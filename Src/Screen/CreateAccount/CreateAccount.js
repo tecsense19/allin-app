@@ -4,7 +4,6 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { PERMISSIONS, request, openSettings, } from 'react-native-permissions';
 import CountryPicker from 'rn-country-picker';
 import uuid from 'react-native-uuid'
-import ImageResizer from '@bam.tech/react-native-image-resizer';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Button from '../../Custom/Button/Button';
 import styles from './CreateAccountStyle';
@@ -57,6 +56,9 @@ const CreateAccount = props => {
     //     notificationsPermission()
     //     getFcmToken()
     // }, [])
+    const storeData = () => {
+        props.navigation.navigate('login')
+    }
     const BgImageCemera = async () => {
         const result = await launchCamera();
         if (result?.assets[0]?.uri) {
