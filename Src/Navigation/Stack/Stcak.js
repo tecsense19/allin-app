@@ -6,6 +6,7 @@ import FirstScreen from '../../Screen/FirstScreen/FirstScreen';
 import LoginScreen from '../../Screen/LoginScreen/LoginScreen';
 import VerificationScreen from '../../Screen/VerificationScreen/VerificationScreen';
 import CreateAccount from '../../Screen/CreateAccount/CreateAccount';
+import HomeScreen from '../BottomTab/HomeScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +23,7 @@ const StackScreen = () => {
                 <Stack.Screen name="login" component={LoginScreen} />
                 <Stack.Screen name="verification" component={VerificationScreen} />
                 <Stack.Screen name="createaccount" component={CreateAccount} />
+                <Stack.Screen name="home" component={HomeScreen} />
 
 
             </Stack.Navigator>

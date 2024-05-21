@@ -1,22 +1,16 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MyTabBar from './customBotton';
-
-import Board from '../../screens/Board/Board';
-import Tme from '../../screens/BottomTme/Tme';
-import Chats from '../../screens/BottomChats/Chats';
-import Feed from '../../screens/BottomFeed/Feed';
 import { StatusBar, View } from 'react-native';
-import Note from '../../screens/Note/Landing';
 import FeedScreen from '../../Screen/FeedScreen/FeedScreen';
 import TmeScreen from '../../Screen/TmeScreen/TmeScreen';
 import ProjectManagementScreen from '../../Screen/ProjectManagement.js/ProjectManagementScreen';
 import ChatUserListScreen from '../../Screen/ChatUserLIst/ChatUserListScreen';
 import BoardScreen from '../../Screen/BoardScreen/BoardScreen';
+import MyTabBar from './MyTabBar';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTab = () => {
+const HomeScreen = () => {
     return (
         <View style={{ flex: 1 }}>
             <StatusBar barStyle="light-content" />
@@ -34,4 +28,4 @@ const BottomTab = () => {
     );
 };
 
-export default BottomTab;
+export default HomeScreen;

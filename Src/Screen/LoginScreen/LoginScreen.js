@@ -1,4 +1,4 @@
-import { View, Alert, StatusBar, ScrollView, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { View, Alert, StatusBar, ScrollView, SafeAreaView, TouchableOpacity, Image, KeyboardAvoidingView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
 import LoginTextInput from '../../Custom/TextInput/LoginTextInput';
@@ -23,18 +23,25 @@ const LoginScreen = props => {
     };
 
     return (
-        <View style={styles.detailsView}>
-            <ScrollView bounces={false} style={{ flex: 1 }}>
-                <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.onBack}>
-                    <Image source={require('../../Assets/Image/back.png')} style={styles.backimg} />
-                </TouchableOpacity>
-                <View style={{ marginTop: '30%' }}>
-                    <VerificationCodeIcon />
-                    <LoginTextInput marginTop={50} value={phoneNo} onChangeText={text => setphoneNo(text)} label={'Enter your mobile number'} placeholderTextColor={COLOR.placeholder} placeholder={'000-000-0000'} />
-                    <Button bgColor={COLOR.green} title={'Submit'} color={COLOR.white} marginTop={40} marginBottom={100} onPress={validatePhoneNumber} />
-                </View>
-            </ScrollView>
-        </View>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
+            <StatusBar barStyle={'dark-content'} />
+            <View style={styles.detailsView}>
+
+                <ScrollView bounces={false} style={{
+                    flex: 1, padding: 20,
+                    paddingHorizontal: 30
+                }}>
+                    <TouchableOpacity onPress={() => props.navigation.goBack()} style={styles.onBack}>
+                        <Image source={require('../../Assets/Image/back.png')} style={styles.backimg} />
+                    </TouchableOpacity>
+                    <View style={{ marginTop: '30%' }}>
+                        <VerificationCodeIcon />
+                        <LoginTextInput marginTop={50} value={phoneNo} onChangeText={text => setphoneNo(text)} label={'Enter your mobile number'} placeholderTextColor={COLOR.placeholder} placeholder={'000-000-0000'} selectedValue={(a) => setC_Code(a)} />
+                        <Button bgColor={COLOR.green} title={'Submit'} color={COLOR.white} marginTop={40} marginBottom={100} onPress={validatePhoneNumber} />
+                    </View>
+                </ScrollView>
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 export default LoginScreen;

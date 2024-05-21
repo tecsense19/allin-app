@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     countrynametext: {
         paddingLeft: 20,
         color: COLOR.titlecolor,
-        fontSize: 18,
+        fontSize: 16,
         textAlign: 'right',
         fontWeight: '600',
     },

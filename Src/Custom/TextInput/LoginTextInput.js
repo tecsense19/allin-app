@@ -12,9 +12,9 @@ const LoginTextInput = ({
     onSubmitEditing,
     marginTop,
     placeholderTextColor,
-    code,
+    selectedValue
 }) => {
-    const [first, setCountryCode] = useState('91')
+
     return (
         <View style={{ marginTop: marginTop, alignSelf: 'center', width: '75%' }}>
             <Text style={styles.label}>{label}</Text>
@@ -26,7 +26,7 @@ const LoginTextInput = ({
                         containerStyle={{ height: 100 }} countryNameTextStyle={styles.countrynametext}
                         searchBarPlaceHolder={'Search here......'} countryFlagStyle={styles.countryflag}
                         hideCountryCode={false} countryCode={'91'}
-                        selectedValue={res => setCountryCode(res)} />
+                        selectedValue={selectedValue} />
                 </View>
 
                 <TextInput

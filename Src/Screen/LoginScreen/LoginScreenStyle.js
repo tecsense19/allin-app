@@ -6,10 +6,6 @@ const styles = StyleSheet.create({
     detailsView: {
         flex: 1,
         backgroundColor: COLOR.white,
-        borderTopLeftRadius: 25,
-        borderTopRightRadius: 25,
-        padding: 20,
-        paddingHorizontal: 30
     }, onBack: {
         backgroundColor: COLOR.green,
         borderRadius: 100,

@@ -907,6 +907,8 @@ PODS:
   - React-Mapbuffer (0.74.1):
     - glog
     - React-debug
+  - react-native-contacts (7.0.8):
+    - React-Core
   - react-native-image-picker (7.1.2):
     - DoubleConversion
     - glog
@@ -1146,6 +1148,27 @@ PODS:
     - React-utils (= 0.74.1)
   - RNCAsyncStorage (1.23.1):
     - React-Core
+  - RNGestureHandler (2.16.2):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNPermissions (4.1.5):
     - React-Core
   - RNReanimated (3.11.0):
@@ -1226,6 +1249,7 @@ DEPENDENCIES:
   - React-jsitracing (from `../node_modules/react-native/ReactCommon/hermes/executor/`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
+  - react-native-contacts (from `../node_modules/react-native-contacts`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -1252,6 +1276,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1320,6 +1345,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   React-Mapbuffer:
     :path: "../node_modules/react-native/ReactCommon"
+  react-native-contacts:
+    :path: "../node_modules/react-native-contacts"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
@@ -1372,6 +1399,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -1411,6 +1440,7 @@ SPEC CHECKSUMS:
   React-jsitracing: 233d1a798fe0ff33b8e630b8f00f62c4a8115fbc
   React-logger: 7e7403a2b14c97f847d90763af76b84b152b6fce
   React-Mapbuffer: 11029dcd47c5c9e057a4092ab9c2a8d10a496a33
+  react-native-contacts: cb4f3b823550adbce0802901b9e63bf1526ec0af
   react-native-image-picker: 4f9a6950199b156f8664ae47d4a7ca3224bd3e51
   react-native-image-resizer: 669454edae94399b11e49c840e4da14482302293
   react-native-safe-area-context: dcab599c527c2d7de2d76507a523d20a0b83823d
@@ -1437,6 +1467,7 @@ SPEC CHECKSUMS:
   React-utils: 7d0b70b2f4ba6795ab6bac9419155df58a2d5cb7
   ReactCommon: c4278abb4fdef5568fd9023d691bd2ff024c1b09
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
+  RNGestureHandler: 9508b860b3709d658dda7a701363a318e329d04b
   RNPermissions: 10d46d6c38fa0ff137d9aad0f676699de60b5bf4
   RNReanimated: 6de652b2366c2bea75683f190719d870af7f999f
   RNScreens: 4e9248a76e35421013de772f5fefa73d7b039d05
