@@ -1,22 +1,24 @@
-
-import React, { useRef } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle } from 'react';
 import OTPTextInput from 'react-native-otp-textinput';
 import { View } from 'react-native';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 
+const OtpInput = forwardRef(({ onChengeText }, ref) => {
+    const otpInput = useRef(null);
 
-const OtpInput = ({ onChengeText }) => {
-    let otpInput = useRef(null);
-    const clearOtp = () => {
-        if (otpInput.current) {
-            otpInput.current.clear();
+    useImperativeHandle(ref, () => ({
+        clearOtp() {
+            if (otpInput.current) {
+                otpInput.current.clear();
+            }
         }
-    };
+    }));
+
     return (
         <View>
             <OTPTextInput
                 handleTextChange={onChengeText}
-                ref={e => (otpInput = e)}
+                ref={otpInput}
                 inputCount={6}
                 keyboardType="numeric"
                 tintColor={COLOR.bordercolor}
@@ -31,10 +33,9 @@ const OtpInput = ({ onChengeText }) => {
                 }}
                 containerStyle={{ alignSelf: 'center' }}
                 offTintColor={COLOR.bordercolor}
-
             />
         </View>
     );
-};
+});
 
 export default OtpInput;

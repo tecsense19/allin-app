@@ -6,10 +6,12 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Button from '../../Custom/Button/Button';
 import styles from './LoginScreenStyle';
 import VerificationCodeIcon from './VerificationCodeIcon';
+import Loader from '../../Custom/Loader/loader';
 
 const LoginScreen = props => {
     const [phoneNo, setphoneNo] = useState('');
     const [C_Code, setC_Code] = useState(91);
+    const [visible, setVisible] = useState(false);
 
 
     const validatePhoneNumber = () => {
@@ -18,6 +20,7 @@ const LoginScreen = props => {
             Alert.alert('valid only 10-digit phone number not include spaces or special characters',);
         }
         else {
+            setVisible(true)
             CheckMobailNumberExists()
         }
     };
@@ -30,10 +33,15 @@ const LoginScreen = props => {
             .then(response => response?.json())
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
+                    setVisible(false)
                     props.navigation.navigate('verification', { mobile: phoneNo, country_code: '+' + C_Code, device_token: 'lkjiawdf32rfrvr35yghtbthrnruygutlr', type: 'login' });
-                } else { Alert.alert('User Alrady Exist') }
+                } else {
+                    setVisible(false)
+                    Alert.alert('User Alrady Exist')
+                }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error =>
+                setVisible(false), console.error('Error:', error));
     }
     const CheckMobailNumberExists = async () => {
         await fetch('https://allin.website4you.co.in/api/v1/check-mobile-exists', {
@@ -44,12 +52,15 @@ const LoginScreen = props => {
             .then(response => response.json())
             .then(async (data) => {
                 if (data?.message == 'User Not Found!') {
+                    setVisible(false)
                     Alert.alert('User not found please create account')
                 } else {
                     await sendOtp()
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error =>
+                setVisible(false),
+                console.error('Error:', error));
     }
 
     return (
@@ -71,6 +82,8 @@ const LoginScreen = props => {
                     </View>
                 </ScrollView>
             </View>
+            <Loader visible={visible} />
+
         </KeyboardAvoidingView>
     );
 };

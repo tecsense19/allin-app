@@ -4,6 +4,7 @@ import styles from './FirstScreenStyle';
 import Button from '../../Custom/Button/Button';
 import CheckBox from '../../Custom/CheckBox/CheckBox';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
+import Loader from '../../Custom/Loader/loader';
 
 const FirstScreen = props => {
     const [ischeck, setIsCheck] = useState(false);
@@ -40,6 +41,7 @@ const FirstScreen = props => {
                     </View>
                 </View>
             </ScrollView>
+
         </View >
     );
 };

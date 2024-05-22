@@ -15,7 +15,7 @@ const HomeScreen = () => {
         <View style={{ flex: 1 }}>
             <StatusBar barStyle="light-content" />
             <Tab.Navigator
-                initialRouteName="notes"
+                initialRouteName="projectmanagement"
                 tabBar={props => <MyTabBar {...props} />}
                 screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
                 <Tab.Screen name="feed" component={FeedScreen} />

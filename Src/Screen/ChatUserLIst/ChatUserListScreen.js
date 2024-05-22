@@ -29,7 +29,7 @@ const ChatUserListScreen = props => {
     const swipeableRef = useRef(null);
 
     const closeModal = () => { setVisible(false); };
-    useEffect(() => { ; getuser(); getMyId(); requestContactsPermission() }, [myID])
+    useEffect(() => { ; getuser(); getMYData(), requestContactsPermission() }, [myID])
 
 
     const handleSwipeableOpen = id => {
@@ -50,7 +50,6 @@ const ChatUserListScreen = props => {
                 { text: 'Clear', onPress: () => { clearMessages(id) }, style: 'destructive' },
             ],)
     }
-    const clearMessages = (userId) => { Alert.alert('clear') }
     const ContactPermissionAlert = () => {
         const title = 'Permission Request';
         const Descriptions =
@@ -163,16 +162,44 @@ const ChatUserListScreen = props => {
             'hardwareBackPress', closeModal,);
         return () => backHandler.remove();
     }, [visible]);
-    const getMyId = async () => {
 
-    };
+
+
+    const getMYData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('myData');
+            if (value !== null) {
+                // console.log(value, '=====>myData');
+            }
+        } catch (e) {
+            // error reading value
+            console.error(e);
+        }
+
+    }
     const getuser = async () => {
-
-    };
+        await fetch('https://allin.website4you.co.in/api/v1/user-list', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        })
+            .then(response => response?.json())
+            .then(data => {
+                if (data) {
+                    console.log(data);
+                } else {
+                    Alert.alert('not user')
+                }
+            })
+            .catch(error =>
+                console.error('Error:', error));
+    }
 
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={COLOR.black} barStyle={'light-content'} hidden={false} />
+            <StatusBar barStyle="light-content" />
             <View style={styles.headerView}>
                 <MainMenu
                     QR={() => { Alert.alert('Website QR'), setVisible(false) }}
@@ -185,7 +212,12 @@ const ChatUserListScreen = props => {
                     onPress={() => { Alert.alert('summarize'), setVisible(false) }}
                 // props.navigation.navigate('summarize'), setVisible(false);
                 />
-                <ChatHeader onCall={() => props.navigation.navigate('call')} tintColor={COLOR.white} onMenu={() => setVisible(true)} onInvite={() => props.navigation.navigate('group')} onSearch={() => props.navigation.navigate('search')} />
+                <ChatHeader
+                    onCall={() => Alert.alert('call')}
+                    tintColor={COLOR.white}
+                    onMenu={() => setVisible(true)}
+                    onInvite={() => Alert.alert('Group')}
+                    onSearch={() => Alert.alert('search')} />
             </View>
             <View style={styles.detailsview}>
                 <FlatList data={userData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
