@@ -23,7 +23,7 @@ const CreateAccount = props => {
     const [diviceToken, setDeviceToken] = useState('');
 
     const closeModal = () => { setVisible(false); };
-
+    // console.log(phone, 'phone');
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', closeModal,);
         return () => backHandler.remove();
@@ -44,6 +44,7 @@ const CreateAccount = props => {
     const handleProfileImgGallery = async () => {
         const profileImage = await profileImgGallery();
         setVisible(false); setImg(profileImage)
+        console.log(profileImage);
     };
     const handleValidAccount = async () => {
         const phoneNumberPattern = /^\d{10}$/;
@@ -70,7 +71,7 @@ const CreateAccount = props => {
             .then(response => response.json())
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
-                    props.navigation.navigate('verification', { mobile: phone, country_code: '+' + countryCode, first_name: fname, last_name: lname, otp: null, device_token: 'lkjiuygutlr', profile: img, cover_image: bgimg });
+                    props.navigation.navigate('verification', { mobile: phone, country_code: '+' + countryCode, first_name: fname, last_name: lname, device_token: 'lkjiuygutlr', profile: img, cover_image: bgimg, type: 'ragister' });
                 } else {
                     Alert.alert('User Alrady Exist')
                 }
@@ -99,9 +100,6 @@ const CreateAccount = props => {
                 }
             })
             .catch(error => console.error('Error:', error));
-
-
-
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">

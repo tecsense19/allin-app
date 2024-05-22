@@ -7,7 +7,11 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 
 const OtpInput = ({ onChengeText }) => {
     let otpInput = useRef(null);
-
+    const clearOtp = () => {
+        if (otpInput.current) {
+            otpInput.current.clear();
+        }
+    };
     return (
         <View>
             <OTPTextInput

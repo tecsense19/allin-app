@@ -1,29 +1,31 @@
 import { View, StatusBar, Image, StyleSheet, } from 'react-native';
 import React, { useEffect, } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplaseScreen = props => {
     useEffect(() => {
         setTimeout(() => {
+            getMyData()
+            // props.navigation.reset({
+            //     routes: [{ name: 'first' }],
+            // });
+        }, 3000);
+    }, []);
+    const getMyData = async () => {
+        const jsonValue = await AsyncStorage.getItem('myData');
+        const userData = JSON.parse(jsonValue);
+        console.log(userData);
+        if (jsonValue == null) {
             props.navigation.reset({
                 routes: [{ name: 'first' }],
             });
-        }, 3000);
-    }, []);
-    // const getUserData = async () => {
-    //     const jsonValue = await AsyncStorage.getItem('userData');
-    //     const userData = JSON.parse(jsonValue);
-    //     console.log(userData);
-    //     if (jsonValue == null) {
-    //         props.navigation.reset({
-    //             routes: [{ name: 'home' }],
-    //         });
-    //     } else {
-    //         props.navigation.reset({
-    //             routes: [{ name: 'bottomtab' }],
-    //         });
-    //     }
-    // };
+        } else {
+            props.navigation.reset({
+                routes: [{ name: 'home' }],
+            });
+        }
+    };
 
 
 

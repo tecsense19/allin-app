@@ -18,9 +18,39 @@ const LoginScreen = props => {
             Alert.alert('valid only 10-digit phone number not include spaces or special characters',);
         }
         else {
-            props.navigation.navigate('verification', { phoneNo, C_Code });
+            CheckMobailNumberExists()
         }
     };
+    const sendOtp = async () => {
+        await fetch('https://allin.website4you.co.in/api/v1/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ country_code: '+' + C_Code, mobile: phoneNo, })
+        })
+            .then(response => response?.json())
+            .then(data => {
+                if (data?.message == 'OTP Sent successfully') {
+                    props.navigation.navigate('verification', { mobile: phoneNo, country_code: '+' + C_Code, device_token: 'lkjiawdf32rfrvr35yghtbthrnruygutlr', type: 'login' });
+                } else { Alert.alert('User Alrady Exist') }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    const CheckMobailNumberExists = async () => {
+        await fetch('https://allin.website4you.co.in/api/v1/check-mobile-exists', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ country_code: '+' + C_Code, mobile: phoneNo, })
+        })
+            .then(response => response.json())
+            .then(async (data) => {
+                if (data?.message == 'User Not Found!') {
+                    Alert.alert('User not found please create account')
+                } else {
+                    await sendOtp()
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>

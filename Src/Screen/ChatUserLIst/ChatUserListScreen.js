@@ -18,6 +18,7 @@ import styles from './ChatUserListScreenStyle';
 import MainMenu from '../../Custom/Modal/MainMenu';
 import ChatHeader from './ChatHeader';
 import { userData } from '../../StaticOBJ/OBJ';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ChatUserListScreen = props => {
@@ -174,14 +175,14 @@ const ChatUserListScreen = props => {
             <StatusBar backgroundColor={COLOR.black} barStyle={'light-content'} hidden={false} />
             <View style={styles.headerView}>
                 <MainMenu
-                    QR={() => Alert.alert('Website QR')}
+                    QR={() => { Alert.alert('Website QR'), setVisible(false) }}
                     onRequestClose={closeModal}
                     title={'Summarize'}
                     visible={visible}
-                    onLogout={LogoutTwoButtonAlert}
+                    onLogout={() => LogoutTwoButtonAlert()}
                     onClose={() => setVisible(false)}
-                    setting={() => { props.navigation.navigate('settings'), setVisible(false); }}
-                    onPress={() => { Alert.alert('summarize') }}
+                    setting={() => { Alert.alert('summarize'), setVisible(false); }}
+                    onPress={() => { Alert.alert('summarize'), setVisible(false) }}
                 // props.navigation.navigate('summarize'), setVisible(false);
                 />
                 <ChatHeader onCall={() => props.navigation.navigate('call')} tintColor={COLOR.white} onMenu={() => setVisible(true)} onInvite={() => props.navigation.navigate('group')} onSearch={() => props.navigation.navigate('search')} />
