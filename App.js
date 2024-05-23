@@ -16,3 +16,27 @@ const App = () => {
 }
 
 export default App
+
+// import { View, Text } from 'react-native'
+// import React from 'react'
+// import IntlPhoneInput from 'react-native-intl-phone-input';
+// import { COLOR } from './Src/Assets/AllFactors/AllFactors';
+
+// const App = () => {
+//   const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
+//     console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
+//   };
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'black' }}>
+//       <IntlPhoneInput onChangeText={onChangeText} defaultCountry="IN" />
+
+//     </View>
+//   )
+// }
+
+// export default App
+
+
+
+
+

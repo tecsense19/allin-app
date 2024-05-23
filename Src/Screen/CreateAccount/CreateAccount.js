@@ -51,8 +51,10 @@ const CreateAccount = props => {
         if (!phoneNumberPattern.test(phone)) {
             Alert.alert('valid only 10-digit phone number not include spaces or special characters',);
         }
-        else if (fname == '' || lname == '') {
-            Alert.alert('Please enter your first name and last name to proceed');
+        else if (fname == '') {
+            Alert.alert('Please enter your first name to proceed');
+        } else if (lname == '') {
+            Alert.alert('Please enter your last name to proceed');
         } else {
             ragisterAccount()
         }
@@ -101,7 +103,7 @@ const CreateAccount = props => {
 
                 } else {
                     setLoding(false)
-                    Alert.alert('User Alrady Exist')
+                    Alert.alert('User Already Exists')
                 }
             })
             .catch(error =>
@@ -138,7 +140,7 @@ const CreateAccount = props => {
                             </TouchableOpacity>
                             {!img[0]?.uri ? (<Image style={{ height: 25, width: 25 }} source={require('../../Assets/Image/camera.png')} />) : ('')}
                         </ImageBackground>
-                        <Textinput marginTop={20} value={fname} onChangeText={txt => setFname(txt)} label={'First Name'} placeholder={'Enter Your First Name'} />
+                        <Textinput marginTop={60} value={fname} onChangeText={txt => setFname(txt)} label={'First Name'} placeholder={'Enter Your First Name'} />
                         <Textinput value={lname} onChangeText={txt => setLname(txt)} label={'Last Name'} marginTop={20} placeholder={'Enter Your Last Name'} />
                         <Text style={styles.phonenumber}> Phone Number </Text>
                         <View style={styles.countryPickerView}>

@@ -25,7 +25,7 @@ const FirstScreen = props => {
             <Text style={styles.intext}> all<Text style={{ color: COLOR.green }}>in</Text></Text>
 
             <ScrollView bounces={false}>
-                <Button onPress={() => props.navigation.navigate('createaccount')} bgColor={COLOR.green} color={COLOR.white} marginTop={100} title={'Creacte an account'} />
+                <Button onPress={() => props.navigation.navigate('createaccount')} bgColor={COLOR.green} color={COLOR.white} marginTop={100} title={'Create an account'} />
                 <Button onPress={onhandleLogIn} color={COLOR.black} marginTop={10} title={'Log in'} borderWidth={1} borderColor={COLOR.bordercolor} />
                 <View style={styles.footerView}>
                     <CheckBox right={10} top={5} left={-2} ischeck={ischeck} onPress={() => setIsCheck(!ischeck)} boxtintcolor={COLOR.textcolor} checktintcolor={COLOR.black} />

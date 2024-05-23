@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     modalMainView: { backgroundColor: 'rgba(0,0,0,0.5)', flex: 1 },
     modalView: {
         justifyContent: 'center',
-        width: 150,
+        width: 135,
         backgroundColor: COLOR.white,
         position: 'absolute',
         right: 25,
