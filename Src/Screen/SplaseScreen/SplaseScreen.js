@@ -7,9 +7,6 @@ const SplaseScreen = props => {
     useEffect(() => {
         setTimeout(() => {
             getMyData()
-            // props.navigation.reset({
-            //     routes: [{ name: 'first' }],
-            // });
         }, 3000);
     }, []);
     const getMyData = async () => {

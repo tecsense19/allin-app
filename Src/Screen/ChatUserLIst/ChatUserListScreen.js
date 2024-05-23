@@ -24,13 +24,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ChatUserListScreen = props => {
     const [visible, setVisible] = useState(false);
     const [openItemId, setOpenItemId] = useState(null);
-    const [UserData, setUserData] = useState([]);
-    const [myID, setMyId] = useState('');
+    const [allUserData, setAllUserData] = useState([]);
+    const [token, setToken] = useState('');
     const swipeableRef = useRef(null);
 
     const closeModal = () => { setVisible(false); };
-    useEffect(() => { ; getuser(); getMYData(), requestContactsPermission() }, [myID])
-
+    useEffect(() => {
+        getuser();
+        getMyData()
+        requestContactsPermission()
+    }, [token])
 
     const handleSwipeableOpen = id => {
         if (
@@ -119,23 +122,23 @@ const ChatUserListScreen = props => {
                         // onPress={() => props.navigation.navigate('chat', { data: item })}
                         >
                             <View style={styles.imgAndNameView}>
-                                <Image source={item?.img == '' ? require('../../Assets/Image/userimg.png') : { uri: item?.img }} style={styles.chetImg} />
+                                <Image source={{ uri: item?.profile }} style={styles.chetImg} />
                                 <View>
                                     <Text style={styles.name}>
-                                        {item?.name?.length >= 16 || item?.data?.Group_name?.length >= 16
-                                            ? item?.name?.slice(0, 16) + ' . . . ' || ''
-                                            : item?.name || item?.data?.Group_name}
+                                        {item?.first_name?.length >= 16 || item?.data?.Group_name?.length >= 16
+                                            ? item?.first_name?.slice(0, 16) + ' . . . ' || ''
+                                            : item?.first_name || item?.data?.Group_name}
                                     </Text>
                                     <Text style={styles.bio}>
-                                        {item.name?.length >= 20 ? item?.name.slice(0, 30) : item?.name || item?.data?.Group_name}
+                                        last message
                                     </Text>
                                 </View>
                             </View>
                             <View>
 
-                                <View style={styles?.msgView}>
+                                {/* <View style={styles?.msgView}>
                                     <Text style={styles?.msgCount}>0</Text>
-                                </View>
+                                </View> */}
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -164,19 +167,14 @@ const ChatUserListScreen = props => {
     }, [visible]);
 
 
+    const getMyData = async () => {
+        const jsonValue = await AsyncStorage.getItem('myData');
+        const userData = JSON.parse(jsonValue);
+        // console.log('===========>', userData.data.token);
+        setToken(userData?.data?.token)
+        // Alert.alert(userData)
 
-    const getMYData = async () => {
-        try {
-            const value = await AsyncStorage.getItem('myData');
-            if (value !== null) {
-                // console.log(value, '=====>myData');
-            }
-        } catch (e) {
-            // error reading value
-            console.error(e);
-        }
-
-    }
+    };
     const getuser = async () => {
         await fetch('https://allin.website4you.co.in/api/v1/user-list', {
             method: 'POST',
@@ -188,7 +186,8 @@ const ChatUserListScreen = props => {
             .then(response => response?.json())
             .then(data => {
                 if (data) {
-                    console.log(data);
+                    console.log(data.data.userList);
+                    setAllUserData(data?.data?.userList)
                 } else {
                     Alert.alert('not user')
                 }
@@ -220,7 +219,7 @@ const ChatUserListScreen = props => {
                     onSearch={() => Alert.alert('search')} />
             </View>
             <View style={styles.detailsview}>
-                <FlatList data={userData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
+                <FlatList data={allUserData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
             </View>
         </View>
     );

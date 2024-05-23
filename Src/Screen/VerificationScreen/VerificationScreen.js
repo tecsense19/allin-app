@@ -24,7 +24,6 @@ const VerificationScreen = props => {
     const [otp, setOtp] = useState('');
     const [myData, setMyData] = useState('')
     const [visible, setVisible] = useState(false)
-    // console.log(myData);
 
     const otpInputRef = useRef(null);
     const number = data?.mobile?.replace(/\D/g, ''); // Remove non-digit characters
@@ -32,28 +31,17 @@ const VerificationScreen = props => {
     const Otp = otp?.replace(/\D/g, ''); // Remove non-digit characters
     const otpinit = parseInt(Otp);
 
-    const storeUserData = async () => {
-        try {
-            const jsonValue = JSON.stringify(myData);
-            console.log('==========>', jsonValue);
-            await AsyncStorage.setItem('myData', jsonValue);
-            setVisible(false)
-            await props.navigation.reset({
-                routes: [{ name: 'home' }],
-            });
-        } catch (error) {
-            setVisible(false),
-                console.error('Error storing user data:', error);
-        }
-    };
+
+
     const handleClearOtp = () => {
         if (otpInputRef.current) {
             otpInputRef.current.clearOtp();
         }
     };
-    const registrationAccount = async () => {
 
-        setVisible(true)
+
+    const registrationAccount = async () => {
+        setVisible(true);
         const formData = new FormData();
         formData.append('mobile', mobileInt);
         formData.append('country_code', data?.country_code);
@@ -68,16 +56,16 @@ const VerificationScreen = props => {
             formData.append('profile', {
                 uri: profileImageUri,
                 name: profileimageName,
-                type: data.profile[0].type
+                type: data?.profile[0]?.type
             });
         }
-        const coverImageUri = data?.profile[0]?.uri;
-        const coverimageName = coverImageUri ? coverImageUri.split('/').pop() : ''; // Extract image name from URI
+        const coverImageUri = data?.cover_image[0]?.uri;
+        const coverimageName = coverImageUri ? coverImageUri?.split('/').pop() : '';
         if (coverimageName) {
             formData.append('cover_image', {
                 uri: coverImageUri,
                 name: coverimageName,
-                type: data.cover_image[0].type
+                type: data?.cover_image[0]?.type
             });
         }
 
@@ -85,24 +73,35 @@ const VerificationScreen = props => {
             const response = await fetch('https://allin.website4you.co.in/api/v1/user-registration', {
                 method: 'POST',
                 body: formData,
-                headers: { 'Content-Type': 'multipart/form-data', },
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
             const responseData = await response.json();
-            if (response.ok) {
-                setMyData(responseData)
-                // console.log(responseData);
-                storeUserData()
+            if (responseData?.data?.token) {
+                try {
+                    await AsyncStorage.setItem('myData', JSON.stringify(responseData));
+                    setVisible(false);
+                    Alert.alert('Data successfully stored in AsyncStorage');
+                    await props.navigation.reset({
+                        routes: [{ name: 'home' }],
+                    });
+                } catch (e) {
+                    console.error('Failed to save data to AsyncStorage:', e);
+                    Alert.alert('Storage Error', 'Failed to save data');
+                }
+
             } else {
-                setVisible(false)
+                setVisible(false);
                 // console.error('Server Error:', responseData);
                 Alert.alert('Server Error:', responseData.message || 'Something went wrong');
             }
         } catch (error) {
-            setVisible(false)
-            console.error('Error:', error);
+            setVisible(false);
+            // console.error('Error:', error);
             Alert.alert('Error:', error.message);
         }
     };
+
+
     const loginAccount = async () => {
         setVisible(true)
         await fetch('https://allin.website4you.co.in/api/v1/verify-otp', {
@@ -118,12 +117,15 @@ const VerificationScreen = props => {
             })
         })
             .then(response => response.json())
-            .then(data => {
+            .then(async data => {
                 if (data?.message == 'OTP Verified Successfully!') {
-                    // Alert.alert(data?.message)
-
-                    setMyData(data)
-                    storeUserData()
+                    await AsyncStorage.setItem('myData', JSON.stringify(data));
+                    setVisible(false);
+                    Alert.alert('Data successfully stored in AsyncStorage');
+                    await props.navigation.reset({
+                        routes: [{ name: 'home' }],
+                    });
+                    setVisible(false)
                 } else {
                     setVisible(false)
                     Alert.alert(data?.message)
@@ -188,7 +190,7 @@ const VerificationScreen = props => {
                 <Button onPress={sendAgainOtp} borderWidth={1} title={'Send Again'} color={COLOR.black} borderColor={COLOR.bordercolor} marginTop={40} />
                 <Button onPress={handleSubmit} title={'Submit'} color={COLOR.white} bgColor={COLOR.green} marginTop={15} />
             </ScrollView>
-            {/* <Loader visible={visible} /> */}
+            <Loader visible={visible} />
         </View>
     );
 };

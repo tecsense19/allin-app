@@ -71,15 +71,18 @@ const CreateAccount = props => {
             .then(response => response.json())
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
+                    setLoding(false)
                     props.navigation.navigate('verification', { mobile: phone, country_code: '+' + countryCode, first_name: fname, last_name: lname, device_token: 'lkjiuygutlr', profile: img, cover_image: bgimg, type: 'ragister' });
                 } else {
+                    setLoding(false)
                     Alert.alert('User Alrady Exist')
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error =>
+                setLoding(false), console.error('Error:', error));
     }
     const ragisterAccount = async () => {
-
+        setLoding(true)
         await fetch('https://allin.website4you.co.in/api/v1/check-mobile-exists', {
             method: 'POST',
             headers: {
@@ -93,13 +96,16 @@ const CreateAccount = props => {
             .then(response => response.json())
             .then(async (data) => {
                 if (data?.message == 'User Not Found!') {
+                    setLoding(false)
                     await sendOtp()
 
                 } else {
+                    setLoding(false)
                     Alert.alert('User Alrady Exist')
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error =>
+                setLoding(false), console.error('Error:', error));
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
