@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         color: COLOR.titlecolor,
         fontWeight: '600',
         marginLeft: 5,
-        fontSize: 18,
+        fontSize: 18, marginBottom: 8
     },
     countryPickerView: {
         marginTop: 8,

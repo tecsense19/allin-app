@@ -24,28 +24,27 @@ const CreateTask = ({ onSubmit, userId }) => {
         }
     })// by defualt selected user not show
 
-    // const handleSubmit = () => {
-    //     const data = { taskId: id, type: 'Checklist', tasktitle: title, taskdescriptions: descriptions, remind: selectedItems }
-    //     if (title == '') {
-    //         Alert.alert('Please enter title and descriptions');
-    //     }
-    //     else if (
-    //         descriptions.length < 50
-    //     ) { Alert.alert('Write descriptions minimum 50 Character') }
-    //     else {
-    //         onSubmit(data);
-    //         setDescription(null)
-    //         firestore().collection('task').doc(id).collection('taskMsg').add({})
-    //     }
-    // };
-    // const getMyId = async () => {
-    //     try {
-    //         const jsonValue = await AsyncStorage.getItem('userData');
-    //         const myid = JSON.parse(jsonValue);
-    //         setMyId(myid.id);
+    const handleSubmit = () => {
+        const data = { taskId: id, type: 'Checklist', tasktitle: title, taskdescriptions: descriptions, remind: selectedItems }
+        if (title == '') {
+            Alert.alert('Please enter title and descriptions');
+        }
+        else if (
+            descriptions.length < 50
+        ) { Alert.alert('Write descriptions minimum 50 Character') }
+        else {
+            onSubmit(data);
+            setDescription(null)
+        }
+    };
+    const getMyId = async () => {
+        // try {
+        //     const jsonValue = await AsyncStorage.getItem('userData');
+        //     const myid = JSON.parse(jsonValue);
+        //     setMyId(myid.id);
 
-    //     } catch (e) { }
-    // };
+        // } catch (e) { }
+    };
     // const getuser = () => {
     //     let temp = [];
     //     firestore().collection('users').get().then((res) => {
@@ -64,10 +63,11 @@ const CreateTask = ({ onSubmit, userId }) => {
     //     getuser()
 
     // }, [myID])
+
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 4 ? <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../assets/userimg.png')} style={{
+                {index < 4 ? <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{
                     height: 50, width: 50,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
@@ -162,7 +162,7 @@ const CreateTask = ({ onSubmit, userId }) => {
                 color={COLOR.white}
             />
             <Modal visible={visible} >
-                <View style={{ flex: 1, backgroundColor: COLOR.DeepSkyBlue }}>
+                <View style={{ flex: 1, backgroundColor: COLOR.black }}>
                     <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
                     <View style={{ marginTop: 10, paddingHorizontal: 18, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
                         <FlatList data={selectedUser} renderItem={(({ item }) => {
@@ -170,7 +170,7 @@ const CreateTask = ({ onSubmit, userId }) => {
                                 <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.DeepSkyBlue, fontWeight: 'bold' }}>{item.data.first_name}</Text>
+                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{item.data.first_name}</Text>
                                     </View>
 
                                     <TouchableOpacity onPress={() => toggleItem(item.id)}>
@@ -188,6 +188,7 @@ const CreateTask = ({ onSubmit, userId }) => {
                     </View>
                 </View>
             </Modal>
+
         </ScrollView>
     )
 }

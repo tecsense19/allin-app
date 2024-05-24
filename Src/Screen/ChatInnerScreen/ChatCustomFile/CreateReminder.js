@@ -32,27 +32,26 @@ const CreateReminder = ({ onSubmit, userId }) => {
             return user?.id
         }
     })// by defualt selected user not show
-    // const handleSubmit = () => {
-    //     const data = { type: 'Reminder', reminddescriptions: descriptions, remindtitle: title, remindtime, remind: selectedItems }
-    //     if (descriptions == '') {
-    //         Alert.alert('Please enter title and description');
-    //     }
-    //     else if (
-    //         descriptions.length < 50
-    //     ) { Alert.alert('Write minimum 50 Character') }
-    //     else {
-    //         onSubmit(data);
-    //         setDescription('')
-    //         firestore().collection('task').doc(id).collection('taskMsg').add({})
-    //     }
-    // };
-    // const toggleItem = (itemId) => {
-    //     if (selectedItems.includes(itemId)) {
-    //         setSelectedItems(selectedItems.filter((id) => id !== itemId));
-    //     } else {
-    //         setSelectedItems([...selectedItems, itemId]);
-    //     }
-    // };
+    const handleSubmit = () => {
+        const data = { type: 'Reminder', reminddescriptions: descriptions, remindtitle: title, remindtime, remind: selectedItems }
+        if (descriptions == '') {
+            Alert.alert('Please enter title and description');
+        }
+        else if (
+            descriptions.length < 50
+        ) { Alert.alert('Write minimum 50 Character') }
+        else {
+            onSubmit(data);
+            setDescription('')
+        }
+    };
+    const toggleItem = (itemId) => {
+        if (selectedItems.includes(itemId)) {
+            setSelectedItems(selectedItems.filter((id) => id !== itemId));
+        } else {
+            setSelectedItems([...selectedItems, itemId]);
+        }
+    };
 
     // const getMyId = async () => {
     //     try {

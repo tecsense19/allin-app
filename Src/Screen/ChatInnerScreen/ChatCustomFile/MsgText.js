@@ -1,8 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import COLOR from '../../../color/color'
-import font from '../../../../assets/fonts/font'
-
+import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 const MsgText = ({ data, time, onPress, myId }) => {
     const texts = data?.text
     const id = data?.sendBy == myId

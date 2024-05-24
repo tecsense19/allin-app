@@ -5,20 +5,20 @@ import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 const MsgTask = ({ data, time, MYID, onPress, disabled }) => {
     const id = data?.sendBy == MYID
 
-    // const createTwoButtonAlert = () =>
-    //     Alert.alert(
-    //         'Acctions',
-    //         'Are You sure to edit,delete.....?',
-    //         [
-    //             { text: 'Edit', },
-    //             {
-    //                 text: 'Cancel',
-    //                 onPress: () => console.log('Cancel Pressed'),
-    //                 style: 'No',
-    //             },
-    //             { text: 'DELETE', onPress: () => deleteTwoButton(), style: 'destructive' },
-    //         ],
-    //     );
+    const createTwoButtonAlert = () =>
+        Alert.alert(
+            'Acctions',
+            'Are You sure to edit,delete.....?',
+            [
+                { text: 'Edit', },
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'No',
+                },
+                { text: 'DELETE', onPress: () => deleteTwoButton(), style: 'destructive' },
+            ],
+        );
     const deleteTwoButton = () => {
         Alert.alert('Delete Task',
             'Are you sure delete Task....?',
@@ -38,12 +38,12 @@ const MsgTask = ({ data, time, MYID, onPress, disabled }) => {
                         source={require('../../../Assets/Image/check.png')}
                         style={[styles.checkImg, { tintColor: id ? COLOR.green : COLOR.slateblue, }]}
                     />
-                    {id ? <Text style={styles.taskTitle}>
-                        {data?.Checklist?.title.length > 28 ?
-                            data?.Checklist?.title.slice(0, 28) + '...' : data?.Checklist?.title}</Text> :
+                    {id ? <Text style={styles?.taskTitle}>
+                        {data?.Checklist?.title?.length > 28 ?
+                            data?.Checklist?.title?.slice(0, 28) + '...' : data?.Checklist?.title}</Text> :
                         <Text style={styles.taskTitle}>
-                            {data?.Checklist?.title.length > 42 ?
-                                data?.Checklist?.title.slice(0, 42) + '...' : data?.Checklist?.title}</Text>}
+                            {data?.Checklist?.title?.length > 42 ?
+                                data?.Checklist?.title?.slice(0, 42) + '...' : data?.Checklist?.title}</Text>}
                 </View>
                 {id ? <TouchableOpacity onPress={createTwoButtonAlert} style={styles.onThreeDott}>
                     <Image source={require('../../../Assets/Image/dott.png')} style={styles.threedottImg} />

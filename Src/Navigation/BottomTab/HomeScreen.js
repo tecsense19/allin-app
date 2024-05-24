@@ -13,7 +13,7 @@ const Tab = createBottomTabNavigator();
 const HomeScreen = () => {
     return (
         <View style={{ flex: 1 }}>
-            <StatusBar barStyle="light-content" />
+
             <Tab.Navigator
                 initialRouteName="projectmanagement"
                 tabBar={props => <MyTabBar {...props} />}

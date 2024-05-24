@@ -7,7 +7,7 @@ import LoginScreen from '../../Screen/LoginScreen/LoginScreen';
 import VerificationScreen from '../../Screen/VerificationScreen/VerificationScreen';
 import CreateAccount from '../../Screen/CreateAccount/CreateAccount';
 import HomeScreen from '../BottomTab/HomeScreen';
-// import ChatInnerScreen from '../../Screen/ChatInnerScreen/ChatInnerScreen';
+import ChatInnerScreen from '../../Screen/ChatInnerScreen/ChatInnerScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -25,7 +25,7 @@ const StackScreen = () => {
                 <Stack.Screen name="verification" component={VerificationScreen} />
                 <Stack.Screen name="createaccount" component={CreateAccount} />
                 <Stack.Screen name="home" component={HomeScreen} />
-                {/* <Stack.Screen name="chatinner" component={ChatInnerScreen} /> */}
+                <Stack.Screen name="chatinner" component={ChatInnerScreen} />
 
 
             </Stack.Navigator>

@@ -42,22 +42,21 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
     hours = hours ? hours : 12; // Handle midnight (0:00) as 12 AM
     const meetingtime = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
 
-    // const handleSubmit = () => {
-    //     const data = { type: 'Meeting', meetingtitle: title, meetingdescription: descriptions, meetingdate: meetingdate, meetingtime: meetingtime, remind: selectedItems }
-    //     if (title == '' || descriptions == '') {
-    //         Alert.alert('Please Enter title and description');
-    //     }
-    //     else if (
-    //         descriptions.length < 50
-    //     ) { Alert.alert('Write minimum 50 Character') }
-    //     else {
-    //         onSubmit(data);
-    //         setTitle(null)
-    //         setDescription(null)
-    //         firestore().collection('task').doc(id).collection('taskMsg').add({})
+    const handleSubmit = () => {
+        const data = { type: 'Meeting', meetingtitle: title, meetingdescription: descriptions, meetingdate: meetingdate, meetingtime: meetingtime, remind: selectedItems }
+        if (title == '' || descriptions == '') {
+            Alert.alert('Please Enter title and description');
+        }
+        else if (
+            descriptions.length < 50
+        ) { Alert.alert('Write minimum 50 Character') }
+        else {
+            onSubmit(data);
+            setTitle(null)
+            setDescription(null)
 
-    //     }
-    // };
+        }
+    };
 
 
 
@@ -99,7 +98,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 4 ? <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../assets/userimg.png')} style={{
+                {index < 4 ? <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{
                     height: 50, width: 50,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
@@ -165,7 +164,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                 }}
             />
             {descriptions.length > 50 ? '' : <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image source={require('../../../assets/notice.png')} style={{ height: 15, width: 15, marginRight: 5, tintColor: COLOR.orange }} />
+                <Image source={require('../../../Assets/Image/notice.png')} style={{ height: 15, width: 15, marginRight: 5, tintColor: COLOR.orange }} />
                 <Text style={{
                     color: COLOR.orange, fontWeight: '500',
                     textAlign: 'left', fontSize: 14,
@@ -220,7 +219,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                 <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{'+' + filteredUserData?.length}</Text>
             </View> : null}
             <Button
-                // onPress={handleSubmit}
+                onPress={handleSubmit}
                 marginTop={20}
                 marginBottom={30}
                 title={'Submit'}
@@ -264,13 +263,13 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                             return (
                                 <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../assets/userimg.png')} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                        <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{ height: 50, width: 50, borderRadius: 50 }} />
                                         <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{item.data.first_name}</Text>
                                     </View>
 
                                     <TouchableOpacity onPress={() => toggleItem(item.id)}>
                                         <Image
-                                            source={selectedItems.includes(item.id) ? require('../../../assets/check.png') : require('../../../assets/box.png')}
+                                            source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
                                             style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
                                         />
                                     </TouchableOpacity>
@@ -293,7 +292,7 @@ const PickerButton = ({ title, onPress }) => {
     return (
         <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 10, borderRadius: 10, borderColor: COLOR.bordercolor }}>
             <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.titlecolor }}>{title}</Text>
-            <Image source={require('../../../assets/down.png')}
+            <Image source={require('../../../Assets/Image/down.png')}
                 style={{ height: 18, width: 18, resizeMode: 'contain', marginTop: -5, marginLeft: 5, tintColor: COLOR.green }} />
         </TouchableOpacity>
     )

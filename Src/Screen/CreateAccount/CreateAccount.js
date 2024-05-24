@@ -9,6 +9,7 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import RoundPlus from '../../Custom/RoundPlus/RoundPlus';
 import Textinput from '../../Custom/TextInput/SimpaleTextInput';
 import ProfileModal from '../../Custom/Modal/ProfileModal';
+import IntlPhoneInput from 'react-native-intl-phone-input';
 import { BgImageCemera, BgImageGallery, profileImgCemera, profileImgGallery, } from './Functions';
 
 const CreateAccount = props => {
@@ -21,9 +22,18 @@ const CreateAccount = props => {
     const [visible, setVisible] = useState(false);
     const [loding, setLoding] = useState(false);
     const [diviceToken, setDeviceToken] = useState('');
+    const [maskNumber, setMaskNumber] = useState('');
 
     const closeModal = () => { setVisible(false); };
-    // console.log(phone, 'phone');
+    console.log(phone);
+    console.log(countryCode);
+
+    const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
+        // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
+        setPhone(unmaskedPhoneNumber)
+        setCountryCode(dialCode)
+        setMaskNumber(phoneNumber)
+    };
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', closeModal,);
         return () => backHandler.remove();
@@ -47,11 +57,8 @@ const CreateAccount = props => {
         console.log(profileImage);
     };
     const handleValidAccount = async () => {
-        const phoneNumberPattern = /^\d{10}$/;
-        if (!phoneNumberPattern.test(phone)) {
-            Alert.alert('valid only 10-digit phone number not include spaces or special characters',);
-        }
-        else if (fname == '') {
+
+        if (fname == '') {
             Alert.alert('Please enter your first name to proceed');
         } else if (lname == '') {
             Alert.alert('Please enter your last name to proceed');
@@ -66,7 +73,7 @@ const CreateAccount = props => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                country_code: '+' + countryCode,
+                country_code: countryCode,
                 mobile: phone,
             })
         })
@@ -74,10 +81,10 @@ const CreateAccount = props => {
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
                     setLoding(false)
-                    props.navigation.navigate('verification', { mobile: phone, country_code: '+' + countryCode, first_name: fname, last_name: lname, device_token: 'lkjiuygutlr', profile: img, cover_image: bgimg, type: 'ragister' });
+                    props.navigation.navigate('verification', { mobile: phone, country_code: countryCode, first_name: fname, last_name: lname, device_token: 'lkjiuygutlr', profile: img, cover_image: bgimg, type: 'ragister', maskNumber: maskNumber });
                 } else {
                     setLoding(false)
-                    Alert.alert('User Alrady Exist')
+                    Alert.alert(data?.message)
                 }
             })
             .catch(error =>
@@ -91,7 +98,7 @@ const CreateAccount = props => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                country_code: '+' + countryCode,
+                country_code: countryCode,
                 mobile: phone,
             })
         })
@@ -103,7 +110,7 @@ const CreateAccount = props => {
 
                 } else {
                     setLoding(false)
-                    Alert.alert('User Already Exists')
+                    Alert.alert(data?.message)
                 }
             })
             .catch(error =>
@@ -143,10 +150,11 @@ const CreateAccount = props => {
                         <Textinput marginTop={60} value={fname} onChangeText={txt => setFname(txt)} label={'First Name'} placeholder={'Enter Your First Name'} />
                         <Textinput value={lname} onChangeText={txt => setLname(txt)} label={'Last Name'} marginTop={20} placeholder={'Enter Your Last Name'} />
                         <Text style={styles.phonenumber}> Phone Number </Text>
-                        <View style={styles.countryPickerView}>
+                        {/* <View style={styles.countryPickerView}>
                             <CountryPicker pickerTitle="Select yourCountry" animationType={'none'} pickerTitleStyle={styles.pickertitle} language="en" selectedCountryTextStyle={styles.selectedcountrytext} containerStyle={{ height: 100 }} countryNameTextStyle={styles.countrynametext} searchBarPlaceHolder={'Search here......'} countryFlagStyle={styles.countryflag} hideCountryCode={false} countryCode={'91'} selectedValue={res => setCountryCode(res)} />
-                            <TextInput placeholder="Enter Phone Number" placeholderTextColor={COLOR.lightgray} keyboardType="numeric" maxLength={10} onChangeText={res => { setPhone(res) }} value={phone} style={styles.phonenumberinput} />
-                        </View>
+                            <TextInput placeholder="Enter Phone Number" placeholderTextColor={COLOR.lightgray} keyboardType="numeric" maxLength={14} onChangeText={res => { setPhone(res) }} value={phone} style={styles.phonenumberinput} />
+                        </View> */}
+                        <IntlPhoneInput onChangeText={onChangeText} defaultCountry="IN" />
                         <Button onPress={handleValidAccount} title={'Let’s Get Started'} color={COLOR.white} bgColor={COLOR.green} marginTop={30} />
                         <ProfileModal onRequestClose={closeModal} visible={visible} onClose={() => setVisible(false)}
                             onCemera={() => { handleProfileImgCamera() }}

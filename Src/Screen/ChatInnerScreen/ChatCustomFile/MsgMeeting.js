@@ -22,7 +22,7 @@ export const MsgMeeting = ({ data, time, onPress, MYID, }) => {
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 3 ? <Image source={item?.profile_image ? { uri: item?.profile_image } : require('../../../assets/admin.jpg')} style={{
+                {index < 3 ? <Image source={item?.profile_image ? { uri: item?.profile_image } : require('../../../Assets/Image/admin.jpg')} style={{
                     height: 40, width: 40,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}

@@ -71,7 +71,7 @@ const ChatUserListScreen = props => {
     };
 
     const list = ({ item }) => {
-
+        const userName = item?.first_name + ' ' + item.last_name
         const swipeRightSide = () => {
             return (
                 <View style={styles.swipeView}>
@@ -119,15 +119,15 @@ const ChatUserListScreen = props => {
                     <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 20, marginTop: 5 }}>
                         <TouchableOpacity
                             style={styles.listcontainer}
-                        // onPress={() => props.navigation.navigate('chat', { data: item })}
+                        // onPress={() => props.navigation.navigate('chatinner', { data: item })}
                         >
                             <View style={styles.imgAndNameView}>
                                 <Image source={{ uri: item?.profile }} style={styles.chetImg} />
                                 <View>
                                     <Text style={styles.name}>
-                                        {item?.first_name?.length >= 16 || item?.data?.Group_name?.length >= 16
-                                            ? item?.first_name?.slice(0, 16) + ' . . . ' || ''
-                                            : item?.first_name || item?.data?.Group_name}
+                                        {userName?.length >= 16
+                                            ? userName?.slice(0, 16) + ' . . . ' || ''
+                                            : userName}
                                     </Text>
                                     <Text style={styles.bio}>
                                         last message
@@ -219,7 +219,7 @@ const ChatUserListScreen = props => {
                     onSearch={() => Alert.alert('search')} />
             </View>
             <View style={styles.detailsview}>
-                <FlatList data={allUserData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
+                {/* <FlatList data={allUserData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} /> */}
             </View>
         </View>
     );

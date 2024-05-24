@@ -1,43 +1,45 @@
-import { View, Alert, StatusBar, ScrollView, SafeAreaView, TouchableOpacity, Image, KeyboardAvoidingView } from 'react-native';
+import { View, Alert, StatusBar, ScrollView, SafeAreaView, TouchableOpacity, Image, KeyboardAvoidingView, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
-import LoginTextInput from '../../Custom/TextInput/LoginTextInput';
+// import LoginTextInput from '../../Custom/TextInput/LoginTextInput';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Button from '../../Custom/Button/Button';
 import styles from './LoginScreenStyle';
 import VerificationCodeIcon from './VerificationCodeIcon';
 import Loader from '../../Custom/Loader/loader';
+import LoginTextInput from '../../Custom/TextInput/LoginTextInput';
+import IntlPhoneInput from 'react-native-intl-phone-input'
 
 const LoginScreen = props => {
     const [phoneNo, setphoneNo] = useState('');
     const [C_Code, setC_Code] = useState(91);
     const [visible, setVisible] = useState(false);
+    const [maskNumber, setMaskNumber] = useState(false);
 
 
     const validatePhoneNumber = () => {
-        const phoneNumberPattern = /^\d{10}$/;
-        if (!phoneNumberPattern.test(phoneNo)) {
-            Alert.alert('valid only 10-digit phone number not include spaces or special characters',);
-        }
-        else {
-            setVisible(true)
-            CheckMobailNumberExists()
-        }
+
+        setVisible(true)
+        CheckMobailNumberExists()
+
+
+
     };
+
     const sendOtp = async () => {
         await fetch('https://allin.website4you.co.in/api/v1/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ country_code: '+' + C_Code, mobile: phoneNo, })
+            body: JSON.stringify({ country_code: C_Code, mobile: phoneNo, })
         })
             .then(response => response?.json())
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
                     setVisible(false)
-                    props.navigation.navigate('verification', { mobile: phoneNo, country_code: '+' + C_Code, device_token: 'lkjiawdf32rfrvr35yghtbthrnruygutlr', type: 'login' });
+                    props.navigation.navigate('verification', { mobile: phoneNo, country_code: C_Code, device_token: 'lkjiawdf32rfrvr35yghtbthrnruygutlr', type: 'login', maskNumber: maskNumber });
                 } else {
                     setVisible(false)
-                    Alert.alert('User Alrady Exist')
+                    Alert.alert(data?.message)
                 }
             })
             .catch(error =>
@@ -47,7 +49,7 @@ const LoginScreen = props => {
         await fetch('https://allin.website4you.co.in/api/v1/check-mobile-exists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ country_code: '+' + C_Code, mobile: phoneNo, })
+            body: JSON.stringify({ country_code: C_Code, mobile: phoneNo, })
         })
             .then(response => response.json())
             .then(async (data) => {
@@ -62,6 +64,13 @@ const LoginScreen = props => {
                 setVisible(false),
                 console.error('Error:', error));
     }
+    const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
+        // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
+        setC_Code(dialCode)
+        setphoneNo(unmaskedPhoneNumber)
+
+        setMaskNumber(phoneNumber)
+    };
 
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
@@ -77,7 +86,21 @@ const LoginScreen = props => {
                     </TouchableOpacity>
                     <View style={{ marginTop: '30%' }}>
                         <VerificationCodeIcon />
-                        <LoginTextInput marginTop={50} value={phoneNo} onChangeText={text => setphoneNo(text)} label={'Enter your mobile number'} placeholderTextColor={COLOR.placeholder} placeholder={'000-000-0000'} selectedValue={(a) => setC_Code(a)} />
+                        <Text style={{
+                            color: COLOR.gray,
+                            textAlign: 'center',
+                            fontSize: 16,
+                            fontWeight: '500', marginTop: 40,
+                        }}>Enter your mobile number</Text>
+                        <View style={{ marginTop: 25, width: '80%', alignSelf: 'center' }}>
+                            <IntlPhoneInput onChangeText={onChangeText} defaultCountry="IN" phoneInputStyle={{
+                                fontWeight: 'bold',
+                                fontSize: 18,
+                            }}
+                                containerStyle={{ borderWidth: 0, borderBottomWidth: 2, borderRadius: 0, borderColor: COLOR.black }}
+                                dialCodeTextStyle={{ fontSize: 18, fontWeight: 'bold', }} />
+                        </View>
+                        {/* <LoginTextInput marginTop={50} value={phoneNo} onChangeText={text => setphoneNo(text)} label={'Enter your mobile number'} placeholderTextColor={COLOR.placeholder} placeholder={'000-000-0000'} selectedValue={(a) => setC_Code(a)} /> */}
                         <Button bgColor={COLOR.green} title={'Submit'} color={COLOR.white} marginTop={40} marginBottom={100} onPress={validatePhoneNumber} />
                     </View>
                 </ScrollView>

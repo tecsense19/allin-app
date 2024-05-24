@@ -31,7 +31,7 @@ const LoginTextInput = ({
 
                 <TextInput
                     autoFocus
-                    maxLength={10}
+                    maxLength={14}
                     onSubmitEditing={onSubmitEditing}
                     keyboardType="numeric"
                     placeholder={placeholder}

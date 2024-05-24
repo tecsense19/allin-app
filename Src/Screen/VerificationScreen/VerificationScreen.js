@@ -27,9 +27,9 @@ const VerificationScreen = props => {
 
     const otpInputRef = useRef(null);
     const number = data?.mobile?.replace(/\D/g, ''); // Remove non-digit characters
-    const mobileInt = parseInt(number);
+    const mobileInt = number;
     const Otp = otp?.replace(/\D/g, ''); // Remove non-digit characters
-    const otpinit = parseInt(Otp);
+    const otpinit = Otp;
 
 
 
@@ -68,6 +68,8 @@ const VerificationScreen = props => {
                 type: data?.cover_image[0]?.type
             });
         }
+        // console.log('formdata=====>', formData);
+
 
         try {
             const response = await fetch('https://allin.website4you.co.in/api/v1/user-registration', {
@@ -80,19 +82,17 @@ const VerificationScreen = props => {
                 try {
                     await AsyncStorage.setItem('myData', JSON.stringify(responseData));
                     setVisible(false);
-                    Alert.alert('Data successfully stored in AsyncStorage');
                     await props.navigation.reset({
                         routes: [{ name: 'home' }],
                     });
                 } catch (e) {
                     console.error('Failed to save data to AsyncStorage:', e);
-                    Alert.alert('Storage Error', 'Failed to save data');
                 }
 
             } else {
                 setVisible(false);
                 // console.error('Server Error:', responseData);
-                Alert.alert('Server Error:', responseData.message || 'Something went wrong');
+                Alert.alert(responseData.message);
             }
         } catch (error) {
             setVisible(false);
@@ -121,7 +121,6 @@ const VerificationScreen = props => {
                 if (data?.message == 'OTP Verified Successfully!') {
                     await AsyncStorage.setItem('myData', JSON.stringify(data));
                     setVisible(false);
-                    Alert.alert('Data successfully stored in AsyncStorage');
                     await props.navigation.reset({
                         routes: [{ name: 'home' }],
                     });
@@ -137,7 +136,7 @@ const VerificationScreen = props => {
     }
     const handleSubmit = () => {
         if (data.type == 'ragister') {
-            // console.log(data.type);
+            console.log(data.type);
             registrationAccount()
         } else (
             loginAccount()
@@ -153,16 +152,16 @@ const VerificationScreen = props => {
             .then(response => response?.json())
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
-                    // console.log(data?.message);
-                    // setVisible(false)
+                    console.log(data?.message);
+                    setVisible(false)
 
                 } else {
-                    // setVisible(false)
+                    setVisible(false)
                     Alert.alert('User Alrady Exist')
                 }
             })
             .catch(error =>
-                // setVisible(false),
+                setVisible(false),
                 console.error('Error:', error));
     }
 
@@ -181,7 +180,7 @@ const VerificationScreen = props => {
                 <Text style={styles.DownSmallTxt}>We have sent SMS verification code</Text>
                 <OtpInput onChengeText={i => setOtp(i)} ref={otpInputRef} />
                 <View style={styles.numberView}>
-                    <Text style={styles.numberTxt}>{data?.country_code + ' ' + data?.mobile}</Text>
+                    <Text style={styles.numberTxt}>{data?.country_code + ' ' + data?.maskNumber}</Text>
                     <TouchableOpacity
                         onPress={() => handleEditNumber(data, props.navigation)}>
                         <Image source={require('../../Assets/Image/edit.png')} style={styles.editIcon} />
