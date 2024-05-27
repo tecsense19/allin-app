@@ -18,7 +18,7 @@ const StackScreen = () => {
         <NavigationContainer>
             <Stack.Navigator
 
-                initialRouteName="setting"
+                // initialRouteName="home"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 <Stack.Screen name="splase" component={SplaseScreen} />
                 <Stack.Screen name="first" component={FirstScreen} />

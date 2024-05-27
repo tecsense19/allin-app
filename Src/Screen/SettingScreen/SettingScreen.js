@@ -19,21 +19,58 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import styles from './SettingScreenStyle';
 import { SettingData } from '../../StaticOBJ/OBJ';
 import { getDataFromStorage } from '../../Service/MyLocalInfo';
+import messaging from '@react-native-firebase/messaging';
 LogBox.ignoreAllLogs();
 const SettingScreen = props => {
 
 
     const [language, setLanguage] = useState('English(Us)');
     const [data, setData] = useState('');
-    const mydata = data.userDetails
+    const mydata = data?.userDetails
     const userName = mydata?.first_name + ' ' + mydata?.last_name
     const myNumber = mydata?.country_code + ' ' + mydata?.mobile
 
     const getData = async () => {
         const data = await getDataFromStorage('myData');
         setData(data?.data)
+
     };
-    console.log(mydata);
+    useEffect(() => {
+        getFcmToken()
+    }, [])
+    const getFcmToken = async () => {
+        try {
+            const D_token = await messaging().getToken();
+            setDeviceToken(D_token)
+        } catch (error) {
+            console.error('Error getting FCM token:', error)
+        }
+    }
+
+    const logout = async () => {
+        try {
+            const url = 'https://allin.website4you.co.in/api/v1/logout'; // Ensure the full URL is specified
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ device_token: deviceToken }) // Stringify the body
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (data?.message == 'Logout Successfully.') {
+                createTwoButtonAlert()
+            }
+        } catch (error) {
+            console.error('Error during logout', error);
+        }
+
+    }
+
     useEffect(() => {
         getData();
 
@@ -61,7 +98,7 @@ const SettingScreen = props => {
     const list = ({ item }) => {
         const onNavigate = () => {
             if (item?.id == 6) {
-                createTwoButtonAlert();
+                logout()
             } else {
                 props?.navigation?.navigate(item?.navigation);
             }
@@ -77,7 +114,7 @@ const SettingScreen = props => {
                 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Image
-                        source={item.icon}
+                        source={item?.icon}
                         style={{
                             height: 20,
                             width: 20,

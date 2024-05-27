@@ -2,13 +2,16 @@ import { View, StatusBar, Image, StyleSheet, } from 'react-native';
 import React, { useEffect, } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { notificationsPermission } from '../../Service/Functions';
 
 const SplaseScreen = props => {
     useEffect(() => {
         setTimeout(() => {
             getMyData()
+            notificationsPermission()
         }, 3000);
     }, []);
+
     const getMyData = async () => {
         const jsonValue = await AsyncStorage.getItem('myData');
         const userData = JSON.parse(jsonValue);

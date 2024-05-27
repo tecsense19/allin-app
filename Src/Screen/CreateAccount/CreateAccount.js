@@ -10,7 +10,7 @@ import RoundPlus from '../../Custom/RoundPlus/RoundPlus';
 import Textinput from '../../Custom/TextInput/SimpaleTextInput';
 import ProfileModal from '../../Custom/Modal/ProfileModal';
 import IntlPhoneInput from 'react-native-intl-phone-input';
-import { BgImageCemera, BgImageGallery, profileImgCemera, profileImgGallery, } from './Functions';
+import { BgImageCemera, BgImageGallery, profileImgCemera, profileImgGallery, requestCameraPermission, } from './Functions';
 
 const CreateAccount = props => {
     const [fname, setFname] = useState('');
@@ -25,8 +25,7 @@ const CreateAccount = props => {
     const [maskNumber, setMaskNumber] = useState('');
 
     const closeModal = () => { setVisible(false); };
-    console.log(phone);
-    console.log(countryCode);
+
 
     const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
         // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
@@ -81,7 +80,7 @@ const CreateAccount = props => {
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
                     setLoding(false)
-                    props.navigation.navigate('verification', { mobile: phone, country_code: countryCode, first_name: fname, last_name: lname, device_token: 'lkjiuygutlr', profile: img, cover_image: bgimg, type: 'ragister', maskNumber: maskNumber });
+                    props.navigation.navigate('verification', { mobile: phone, country_code: countryCode, first_name: fname, last_name: lname, profile: img, cover_image: bgimg, type: 'ragister', maskNumber: maskNumber });
                 } else {
                     setLoding(false)
                     Alert.alert(data?.message)

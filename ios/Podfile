@@ -12,7 +12,9 @@ def node_require(script)
   
    node_require('react-native/scripts/react_native_pods.rb')
    node_require('react-native-permissions/scripts/setup.rb')
-  #  use_frameworks! :linkage => :static
+   use_frameworks! :linkage => :static
+   $RNFirebaseAsStaticFramework = true
+
   
   platform :ios, 13.4
   prepare_react_native_project!

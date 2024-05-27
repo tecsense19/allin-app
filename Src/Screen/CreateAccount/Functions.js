@@ -42,11 +42,11 @@ export const requestCameraPermission = async () => {
     const Allow = () => openSettings();
 
     try {
-        const photo = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+        // const photo = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
         const result = await request(PERMISSIONS.IOS.CAMERA);
-        if (photo === 'granted' && result === 'granted') {
-            console.log('gallery===>', result);
-            console.log('camera===>', photo);
+        if (result === 'granted') {
+            console.log('camera===>', result);
+
         } else {
             MyAlert(title, Descriptions, Allow, Deny);
         }

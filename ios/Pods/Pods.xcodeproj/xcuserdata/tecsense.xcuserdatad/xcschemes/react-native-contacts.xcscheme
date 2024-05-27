@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6430AD0ABE9CD7D45335011DF1F4B5D9"
-               BuildableName = "libreact-native-contacts.a"
+               BuildableName = "react_native_contacts.framework"
                BlueprintName = "react-native-contacts"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>

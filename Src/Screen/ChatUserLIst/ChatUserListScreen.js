@@ -19,6 +19,7 @@ import MainMenu from '../../Custom/Modal/MainMenu';
 import ChatHeader from './ChatHeader';
 import { userData } from '../../StaticOBJ/OBJ';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 
 const ChatUserListScreen = props => {
@@ -26,6 +27,7 @@ const ChatUserListScreen = props => {
     const [openItemId, setOpenItemId] = useState(null);
     const [allUserData, setAllUserData] = useState([]);
     const [token, setToken] = useState('');
+    const [deviceToken, setDeviceToken] = useState('');
     const swipeableRef = useRef(null);
 
     const closeModal = () => { setVisible(false); };
@@ -166,7 +168,6 @@ const ChatUserListScreen = props => {
         return () => backHandler.remove();
     }, [visible]);
 
-
     const getMyData = async () => {
         const jsonValue = await AsyncStorage.getItem('myData');
         const userData = JSON.parse(jsonValue);
@@ -195,6 +196,47 @@ const ChatUserListScreen = props => {
             .catch(error =>
                 console.error('Error:', error));
     }
+    // Function to log out
+    useEffect(() => {
+        getFcmToken()
+    }, [])
+    const getFcmToken = async () => {
+        try {
+            const D_token = await messaging().getToken();
+            setDeviceToken(D_token)
+        } catch (error) {
+            console.error('Error getting FCM token:', error)
+        }
+    }
+
+    const logout = async () => {
+        try {
+            const url = 'https://allin.website4you.co.in/api/v1/logout'; // Ensure the full URL is specified
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ device_token: deviceToken }) // Stringify the body
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (data?.message == 'Logout Successfully.') {
+                LogoutTwoButtonAlert()
+            }
+        } catch (error) {
+            console.error('Error during logout', error);
+        }
+
+    }
+
+
+
+
+
 
     return (
         <View style={styles.container}>
@@ -205,7 +247,7 @@ const ChatUserListScreen = props => {
                     onRequestClose={closeModal}
                     title={'Summarize'}
                     visible={visible}
-                    onLogout={() => LogoutTwoButtonAlert()}
+                    onLogout={() => logout()}
                     onClose={() => setVisible(false)}
                     setting={() => { props.navigation.navigate('setting'); setVisible(false); }}
                     onPress={() => { Alert.alert('summarize'), setVisible(false) }}

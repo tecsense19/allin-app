@@ -1,0 +1,6 @@
+framework module Pods_AllIn_AllInTests {
+  umbrella header "Pods-AllIn-AllInTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -18,11 +18,13 @@ import OtpInput from './OtpInput';
 import Button from '../../Custom/Button/Button';
 import { handleEditNumber } from './Functions';
 import Loader from '../../Custom/Loader/loader';
+import messaging from '@react-native-firebase/messaging';
 
 const VerificationScreen = props => {
     const data = props?.route?.params
     const [otp, setOtp] = useState('');
     const [myData, setMyData] = useState('')
+    const [deviceToken, setDeviceToken] = useState('')
     const [visible, setVisible] = useState(false)
 
     const otpInputRef = useRef(null);
@@ -30,7 +32,7 @@ const VerificationScreen = props => {
     const mobileInt = number;
     const Otp = otp?.replace(/\D/g, ''); // Remove non-digit characters
     const otpinit = Otp;
-
+    console.log('==========>>>>>>deviceToken', deviceToken);
 
 
     const handleClearOtp = () => {
@@ -38,8 +40,17 @@ const VerificationScreen = props => {
             otpInputRef.current.clearOtp();
         }
     };
-
-
+    useEffect(() => {
+        getFcmToken()
+    }, [])
+    const getFcmToken = async () => {
+        try {
+            const D_token = await messaging().getToken();
+            setDeviceToken(D_token)
+        } catch (error) {
+            console.error('Error getting FCM token:', error)
+        }
+    }
     const registrationAccount = async () => {
         setVisible(true);
         const formData = new FormData();
@@ -48,7 +59,7 @@ const VerificationScreen = props => {
         formData.append('first_name', data?.first_name);
         formData.append('last_name', data?.last_name);
         formData.append('otp', otpinit);
-        formData.append('device_token', data?.device_token);
+        formData.append('device_token', deviceToken);
 
         const profileImageUri = data?.profile[0]?.uri;
         const profileimageName = profileImageUri ? profileImageUri.split('/').pop() : ''; // Extract image name from URI
@@ -136,7 +147,7 @@ const VerificationScreen = props => {
     }
     const handleSubmit = () => {
         if (data.type == 'ragister') {
-            console.log(data.type);
+            // console.log(data.type);
             registrationAccount()
         } else (
             loginAccount()
@@ -152,7 +163,7 @@ const VerificationScreen = props => {
             .then(response => response?.json())
             .then(data => {
                 if (data?.message == 'OTP Sent successfully') {
-                    console.log(data?.message);
+                    // console.log(data?.message);
                     setVisible(false)
 
                 } else {

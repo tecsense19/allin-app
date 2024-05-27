@@ -9,3 +9,13 @@ export const getDataFromStorage = async (key) => {
         return null;
     }
 };
+
+
+export const setDataInStorage = async (key, data) => {
+    try {
+        const jsonData = JSON.stringify(data); // Convert data to JSON string
+        await AsyncStorage.setItem(key, jsonData); // Set data in AsyncStorage with the provided key
+    } catch (error) {
+        console.error('Error setting data in AsyncStorage:', error);
+    }
+};

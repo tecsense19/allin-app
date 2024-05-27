@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8815FCBDDFE720332A4F8055E70188D8"
-               BuildableName = "libPods-AllIn.a"
+               BuildableName = "Pods_AllIn.framework"
                BlueprintName = "Pods-AllIn"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
