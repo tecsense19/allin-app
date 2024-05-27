@@ -58,7 +58,7 @@ const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count }) => {
 export default DeleteChatHeader
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: COLOR.DeepSkyBlue,
+        backgroundColor: COLOR.black,
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 
     },
     view1: {
-        backgroundColor: COLOR.DeepSkyBlue,
+        backgroundColor: COLOR.black,
         flexDirection: 'row',
         alignItems: 'center',
     },

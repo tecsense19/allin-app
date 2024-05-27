@@ -22,7 +22,7 @@ const MsgDocument = ({ data, time, myId, disabled }) => {
                             marginBottom: '-150%', borderRadius: 10, marginTop: 10, backgroundColor: COLOR.white
                         }} />
                     </View>
-                    <Text style={{ marginTop: 10, fontSize: 15, fontWeight: '700', color: COLOR.DeepSkyBlue }}>{data?.file?.name}</Text>
+                    <Text style={{ marginTop: 10, fontSize: 15, fontWeight: '700', color: COLOR.black }}>{data?.file?.name}</Text>
 
                     <Text style={{
                         fontSize: 12, fontWeight: '700',
@@ -34,7 +34,7 @@ const MsgDocument = ({ data, time, myId, disabled }) => {
                     paddingHorizontal: 10
                 }}>
                     <View style={{ borderRadius: 10, paddingVertical: 15, padding: 10, marginTop: 10, backgroundColor: COLOR.white }}>
-                        <Text style={{ fontSize: 15, color: COLOR.DeepSkyBlue, fontWeight: '600' }}>{data?.file?.name}</Text>
+                        <Text style={{ fontSize: 15, color: COLOR.black, fontWeight: '600' }}>{data?.file?.name}</Text>
                     </View>
                     <Text style={{
                         fontSize: 12, fontWeight: '700',

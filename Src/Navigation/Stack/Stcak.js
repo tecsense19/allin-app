@@ -8,6 +8,7 @@ import VerificationScreen from '../../Screen/VerificationScreen/VerificationScre
 import CreateAccount from '../../Screen/CreateAccount/CreateAccount';
 import HomeScreen from '../BottomTab/HomeScreen';
 import ChatInnerScreen from '../../Screen/ChatInnerScreen/ChatInnerScreen';
+import SettingScreen from '../../Screen/SettingScreen/SettingScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -17,7 +18,7 @@ const StackScreen = () => {
         <NavigationContainer>
             <Stack.Navigator
 
-                // initialRouteName="home"
+                initialRouteName="setting"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 <Stack.Screen name="splase" component={SplaseScreen} />
                 <Stack.Screen name="first" component={FirstScreen} />
@@ -26,6 +27,7 @@ const StackScreen = () => {
                 <Stack.Screen name="createaccount" component={CreateAccount} />
                 <Stack.Screen name="home" component={HomeScreen} />
                 <Stack.Screen name="chatinner" component={ChatInnerScreen} />
+                <Stack.Screen name="setting" component={SettingScreen} />
 
 
             </Stack.Navigator>

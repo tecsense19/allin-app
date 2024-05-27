@@ -207,7 +207,7 @@ const ChatUserListScreen = props => {
                     visible={visible}
                     onLogout={() => LogoutTwoButtonAlert()}
                     onClose={() => setVisible(false)}
-                    setting={() => { Alert.alert('summarize'), setVisible(false); }}
+                    setting={() => { props.navigation.navigate('setting'); setVisible(false); }}
                     onPress={() => { Alert.alert('summarize'), setVisible(false) }}
                 // props.navigation.navigate('summarize'), setVisible(false);
                 />

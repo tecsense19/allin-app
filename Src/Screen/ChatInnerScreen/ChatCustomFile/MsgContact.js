@@ -34,7 +34,7 @@ const MsgContact = ({ myId, Time, contact }) => {
 
                     <Image source={require('../../../Assets/Image/admin.jpg')} style={{ height: 50, width: 50, marginRight: 10, borderRadius: 50 }} />
                     <View>
-                        <Text style={{ fontSize: 18, color: COLOR.DeepSkyBlue, fontWeight: '700' }}>{item.givenName.length > 20 ? item.givenName.slice(0, 20) + '...' : item.givenName}</Text>
+                        <Text style={{ fontSize: 18, color: COLOR.black, fontWeight: '700' }}>{item.givenName.length > 20 ? item.givenName.slice(0, 20) + '...' : item.givenName}</Text>
                         <Text style={{ fontSize: 16, color: COLOR.gray, fontWeight: '600', marginTop: 5 }}>{item.phoneNumbers[0].number}</Text>
                     </View>
                 </View>
@@ -61,14 +61,14 @@ const MsgContact = ({ myId, Time, contact }) => {
                         </View> :
                         < Image source={require('../../../Assets/Image/admin.jpg')} style={{ height: 50, width: 50, marginRight: 10, borderRadius: 50 }} />
                 }
-                <Text style={{ fontSize: 15, color: COLOR.DeepSkyBlue, fontWeight: '700', marginLeft: 10, width: '80%' }}>{length > 1 ? name + '\n' + `and ${length - 1} other contact` : name}</Text>
+                <Text style={{ fontSize: 15, color: COLOR.black, fontWeight: '700', marginLeft: 10, width: '80%' }}>{length > 1 ? name + '\n' + `and ${length - 1} other contact` : name}</Text>
             </View>
             <Text style={{
                 position: 'absolute', right: 15, bottom: 5, fontSize: 12, fontWeight: '700',
                 color: COLOR.placeholder,
             }}>{Time}</Text>
             <Modal visible={visible}>
-                <View style={{ backgroundColor: COLOR.DeepSkyBlue, flex: 1, }}>
+                <View style={{ backgroundColor: COLOR.black, flex: 1, }}>
                     <Header title={'Contacts'} top={5} onPress={() => setvisible(false)} color={COLOR.white} smallTitleSize={15} />
                     <View style={{ backgroundColor: COLOR.white, flex: 1, }}>
                         <FlatList data={data} renderItem={list} style={{ paddingHorizontal: 15 }} />

@@ -101,3 +101,58 @@ export const userData = [
         coverimg: 'https://t3.ftcdn.net/jpg/04/23/59/74/360_F_423597477_AKCjGMtevfCi9XJG0M8jter97kG466y7.jpg',
     },
 ];
+
+
+
+export const SettingData = [
+    {
+        id: 1,
+        icon: require('../Assets/Image/user.png'),
+        name: 'Edit Profile',
+        navigation: 'editProfile',
+    },
+    {
+        id: 2,
+        icon: require('../Assets/Image/bellicon.png'),
+        name: 'Notifications',
+        navigation: 'notifications',
+    },
+    {
+        id: 3,
+        icon: require('../Assets/Image/security.png'),
+        name: 'Security',
+        navigation: 'security',
+    },
+    {
+        id: 4,
+        icon: require('../Assets/Image/world.png'),
+        name: 'Language',
+
+        navigation: 'language',
+    },
+    {
+        id: 5,
+        icon: require('../Assets/Image/help.png'),
+        name: 'Help Center',
+        navigation: 'helpcenter',
+    },
+
+    {
+        id: 7,
+        icon: require('../Assets/Image/terms.png'),
+        name: 'Terms & conditions',
+        navigation: 'termsconditions',
+    },
+    {
+        id: 8,
+        icon: require('../Assets/Image/policy.png'),
+        name: 'Privacy & policy',
+        navigation: 'privacypolicy',
+    },
+    {
+        id: 6,
+        icon: require('../Assets/Image/logout.png'),
+        name: 'Logout',
+        navigation: '',
+    },
+];
