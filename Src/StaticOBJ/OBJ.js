@@ -109,7 +109,7 @@ export const SettingData = [
         id: 1,
         icon: require('../Assets/Image/user.png'),
         name: 'Edit Profile',
-        navigation: 'editProfile',
+        navigation: 'edit',
     },
     {
         id: 2,

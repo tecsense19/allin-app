@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     bio: {
         fontSize: 14,
         fontWeight: '500',
-        color: COLOR.textcolor,
-        fontWeight: '500',
+        color: COLOR.placeholder, flexWrap: 'wrap',
+
         marginTop: 5,
     },
     time: { fontSize: 13, color: COLOR.placeholder, fontWeight: '600' },
@@ -42,11 +42,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'flex-end',
         backgroundColor: COLOR.slateblue,
-        padding: 2,
+        padding: 1,
         borderRadius: 100,
         paddingHorizontal: 5,
     },
-    msgCount: { color: COLOR.white, fontSize: 13, fontWeight: '700' },
+    msgCount: { color: COLOR.white, fontSize: 13, fontWeight: '700', },
     modalMainView: { backgroundColor: 'rgba(0,0,0,0.2)', flex: 1 },
     modalView: {
         height: 90,

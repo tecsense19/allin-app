@@ -50,7 +50,7 @@ const ChatInnerScreen = props => {
     const chatProfileData = props?.route?.params?.data;
     const userId = chatProfileData?.id
     const navigation = props.navigation
-
+    console.log(chatProfileData);
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${chatProfileData?.data?.mobile_no}`); };
     const closeModal = () => { setVisible(false) };
     useEffect(() => { getMyId(); setSelectedContact('') }, [])
@@ -320,7 +320,9 @@ const ChatInnerScreen = props => {
                         />
                         <Modal visible={ReMeCkModal}>
                             <View style={styles.createItemModalView}>
-                                <NavigateHeader color={COLOR.white} title={addMessage == 1 ? 'Create Task' : addMessage == 2 ? 'Create Meeting' : addMessage == 3 ? 'Create Remind' : null} onPress={() => { setAddMessage(0); setReMeCkModal(false) }} />
+                                <View style={{ paddingHorizontal: 15, padding: 15 }}>
+                                    <NavigateHeader color={COLOR.white} title={addMessage == 1 ? 'Create Task' : addMessage == 2 ? 'Create Meeting' : addMessage == 3 ? 'Create Remind' : null} onPress={() => { setAddMessage(0); setReMeCkModal(false) }} />
+                                </View>
                                 <View style={styles.createItemModalView2}>
 
                                     {addMessage == 1 ? (

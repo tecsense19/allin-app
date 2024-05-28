@@ -73,6 +73,37 @@ const ChatUserListScreen = props => {
     };
 
     const list = ({ item }) => {
+        const getTime = () => {
+            const time = new Date(item?.last_message_date); // Convert timestamp to milliseconds
+            const now = new Date();
+            const currDate = now.getDate();
+            const notiDate = time.getDate();
+            const currMon = now.getMonth() + 1;
+            const notiMon = time.getMonth() + 1;
+
+            const timeDiffInMilliseconds = now - time;
+            const timeDiffInMinutes = Math.floor(timeDiffInMilliseconds / (1000 * 60));
+
+            if (currMon === notiMon) {
+                if (currDate === notiDate) {
+                    if (timeDiffInMinutes < 1) {
+                        return "just now";
+                    } else if (timeDiffInMinutes < 60) {
+                        return `${timeDiffInMinutes} mins`;
+                    } else {
+                        const timeDiffInHours = Math.floor(timeDiffInMinutes / 60);
+                        return `${timeDiffInHours} hrs`;
+                    }
+                } else if (currDate - 1 === notiDate) {
+                    return "Yesterday";
+                } else {
+                    return `${currDate - notiDate} days`;
+                }
+            } else {
+                return `${time.toDateString().split(" ")[2]} ${time.toDateString().split(" ")[1]}`;
+            }
+        };
+
         const userName = item?.first_name + ' ' + item.last_name
         const swipeRightSide = () => {
             return (
@@ -121,26 +152,27 @@ const ChatUserListScreen = props => {
                     <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 20, marginTop: 5 }}>
                         <TouchableOpacity
                             style={styles.listcontainer}
-                        // onPress={() => props.navigation.navigate('chatinner', { data: item })}
+                            onPress={() => props.navigation.navigate('chatinner', { data: item })}
                         >
                             <View style={styles.imgAndNameView}>
                                 <Image source={{ uri: item?.profile }} style={styles.chetImg} />
-                                <View>
+                                <View style={{}}>
                                     <Text style={styles.name}>
                                         {userName?.length >= 16
                                             ? userName?.slice(0, 16) + ' . . . ' || ''
                                             : userName}
                                     </Text>
                                     <Text style={styles.bio}>
-                                        last message
+                                        {item?.last_message?.length >= 30 ? item?.last_message?.slice(0, 30) : item?.last_message}
                                     </Text>
                                 </View>
                             </View>
-                            <View>
+                            <View style={{}}>
+                                {item?.last_message_date == null ? '' : <Text style={{ marginTop: 5, fontWeight: '500' }}>{getTime()}</Text>}
 
-                                {/* <View style={styles?.msgView}>
-                                    <Text style={styles?.msgCount}>0</Text>
-                                </View> */}
+                                {item?.unread_message_count !== 0 ? <View style={styles?.msgView}>
+                                    <Text style={styles?.msgCount}>{item?.unread_message_count}</Text>
+                                </View> : ''}
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -187,7 +219,7 @@ const ChatUserListScreen = props => {
             .then(response => response?.json())
             .then(data => {
                 if (data) {
-                    console.log(data.data.userList);
+                    // console.log(data.data.userList);
                     setAllUserData(data?.data?.userList)
                 } else {
                     Alert.alert('not user')
@@ -208,7 +240,6 @@ const ChatUserListScreen = props => {
             console.error('Error getting FCM token:', error)
         }
     }
-
     const logout = async () => {
         try {
             const url = 'https://allin.website4you.co.in/api/v1/logout'; // Ensure the full URL is specified
@@ -220,9 +251,7 @@ const ChatUserListScreen = props => {
                 },
                 body: JSON.stringify({ device_token: deviceToken }) // Stringify the body
             });
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
+
             const data = await response.json();
             if (data?.message == 'Logout Successfully.') {
                 LogoutTwoButtonAlert()
@@ -232,12 +261,6 @@ const ChatUserListScreen = props => {
         }
 
     }
-
-
-
-
-
-
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
@@ -261,7 +284,7 @@ const ChatUserListScreen = props => {
                     onSearch={() => Alert.alert('search')} />
             </View>
             <View style={styles.detailsview}>
-                {/* <FlatList data={allUserData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} /> */}
+                <FlatList data={allUserData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
             </View>
         </View>
     );

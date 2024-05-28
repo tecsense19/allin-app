@@ -21,19 +21,19 @@ import { SettingData } from '../../StaticOBJ/OBJ';
 import { getDataFromStorage } from '../../Service/MyLocalInfo';
 import messaging from '@react-native-firebase/messaging';
 LogBox.ignoreAllLogs();
+
 const SettingScreen = props => {
-
-
     const [language, setLanguage] = useState('English(Us)');
     const [data, setData] = useState('');
+    const [deviceToken, setDeviceToken] = useState('');
     const mydata = data?.userDetails
     const userName = mydata?.first_name + ' ' + mydata?.last_name
     const myNumber = mydata?.country_code + ' ' + mydata?.mobile
+    const token = data?.token
 
     const getData = async () => {
         const data = await getDataFromStorage('myData');
         setData(data?.data)
-
     };
     useEffect(() => {
         getFcmToken()
@@ -46,7 +46,6 @@ const SettingScreen = props => {
             console.error('Error getting FCM token:', error)
         }
     }
-
     const logout = async () => {
         try {
             const url = 'https://allin.website4you.co.in/api/v1/logout'; // Ensure the full URL is specified
@@ -58,24 +57,23 @@ const SettingScreen = props => {
                 },
                 body: JSON.stringify({ device_token: deviceToken }) // Stringify the body
             });
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
+
             const data = await response.json();
+            console.log('data', data);
             if (data?.message == 'Logout Successfully.') {
-                createTwoButtonAlert()
+                onLogOut()
+            } else {
+                Alert.alert('Logout Error', data?.message)
             }
         } catch (error) {
             console.error('Error during logout', error);
         }
 
     }
-
     useEffect(() => {
         getData();
 
-    }, [])
-    const ScrollViewRef = useRef();
+    }, [data])
     const createTwoButtonAlert = () =>
         Alert.alert(
             'LOGOUT',
@@ -86,19 +84,20 @@ const SettingScreen = props => {
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'No',
                 },
-                { text: 'YES', onPress: () => onLogOut(), style: 'destructive' },
+                { text: 'YES', onPress: () => logout(), style: 'destructive' },
             ],
         );
     const onLogOut = async () => {
         try {
             await AsyncStorage.clear();
-            props.navigation.navigate('splase1');
+            props?.navigation?.navigate('splase');
         } catch (e) { }
     };
     const list = ({ item }) => {
+
         const onNavigate = () => {
             if (item?.id == 6) {
-                logout()
+                createTwoButtonAlert()
             } else {
                 props?.navigation?.navigate(item?.navigation);
             }

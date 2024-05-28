@@ -32,7 +32,7 @@ const VerificationScreen = props => {
     const mobileInt = number;
     const Otp = otp?.replace(/\D/g, ''); // Remove non-digit characters
     const otpinit = Otp;
-    console.log('==========>>>>>>deviceToken', deviceToken);
+    // console.log('==========>>>>>>deviceToken', deviceToken);
 
 
     const handleClearOtp = () => {
@@ -80,8 +80,6 @@ const VerificationScreen = props => {
             });
         }
         // console.log('formdata=====>', formData);
-
-
         try {
             const response = await fetch('https://allin.website4you.co.in/api/v1/user-registration', {
                 method: 'POST',
@@ -99,7 +97,6 @@ const VerificationScreen = props => {
                 } catch (e) {
                     console.error('Failed to save data to AsyncStorage:', e);
                 }
-
             } else {
                 setVisible(false);
                 // console.error('Server Error:', responseData);
@@ -111,8 +108,6 @@ const VerificationScreen = props => {
             Alert.alert('Error:', error.message);
         }
     };
-
-
     const loginAccount = async () => {
         setVisible(true)
         await fetch('https://allin.website4you.co.in/api/v1/verify-otp', {
@@ -124,14 +119,15 @@ const VerificationScreen = props => {
                 country_code: data?.country_code,
                 mobile: data?.mobile,
                 otp: Otp,
-                device_token: 'test' + data?.mobile
+                device_token: deviceToken
             })
         })
             .then(response => response.json())
             .then(async data => {
                 if (data?.message == 'OTP Verified Successfully!') {
+                    // console.log();
                     await AsyncStorage.setItem('myData', JSON.stringify(data));
-                    setVisible(false);
+
                     await props.navigation.reset({
                         routes: [{ name: 'home' }],
                     });
@@ -158,7 +154,7 @@ const VerificationScreen = props => {
         await fetch('https://allin.website4you.co.in/api/v1/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ country_code: data.country_code, mobile: data.mobile, device_token: data.device_token })
+            body: JSON.stringify({ country_code: data.country_code, mobile: data.mobile, device_token: deviceToken })
         })
             .then(response => response?.json())
             .then(data => {
@@ -168,7 +164,7 @@ const VerificationScreen = props => {
 
                 } else {
                     setVisible(false)
-                    Alert.alert('User Alrady Exist')
+                    Alert.alert(data?.message)
                 }
             })
             .catch(error =>
