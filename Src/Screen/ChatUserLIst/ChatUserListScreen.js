@@ -36,7 +36,6 @@ const ChatUserListScreen = props => {
         getMyData()
         requestContactsPermission()
     }, [token])
-
     const handleSwipeableOpen = id => {
         if (
             openItemId !== null &&
@@ -71,10 +70,9 @@ const ChatUserListScreen = props => {
             })
         }
     };
-
     const list = ({ item }) => {
         const getTime = () => {
-            const time = new Date(item?.last_message_date); // Convert timestamp to milliseconds
+            const time = new Date(item?.last_message_date);
             const now = new Date();
             const currDate = now.getDate();
             const notiDate = time.getDate();
@@ -152,7 +150,7 @@ const ChatUserListScreen = props => {
                     <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 20, marginTop: 5 }}>
                         <TouchableOpacity
                             style={styles.listcontainer}
-                            onPress={() => props.navigation.navigate('chatinner', { data: item })}
+                            onPress={() => props.navigation.navigate('chatinner', { token, item })}
                         >
                             <View style={styles.imgAndNameView}>
                                 <Image source={{ uri: item?.profile }} style={styles.chetImg} />
@@ -228,7 +226,6 @@ const ChatUserListScreen = props => {
             .catch(error =>
                 console.error('Error:', error));
     }
-    // Function to log out
     useEffect(() => {
         getFcmToken()
     }, [])
@@ -264,6 +261,7 @@ const ChatUserListScreen = props => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
+
             <View style={styles.headerView}>
                 <MainMenu
                     QR={() => { Alert.alert('Website QR'), setVisible(false) }}

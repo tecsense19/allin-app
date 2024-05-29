@@ -27,6 +27,7 @@ import MsgContact from './ChatCustomFile/MsgContact';
 import MsgDocument from './ChatCustomFile/MsgDocument';
 import DeleteChatHeader from './ChatCustomFile/DeleteChatHeader';
 import Loader from '../../Custom/Loader/loader';
+import { handleMsgText } from './Function/ApiCaliing';
 LogBox.ignoreAllLogs();
 
 const ChatInnerScreen = props => {
@@ -37,7 +38,7 @@ const ChatInnerScreen = props => {
     const [ReMeCkModal, setReMeCkModal] = useState(false);
     const [change, setChange] = useState(false);
     const [loding, setLoding] = useState(false);
-    const [addMessage, setAddMessage] = useState(0);
+    const [msgType, setMsgType] = useState('Text');
     const [file, setFile] = useState('');
     const [cameraImage, setCameraImage] = useState('');
     const [gallery, setGallery] = useState('');
@@ -47,10 +48,10 @@ const ChatInnerScreen = props => {
     const [selectedMSG, setSelectedMSG] = useState([])
     const [selecthandle, setSelectHandle] = useState(false)
     const [isSelected, setIsSelected] = useState(false)
-    const chatProfileData = props?.route?.params?.data;
-    const userId = chatProfileData?.id
-    const navigation = props.navigation
-    console.log(chatProfileData);
+    const chatProfileData = props?.route?.params
+    const userId = chatProfileData?.item?.id
+
+    const token = chatProfileData?.token
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${chatProfileData?.data?.mobile_no}`); };
     const closeModal = () => { setVisible(false) };
     useEffect(() => { getMyId(); setSelectedContact('') }, [])
@@ -59,7 +60,9 @@ const ChatInnerScreen = props => {
             'hardwareBackPress', closeModal,);
         return () => backHandler.remove();
     }, [visible]);
-
+    useEffect(() => {
+        getAllMessages()
+    }, [])
     useEffect(() => { requestContactsPermission }, [])
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     const onSend = useCallback((messages = []) => { setMessages(previousMessages => GiftedChat.append(previousMessages, messages),); }, []);
@@ -99,56 +102,85 @@ const ChatInnerScreen = props => {
             setSelectedMSG(selectedMSG.filter((id) => id !== msg));
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
-    const handleSend = async (currentMsgData) => {
-        if (inputText.trim() == '' && addMessage == 0 && gallery == '' && cameraImage == '' && currentMsgData?.descriptions == null && !selectedContact && !file) { return null; }
-        if (currentMsgData?.type == 'Checklist' || currentMsgData?.type == 'Meeting' || currentMsgData?.type == 'Reminder') {
-            setChange(true)
-        } else { setChange(false) }
-        const selectedUsers = currentMsgData?.remind
-        if (selectedUsers) {
-            selectedUsers?.forEach(async userId => {
-                const newMessage = {
-                    _id: uuid.v4(),
-                    sendBy: myID,
-                    sendTo: userId,
-                    createdAt: Date.parse(new Date()),
-                    Checklist: currentMsgData?.type === 'Checklist' ? { title: currentMsgData?.tasktitle, taskId: currentMsgData?.taskId, descriptions: currentMsgData?.taskdescriptions, tasktime: {} } : null,
-                    meeting: currentMsgData?.type === 'Meeting' ? {
-                        title: currentMsgData?.meetingtitle,
-                        descriptions: currentMsgData?.meetingdescription,
-                        date: currentMsgData?.meetingdate,
-                        time: currentMsgData?.meetingtime,
-                        remind: selectedUsers,
-                    } : null,
-                    reminder: currentMsgData?.type === 'Reminder' ? {
-                        descriptions: currentMsgData?.reminddescriptions,
-                        title: currentMsgData?.remindtitle,
-                        time: currentMsgData?.remindtime,
-                        remind: selectedUsers
-                    } : null,
-                    user: { _id: myID, },
-                };
-                onSend([newMessage]); setAddMessage(0);
-                await firestore().collection('messages').add(newMessage);
-            });
-        } else {
-            const newMessage = {
-                _id: uuid.v4(),
-                sendBy: myID,
-                sendTo: userId,
-                text: inputText.trim(),
-                createdAt: Date.parse(new Date()),
-                cameraimg: cameraImage,
-                galleryimg: gallery,
-                contact: currentMsgData?.length >= 1 ? currentMsgData : null,
-                file: file,
-                user: {
-                    _id: myID,
-                },
-            }; onSend([newMessage]); setAddMessage(0); setInputText(''); await firestore().collection('messages').add(newMessage); setCameraImage(''); setSelectedContact(''); setGallery(''); setCameraImage(''); setAddMessage(0); setFile('')
+    // const handleMsgText = async () => {
+    //     try {
+    //         const response = await fetch('https://allin.website4you.co.in/api/v1/text-message', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${token}`
+    //             },
+    //             body: JSON.stringify({ 
+    //                 message_type: msgType, 
+    //                 message: inputText, 
+    //                 receiver_id: userId 
+    //             })
+    //         });
 
+    //         const data = await response.json();
+
+    //         if (data?.message) {
+    //             Alert.alert(data.message);
+    //         } else {
+    //             setVisible(false);
+    //             Alert.alert('No message received from server.');
+    //         }
+    //     } catch (error) {
+    //         setVisible(false);
+    //         console.error('Error:', error);
+    //         Alert.alert('An error occurred:', error.message);
+    //     }
+    // };
+    const getAllMessages = async () => {
+        try {
+            const response = await fetch('https://allin.website4you.co.in/api/v1/user-details', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id: userId
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            if (data?.message === 'Get Data Successfully!') {
+                setMessages(data.data.chat.Today.Today)
+            } else {
+                setVisible(false);
+                Alert.alert('No message received from server.');
+            }
+        } catch (error) {
+            setVisible(false);
+            console.error('Error:', error);
+            Alert.alert('An error occurred:', error.message ?? 'Unknown error');
         }
     };
+
+    const handleSend = async (currentMsgData) => {
+        switch (msgType) {
+            case 'Text':
+                handleMsgText(token, msgType, inputText, userId);
+                setInputText('')
+                setMsgType('Text')
+                break;
+            case 'Task':
+                Alert.alert('Task');
+                break;
+            // Uncomment and implement other cases as needed
+            // case MESSAGE_TYPES.VIDEO:
+            //     return { type: MESSAGE_TYPES.VIDEO, uri: payload.uri };
+            default:
+                console.warn(`Unhandled message type: ${msgType}`);
+        }
+    };
+
     const pickDocument = async () => {
         try {
             const result = await DocumentPicker.pick({ type: [DocumentPicker.types.allFiles], });
@@ -167,34 +199,37 @@ const ChatInnerScreen = props => {
         if (result?.assets[0]?.uri) {
             setIsFocused(false); setVisible(false); setLoding(true)
             const url = result?.assets[0]?.uri
-            const storageRef = storage().ref(`images/chatImage/${uuid.v4()}`)
+            setCameraImage(url)
             try {
-                await storageRef.putFile(url);
-                storageRef.getDownloadURL().then((i) => { setCameraImage(i) })
+
             } catch (error) { console.error(error); }
             setLoding(false)
         }
     };
-    const onPhotoGallery = async () => {
-        let options = { mediaType: 'photo', maxWidth: 300, maxHeight: 550, quality: 1, selectionLimit: 10, };
-        launchImageLibrary(options, async (response) => {
+    const onPhotoGallery = () => {
+        let options = {
+            mediaType: 'photo',
+            maxWidth: 300,
+            maxHeight: 550,
+            quality: 1,
+            selectionLimit: 10,
+        };
+
+        launchImageLibrary(options, (response) => {
             if (!response.didCancel) {
-                setIsFocused(false);
-                setVisible(false);
-                setLoding(true)
-                const downloadURLs = [];
-                for (const asset of response.assets) {
+                setLoding(true);
+                const selectedImages = response.assets;
+                const processedImages = [];
+                selectedImages.forEach((image) => {
+                    processedImages.push({ uri: image.uri }); // Change this to the actual location/path of the saved image
+                });
+                setGallery((prevImages) => [...prevImages, ...processedImages]);
+                setLoding(false);
+                setReMeCkModal(false)
 
-
-                }
-                setGallery((prevFilePathArray) => [
-                    ...prevFilePathArray, ...downloadURLs,
-                ]);
-                setLoding(false)
             }
         });
     };
-
     const renderMessage = props => {
         const { currentMessage } = props;
         const dateString = currentMessage.createdAt;
@@ -203,32 +238,12 @@ const ChatInnerScreen = props => {
         const minutes = dateObject.getMinutes().toString().padStart(2, '0');
         const amOrPm = dateObject.getHours() >= 12 ? 'PM' : 'AM';
         const Msgtime = hours + ':' + minutes + ' ' + amOrPm;
+        console.log(currentMessage.messageDetails);
         return (
-            <View style={{}}>
-                {!change ?
-                    <TouchableOpacity
-                        delayLongPress={500}
-                        onLongPress={() => { setIsSelected(true), onhandaleSelected(currentMessage) }}
-                        onPress={() => { isSelected ? onhandaleSelected(currentMessage) : '' }}
-                        style={{ marginVertical: 2, paddingHorizontal: 30, padding: 3, backgroundColor: selectedMSG.includes(currentMessage) ? COLOR.green : COLOR.white }}>
-                        {currentMessage?.Checklist?.descriptions ? <MsgTask disabled={isSelected}
-                            onPress={() => navigation.navigate('task', { currentMsg: currentMessage, chatprofileInfo: chatProfileData, myid: myID, time: Msgtime },)} MYID={myID} data={currentMessage} userinfo={chatProfileData} time={Msgtime} /> :
-                            currentMessage?.text ? <MsgText data={currentMessage} myId={myID} userId={userId} time={Msgtime} /> :
-                                currentMessage?.meeting?.title ? <MsgMeeting data={currentMessage} MYID={myID} time={Msgtime} /> :
-                                    currentMessage?.cameraimg ? (<MsgImage data={currentMessage} time={Msgtime} MYID={myID} />) :
-                                        currentMessage?.galleryimg ? (<MsgImage data={currentMessage} time={Msgtime} MYID={myID} />) :
-                                            currentMessage?.reminder?.descriptions ? <MsgReminder MYID={myID} data={currentMessage} time={Msgtime} /> :
-                                                currentMessage?.contact ? <MsgContact myId={myID} Time={Msgtime} contact={currentMessage} /> :
-                                                    currentMessage?.file ? <MsgDocument disabled={isSelected} myId={myID} data={currentMessage} time={Msgtime} /> :
-                                                        null}
-                    </TouchableOpacity> :
-                    <View style={{}}>
-                        {currentMessage?.Checklist?.descriptions ? <MsgTask
-                            onPress={() => navigation.navigate('task', { currentMsg: currentMessage, chatprofileInfo: chatProfileData, myid: myID, time: Msgtime },)} MYID={myID} data={currentMessage} userinfo={chatProfileData} time={Msgtime} /> :
-                            currentMessage?.meeting?.title ? <MsgMeeting data={currentMessage} MYID={myID} time={Msgtime} /> :
-                                currentMessage?.reminder?.descriptions ? <MsgReminder MYID={myID} data={currentMessage} time={Msgtime} /> :
-                                    null}</View>}
-            </View>
+
+            <Text>{currentMessage.messageDetails}</Text>
+
+
         );
     };
     const customAlert = () => {
@@ -260,12 +275,12 @@ const ChatInnerScreen = props => {
             </TouchableOpacity>
         )
     }
-    const userName = chatProfileData.first_name + '' + chatProfileData.last_name
+    const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
     return (
         <View style={{ flex: 1 }}>
-            {addMessage == 6 ?
+            {msgType == 'Contact' ?
                 <View style={styles.contactContainer}>
-                    <NavigateHeader title={'Contacts'} onPress={() => setAddMessage(0)} color={COLOR.white} smallTitleSize={15} />
+                    <NavigateHeader title={'Contacts'} onPress={() => setMsgType('Text')} color={COLOR.white} smallTitleSize={15} />
                     <View style={styles.contactListContainer}>
                         {selectedContact?.length > 0 ? <Text style={styles.selectedContactTxt}>{' Selected(' + selectedContact.length + ')'} </Text> : null}
                         <TextInput placeholder='Search here...' style={styles.contactSearchInput} />
@@ -283,7 +298,7 @@ const ChatInnerScreen = props => {
                             onCall={onhandalePhoneCall}
                             value={change}
                             onChange={() => setChange(!change)}
-                            source={{ uri: chatProfileData?.profile }}
+                            source={{ uri: chatProfileData?.item?.profile }}
                             title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName}
                             onSearch={() => Alert.alert('search')}
                             onBack={() => props.navigation.goBack()}
@@ -309,28 +324,28 @@ const ChatInnerScreen = props => {
                         <PlusModal
                             onRequestClose={closeModal} visible={visible}
                             onClose={() => setVisible(false)}
-                            onCheckList={() => { setAddMessage(1); setVisible(false); setReMeCkModal(true); }}
-                            onMeeting={() => { setAddMessage(2); setVisible(false); setReMeCkModal(true); }}
-                            onReminder={() => { setAddMessage(3); setVisible(false); setReMeCkModal(true); }}
-                            onCamera={() => { onCamera(); setAddMessage(4); }}
-                            onPhotoGallery={() => { onPhotoGallery(); setAddMessage(5); }}
-                            onContacts={() => { setAddMessage(6), setVisible(false); }}
+                            onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
+                            onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
+                            onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
+                            onCamera={() => { onCamera(); setMsgType('Attachment'); }}
+                            onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
+                            onContacts={() => { setMsgType('Contact'), setVisible(false); }}
                             onLocation={() => { Alert.alert('Location'); setVisible(false); }}
-                            onFiles={() => { pickDocument(); setAddMessage(0); }}
+                            onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
                         />
                         <Modal visible={ReMeCkModal}>
                             <View style={styles.createItemModalView}>
                                 <View style={{ paddingHorizontal: 15, padding: 15 }}>
-                                    <NavigateHeader color={COLOR.white} title={addMessage == 1 ? 'Create Task' : addMessage == 2 ? 'Create Meeting' : addMessage == 3 ? 'Create Remind' : null} onPress={() => { setAddMessage(0); setReMeCkModal(false) }} />
+                                    <NavigateHeader color={COLOR.white} title={msgType == 'Task' ? 'Create Task' : msgType == 'Meeting' ? 'Create Meeting' : msgType == 'Reminder' ? 'Create Remind' : null} onPress={() => { setMsgType('Text'); setReMeCkModal(false) }} />
                                 </View>
                                 <View style={styles.createItemModalView2}>
 
-                                    {addMessage == 1 ? (
-                                        <CreateTask onSubmit={(taskdata) => { setAddMessage(0), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
-                                    ) : addMessage == 2 ? (
-                                        <CreateMsgMeeting onSubmit={(data) => { handleSend(data); setAddMessage(0), setReMeCkModal(false); }} userId={userId} />
-                                    ) : addMessage == 3 ? (
-                                        <CreateReminder onSubmit={(reminddata) => { handleSend(reminddata); setAddMessage(0), setReMeCkModal(false); }} userId={userId} />
+                                    {msgType == 'Task' ? (
+                                        <CreateTask onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
+                                    ) : msgType == 'Meeting' ? (
+                                        <CreateMsgMeeting onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
+                                    ) : msgType == 'Reminder' ? (
+                                        <CreateReminder onSubmit={(reminddata) => { handleSend(reminddata); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
                                     ) : null}
                                 </View>
                             </View>

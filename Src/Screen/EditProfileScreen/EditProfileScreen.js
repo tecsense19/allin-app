@@ -16,7 +16,6 @@ import Loader from '../../Custom/Loader/loader';
 import ProfileModal from '../../Custom/Modal/ProfileModal';
 import SocialMedia from '../../Custom/Modal/SocialMedia';
 import styles from '../EditProfileScreen/EditProfileScreenStyle';
-import uuid from 'react-native-uuid'
 LogBox.ignoreAllLogs();
 const EditProfileScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -40,7 +39,7 @@ const EditProfileScreen = props => {
     const AccountID = data?.data?.userDetails?.account_id
     const myData = data?.data?.userDetails
     const token = data?.data?.token
-
+    console.log(token);
     const closeModal = () => { setCoverImg(false); setViewImage(false); setVisible(false); };
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', closeModal,);
@@ -52,19 +51,17 @@ const EditProfileScreen = props => {
         setLName(myData?.last_name)
         setImg(myData?.profile)
         setBgImg(myData?.cover_image)
-        setTitle(myData?.title == 'null' ? '' : myData?.title)
-        setDescription(myData?.description == 'null' ? '' : myData?.description)
-        setEmail(myData?.email == 'null' ? '' : myData?.email)
+        setTitle(myData?.title == 'null' || myData?.title == 'undefined' ? '' : myData?.title)
+        setDescription(myData?.description == 'null' || myData?.description == 'undefined' ? '' : myData?.description)
+        setEmail(myData?.email == 'null' || myData?.email == 'undefined' ? '' : myData?.email)
         setPhone(myData?.mobile)
-        setInstagramUrl(myData?.instagram_profile_url == 'null' ? '' : myData?.instagram_profile_url)
-        setFacebookurl(myData?.facebook_profile_url == 'null' ? '' : myData?.facebook_profile_url)
-        setTwitterurl(myData?.twitter_profile_url == 'null' ? '' : myData?.twitter_profile_url)
-        setYoutubeurl(myData?.youtube_profile_url == 'null' ? '' : myData?.youtube_profile_url)
-        setLinkedinurl(myData?.linkedin_profile_url == 'null' ? '' : myData?.linkedin_profile_url)
+        setInstagramUrl(myData?.instagram_profile_url == 'null' || myData?.instagram_profile_url == 'undefined' ? '' : myData?.instagram_profile_url)
+        setFacebookurl(myData?.facebook_profile_url == 'null' || myData?.facebook_profile_url == 'undefined' ? '' : myData?.facebook_profile_url)
+        setTwitterurl(myData?.twitter_profile_url == 'null' || myData?.twitter_profile_url == 'undefined' ? '' : myData?.twitter_profile_url)
+        setYoutubeurl(myData?.youtube_profile_url == 'null' || myData?.youtube_profile_url == 'undefined' ? '' : myData?.youtube_profile_url)
+        setLinkedinurl(myData?.linkedin_profile_url == 'null' || myData?.linkedin_profile_url == 'undefined' ? '' : myData?.linkedin_profile_url)
     }, [myData?.first_name, myData?.last_name, myData?.profile]
     );
-    // console.log(myData);
-    // console.log(img, '===========>');
 
     const BgImageCemera = async () => {
         const result = await launchCamera();
@@ -79,6 +76,7 @@ const EditProfileScreen = props => {
         if (result?.assets[0]?.uri) {
             setBgImg(result.assets[0]);
             try {
+                await UpdateDataApiCalling()
             } catch (e) {
             }
         }
@@ -125,21 +123,31 @@ const EditProfileScreen = props => {
             setData(userData);
         } catch (e) { }
     };
-    const createTwoButtonAlert = () =>
-        Alert.alert('Delete Account', 'You are about to delete your account.This action is irreversible and will permanently remove all your data.Are you sure you want to proceed ?',
-            [
-                { text: 'NO', onPress: () => console.log('Cancel Pressed'), style: 'No', },
-                { text: 'YES', onPress: () => DeleteAccount(), style: 'destructive' },
-            ],
-        );
-    const DeleteAccount = async () => {
+    // const createTwoButtonAlert = () =>
+    //     Alert.alert('Delete Account', 'You are about to delete your account.This action is irreversible and will permanently remove all your data.Are you sure you want to proceed ?',
+    //         [
+    //             { text: 'NO', onPress: () => console.log('Cancel Pressed'), style: 'No', },
+    //             { text: 'YES', onPress: () => DeleteAccount(), style: 'destructive' },
+    //         ],
+    //     );
+    // const DeleteAccount = async () => {
 
-    };
+    // };
 
 
     const UpdateDataApiCalling = async () => {
         setLoding(true)
         const formData = new FormData();
+        const regx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
+
+        if (phone?.length <= 5 || phone?.length >= 14) {
+            setLoding(false)
+            return Alert.alert('Enter Valid Phone Number')
+        }
+        if (!regx.test(email)) {
+            setLoding(false)
+            return Alert.alert('Enter valid Email')
+        }
         formData.append('mobile', phone);
         formData.append('first_name', fname);
         formData.append('last_name', lname);
@@ -208,6 +216,7 @@ const EditProfileScreen = props => {
             Alert.alert('An error occurred', error.message);
         }
     };
+
     return (
         <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
             <View style={styles.container}>
@@ -216,7 +225,7 @@ const EditProfileScreen = props => {
                     <View onPress={() => setCoverImg(true)}>
                         <ImageBackground source={{ uri: bgimg?.uri ? bgimg?.uri : bgimg }} style={styles.headerView}>
                             <View style={{ paddingHorizontal: 30 }}>
-                                <NavigateHeader color={COLOR.white} title={myData?.cover_image || img?.uri ? '' : 'Edit Profile'} onPress={() => { UpdateDataApiCalling(), props.navigation.goBack() }} />
+                                <NavigateHeader tintColor={COLOR.white} color={COLOR.white} title={myData?.cover_image || img?.uri ? '' : 'Edit Profile'} onPress={() => props.navigation.goBack()} />
                             </View>
                             <View style={styles.caneraIconView}>
                                 <TouchableOpacity
@@ -256,9 +265,9 @@ const EditProfileScreen = props => {
                         <SocialMedia source={require('../../Assets/Image/twitter.png')} placeholder={'Paste link here'} onChangeText={(res) => { setTwitterurl(res) }} value={twitterurl} />
                         <SocialMedia source={require('../../Assets/Image/youtube.png')} placeholder={'Paste link here'} onChangeText={(res) => { setYoutubeurl(res) }} value={youtubeurl} />
                         <SocialMedia source={require('../../Assets/Image/linkedin.png')} placeholder={'Paste link here'} onChangeText={(res) => { setLinkedinurl(res) }} value={linkedinurl} />
-                        <Button onPress={() => Alert.alert('Last Seen')} title={'Last Seen'} color={COLOR.white} bgColor={COLOR.green} marginTop={35} marginHorizontal={10} />
-                        <Button onPress={() => Alert.alert('Auto Delete Task')} title={'Auto Delete Tasks'} color={COLOR.white} bgColor={COLOR.green} marginTop={10} marginHorizontal={10} />
-                        <Button onPress={createTwoButtonAlert} title={'Delete Account '} color={COLOR.white} bgColor={COLOR.orange} marginTop={10} marginBottom={50} marginHorizontal={10} />
+                        <Button onPress={() => UpdateDataApiCalling()} title={'Update'} color={COLOR.white} bgColor={COLOR.green} marginTop={35} marginHorizontal={10} />
+                        {/* <Button onPress={() => Alert.alert('Auto Delete Task')} title={'Auto Delete Tasks'} color={COLOR.white} bgColor={COLOR.green} marginTop={10} marginHorizontal={10} /> */}
+                        <Button title={'Delete Account '} color={COLOR.white} bgColor={COLOR.orange} marginTop={10} marginBottom={50} marginHorizontal={10} />
                         <ProfileModal onRequestClose={closeModal} visible={visible} onClose={() => setVisible(false)} onCemera={() => { requestCameraPermission(); profileImgCemera(); }} onGallery={() => { profileImgGallery(); }} />
                     </View>
 

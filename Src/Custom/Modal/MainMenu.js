@@ -43,10 +43,10 @@ const styles = StyleSheet.create({
     modalMainView: { backgroundColor: 'rgba(0,0,0,0.5)', flex: 1 },
     modalView: {
         justifyContent: 'center',
-        width: 135,
+        width: 140,
         backgroundColor: COLOR.white,
         position: 'absolute',
-        right: 25,
+        right: 29,
         top: 75,
 
         borderRadius: 5,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     onselectlist: {
-
+        marginTop: 10,
         height: 30,
         justifyContent: 'center',
         width: '100%',

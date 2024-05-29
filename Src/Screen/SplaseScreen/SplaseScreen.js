@@ -15,7 +15,7 @@ const SplaseScreen = props => {
     const getMyData = async () => {
         const jsonValue = await AsyncStorage.getItem('myData');
         const userData = JSON.parse(jsonValue);
-        console.log(userData);
+        // console.log(userData);
         if (jsonValue == null) {
             props.navigation.reset({
                 routes: [{ name: 'first' }],
