@@ -29,7 +29,7 @@ const ChatUserListScreen = props => {
     const [token, setToken] = useState('');
     const [deviceToken, setDeviceToken] = useState('');
     const swipeableRef = useRef(null);
-
+    // console.log(allUserData);
     const closeModal = () => { setVisible(false); };
     useEffect(() => {
         getuser();
@@ -217,8 +217,8 @@ const ChatUserListScreen = props => {
             .then(response => response?.json())
             .then(data => {
                 if (data) {
-                    // console.log(data.data.userList);
                     setAllUserData(data?.data?.userList)
+                    // console.log(data.data);
                 } else {
                     Alert.alert('not user')
                 }

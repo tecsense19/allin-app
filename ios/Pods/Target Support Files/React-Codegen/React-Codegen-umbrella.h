@@ -55,6 +55,8 @@
 #import "rnreanimatedJSI.h"
 #import "rnscreens/rnscreens.h"
 #import "rnscreensJSI.h"
+#import "RNTimezoneSpec/RNTimezoneSpec.h"
+#import "RNTimezoneSpecJSI.h"
 #import "safeareacontext/safeareacontext.h"
 #import "safeareacontextJSI.h"
 

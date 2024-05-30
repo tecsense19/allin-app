@@ -8,7 +8,7 @@ const ChatInputToolBar = ({ onPress, onsend, value, onFocus, onBlur, onChangeTex
                 flexDirection: 'row',
                 alignItems: 'center',
                 height: 50,
-                marginHorizontal: 20, marginTop: 5
+                marginHorizontal: 20, backgroundColor: COLOR.white
             }}>
             <View
                 style={{
