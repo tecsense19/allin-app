@@ -9,7 +9,7 @@ import {
     BackHandler,
     Alert,
 } from 'react-native';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
@@ -20,6 +20,9 @@ import ChatHeader from './ChatHeader';
 import { userData } from '../../StaticOBJ/OBJ';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import Timezone from 'react-native-timezone'
+import { useFocusEffect } from '@react-navigation/native';
+
 
 
 const ChatUserListScreen = props => {
@@ -32,10 +35,17 @@ const ChatUserListScreen = props => {
     // console.log(allUserData);
     const closeModal = () => { setVisible(false); };
     useEffect(() => {
-        getuser();
         getMyData()
         requestContactsPermission()
+        getFcmToken()
+        getuser();
+
     }, [token])
+    useFocusEffect(React.useCallback(() => {
+        getuser()
+    }))
+    const memoizedUsers = useMemo(() => allUserData, [allUserData]);
+
     const handleSwipeableOpen = id => {
         if (
             openItemId !== null &&
@@ -213,6 +223,7 @@ const ChatUserListScreen = props => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
+            body: JSON.stringify({ timezone: Timezone.getTimeZone() })
         })
             .then(response => response?.json())
             .then(data => {
@@ -226,9 +237,7 @@ const ChatUserListScreen = props => {
             .catch(error =>
                 console.error('Error:', error));
     }
-    useEffect(() => {
-        getFcmToken()
-    }, [])
+
     const getFcmToken = async () => {
         try {
             const D_token = await messaging().getToken();
@@ -282,7 +291,7 @@ const ChatUserListScreen = props => {
                     onSearch={() => Alert.alert('search')} />
             </View>
             <View style={styles.detailsview}>
-                <FlatList data={allUserData} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
+                <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
             </View>
         </View>
     );

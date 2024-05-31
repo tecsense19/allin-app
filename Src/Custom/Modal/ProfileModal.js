@@ -28,7 +28,7 @@ const ProfileModal = ({
                                     source={require('../../Assets/Image/camera.png')}
                                     style={styles.cameraicon}
                                 />
-                                <Text style={styles.modaltxt}>Cemera</Text>
+                                <Text style={styles.modaltxt}>Camera</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={onGallery} style={styles.onmodalicon}>
                                 <Image

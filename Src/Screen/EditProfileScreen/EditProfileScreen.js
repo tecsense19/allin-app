@@ -39,7 +39,7 @@ const EditProfileScreen = props => {
     const AccountID = data?.data?.userDetails?.account_id
     const myData = data?.data?.userDetails
     const token = data?.data?.token
-    console.log(token);
+    // console.log(token);
     const closeModal = () => { setCoverImg(false); setViewImage(false); setVisible(false); };
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', closeModal,);
@@ -134,20 +134,24 @@ const EditProfileScreen = props => {
 
     // };
 
-
     const UpdateDataApiCalling = async () => {
         setLoding(true)
         const formData = new FormData();
         const regx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
+        // console.log();
 
         if (phone?.length <= 5 || phone?.length >= 14) {
             setLoding(false)
             return Alert.alert('Enter Valid Phone Number')
         }
-        if (!regx.test(email)) {
-            setLoding(false)
-            return Alert.alert('Enter valid Email')
+        if (email == undefined || email == '') { }
+        else {
+            if (!regx.test(email)) {
+                setLoding(false)
+                return Alert.alert('Enter Valid Email')
+            }
         }
+
         formData.append('mobile', phone);
         formData.append('first_name', fname);
         formData.append('last_name', lname);
@@ -180,6 +184,7 @@ const EditProfileScreen = props => {
                 type: profileImageType
             });
         }
+        // console.log(formData._parts);
         try {
             const response = await fetch('https://allin.website4you.co.in/api/v1/edit-profile', {
                 method: 'POST',
@@ -193,8 +198,6 @@ const EditProfileScreen = props => {
             const res = await response.json();
 
             if (res?.message === 'User Updated Successfully!') {
-                console.log('User Updated Successfully:', res);
-
                 const a = {
                     data: {
                         token: token,
@@ -205,6 +208,7 @@ const EditProfileScreen = props => {
                 };
                 await AsyncStorage.setItem('myData', JSON.stringify(a));
                 setLoding(false)
+
 
             } else {
                 setLoding(false)

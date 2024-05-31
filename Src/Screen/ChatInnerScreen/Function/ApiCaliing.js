@@ -41,7 +41,7 @@ export const handleUnreadeMsg = async (token, id,) => {
         });
         const data = await response.json();
         if (data?.message) {
-            Alert.alert(data?.message);
+            // Alert.alert(data?.message);
         } else {
             // setVisible(false);
             // Alert.alert(data?.message);

@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, Alert, Vibration, Image, LogBox, BackHandler, Modal, Linking, TouchableOpacity, FlatList, Text, TextInput, SectionList, ScrollView, KeyboardAvoidingView } from 'react-native';
 import uuid from 'react-native-uuid';
@@ -26,6 +25,8 @@ import MsgDocument from './ChatCustomFile/MsgDocument';
 import DeleteChatHeader from './ChatCustomFile/DeleteChatHeader';
 import Loader from '../../Custom/Loader/loader';
 import { handleMsgText, handleUnreadeMsg } from './Function/ApiCaliing';
+import Timezone from 'react-native-timezone'
+import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd';
 LogBox.ignoreAllLogs();
 
 const ChatInnerScreen = props => {
@@ -45,11 +46,14 @@ const ChatInnerScreen = props => {
     const [selectedMSG, setSelectedMSG] = useState([])
     const [selecthandle, setSelectHandle] = useState(false)
     const [isSelected, setIsSelected] = useState(false)
+    const [userDetails, setUserDetails] = useState('')
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
 
     const scrollViewRef = useRef();
     const [showButton, setShowButton] = useState(false);
+
+
     const handleScroll = event => {
         const offsetY = event.nativeEvent.contentOffset.y;
         const contentHeight = event.nativeEvent.contentSize.height;
@@ -60,17 +64,9 @@ const ChatInnerScreen = props => {
             setShowButton(true);
         }
     };
-    const scrollToEnd = () => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-    };
-    useEffect(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, [messages]);
-
-
-
+    const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
+    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
     const allMessageIds = [];
-
     Object.keys(messages).forEach(date => {
         messages[date].forEach(message => {
             if (message.sentBy === "User") {
@@ -79,39 +75,22 @@ const ChatInnerScreen = props => {
         });
     });
     const allMessageIdsString = allMessageIds.toString();
-    console.log(allMessageIdsString);
-
-
     const token = chatProfileData?.token
-    const onhandalePhoneCall = () => { Linking?.openURL(`tel:${chatProfileData?.data?.mobile_no}`); };
+    const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
-    useEffect(() => { getMyId(); setSelectedContact('') }, [])
+
+    useEffect(() => {
+        getAllMessages()
+        handleUnreadeMsg(token, allMessageIdsString)
+        requestContactsPermission()
+
+    }, [])
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
         return () => backHandler.remove();
     }, [visible]);
-    useEffect(() => {
-        getAllMessages()
-    }, [])
-    useEffect(() => {
-        handleUnreadeMsg(token, allMessageIdsString)
-    }, [allMessageIdsString])
-
-    useEffect(() => { requestContactsPermission }, [])
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
-
-    const getMyId = async () => {
-        //     try {
-        //         const jsonValue = await AsyncStorage.getItem('userData');
-        //         const myid = JSON.parse(jsonValue); setMyId(myid.id);
-        //     } catch (e) { }
-        // };
-        // const onhandaleSelected = msg => {
-        //     if (selectedMSG.includes(msg)) {
-        //         setSelectedMSG(selectedMSG.filter((id) => id !== msg));
-        //     } else { setSelectedMSG([...selectedMSG, msg]); }
-    }
     const selectedMsgDelete = async () => {
         selectedMSG?.forEach(async (id) => {
             await firestore()?.collection('messages')?.doc(id?.id)?.delete();
@@ -142,7 +121,10 @@ const ChatInnerScreen = props => {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    id: userId
+                    id: userId,
+                    limit: 1000,
+                    start: 0,
+                    timezone: Timezone.getTimeZone(),
                 })
             });
             if (!response.ok) {
@@ -150,8 +132,8 @@ const ChatInnerScreen = props => {
             }
             const data = await response.json();
             if (data?.message === 'Get Data Successfully!') {
+                setUserDetails(data.data.userData);
                 setMessages(data?.data?.chat)
-                console.log(data.data.chat);
             } else {
                 setVisible(false);
                 Alert.alert('No message received from server.');
@@ -163,12 +145,32 @@ const ChatInnerScreen = props => {
         }
     };
     const handleSend = (currentMsgData) => {
-        // Alert.alert('dsfsd')
+        if (inputText.trim() == '') {
+            return null
+        }
+        if (messages?.length == 0) {
+            getAllMessages()
+        }
+        setMsgType('Text')
+        const time = new Date()
+        const date = new Date(time);
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const hours12 = hours % 12 || 12;
+        const formattedTime = `${hours12}:${formattedMinutes} ${period}`;
+
         switch (msgType) {
             case 'Text':
                 handleMsgText(token, msgType, inputText, userId);
                 setInputText('')
-                setMsgType('Text')
+                if (messages.length !== 0) {
+                    setMessages(prevState => ({
+                        ...prevState,
+                        Today: [...prevState?.Today, { messageDetails: inputText.trim(), messageType: 'Text', sentBy: "loginUser", time: formattedTime }]
+                    }));
+                }
                 break;
             case 'Task':
                 Alert.alert('Task');
@@ -176,6 +178,7 @@ const ChatInnerScreen = props => {
 
             default:
                 console.warn(`Unhandled message type: ${msgType}`);
+
         }
     };
     const pickDocument = async () => {
@@ -290,7 +293,7 @@ const ChatInnerScreen = props => {
         };
 
         return (
-            <TouchableOpacity style={{ marginHorizontal: 10, marginVertical: 3 }}
+            <TouchableOpacity style={{ marginHorizontal: 30, paddingVertical: 1, marginVertical: 2, backgroundColor: selectedMSG.includes(message) ? COLOR.green : COLOR.white }}
                 delayLongPress={500}
                 onLongPress={() => { setIsSelected(true), onhandaleSelected(message) }}
                 onPress={() => { isSelected ? onhandaleSelected(message) : '' }}>
@@ -303,21 +306,23 @@ const ChatInnerScreen = props => {
             <View style={{ flex: 1 }}>
                 {msgType == 'Contact' ?
                     <View style={styles.contactContainer}>
-                        <NavigateHeader title={'Contacts'} onPress={() => setMsgType('Text')} color={COLOR.white} smallTitleSize={15} />
+                        <View style={{ paddingHorizontal: 20 }}>
+                            <NavigateHeader title={'Contacts'} onPress={() => setMsgType('Text')} color={COLOR.white} smallTitleSize={15} />
+                        </View>
                         <View style={styles.contactListContainer}>
                             {selectedContact?.length > 0 ? <Text style={styles.selectedContactTxt}>{' Selected(' + selectedContact.length + ')'} </Text> : null}
                             <TextInput placeholder='Search here...' style={styles.contactSearchInput} />
                             <FlatList data={contacts} renderItem={list} style={styles.ContactFlatList} />
                         </View>
                         {selectedContact.length > 0 ?
-                            <TouchableOpacity style={styles.OncontactScreenSend} onPress={() => handleSend(selectedContact)}>
+                            <TouchableOpacity style={styles.OncontactScreenSend} onPress={() => { handleSend(selectedContact); setMsgType('Text') }}>
                                 <Text style={styles.sendTxt}>Send</Text>
                             </TouchableOpacity> : null}
                     </View> :
                     <View style={styles.chatMainsection}>
                         <View style={styles.chatHeaderView}>
                             {!isSelected ? <Chatheader
-                                onProfile={() => props.navigation.navigate('userprofile', chatProfileData)}
+                                onProfile={() => Alert.alert('Profile')}
                                 onCall={onhandalePhoneCall}
                                 value={change}
                                 onChange={() => setChange(!change)}
@@ -333,29 +338,41 @@ const ChatInnerScreen = props => {
                             <ScrollView ref={scrollViewRef}
                                 invertStickyHeaders={true}
                                 onScroll={handleScroll}
+
                                 scrollEventThrottle={16}>
-                                {Object.keys(messages).map(date => (
+                                {Object?.keys(messages)?.map(date => (
                                     <View key={date}>
                                         <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
-                                        {messages[date].map(message => (
-                                            <ChatMessage key={message.messageId} message={message} />
+                                        {messages[date]?.map(message => (
+                                            <ChatMessage key={message?.messageId} message={message} />
                                         ))}
                                     </View>
                                 ))}
+
                             </ScrollView>
 
                         </View >
                         <PlusModal
+                            //    onRequestClose={closeModal} visible={visible}
+                            //    onClose={() => setVisible(false)}
+                            //    onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
+                            // onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
+                            //    onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
+                            //    onCamera={() => { onCamera(); setMsgType('Attachment'); }}
+                            //    onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
+                            onContacts={() => { setMsgType('Contact'), setVisible(false); }}
+                            //    onLocation={() => { Alert.alert('Location'); setVisible(false); }}
+                            //    onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
                             onRequestClose={closeModal} visible={visible}
                             onClose={() => setVisible(false)}
-                            onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
-                            onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
-                            onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
-                            onCamera={() => { onCamera(); setMsgType('Attachment'); }}
-                            onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
-                            onContacts={() => { setMsgType('Contact'), setVisible(false); }}
-                            onLocation={() => { Alert.alert('Location'); setVisible(false); }}
-                            onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
+                            onCheckList={() => { setVisible(false); }}
+                            onMeeting={() => { setVisible(false); }}
+                            onReminder={() => { setVisible(false); }}
+                            onCamera={() => { setVisible(false) }}
+                            onPhotoGallery={() => { setVisible(false) }}
+                            // onContacts={() => { setVisible(false); }}
+                            onLocation={() => { setVisible(false) }}
+                            onFiles={() => { setVisible(false) }}
                         />
                         <Modal visible={ReMeCkModal}>
                             <View style={styles.createItemModalView}>
@@ -377,14 +394,14 @@ const ChatInnerScreen = props => {
                     </View>
                 }
                 <Loader visible={loding} />
-                <View style={{ marginBottom: isFocused ? 5 : 25 }}>
-                    <ChatInputToolBar source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
-                        onFocus={() => setIsFocused(true)} value={inputText} onsend={handleSend} onPress={() => setVisible(true)}
-                    />
-                </View>
-                {showButton && (<TouchableOpacity style={{ height: 35, width: 35, borderRadius: 30, backgroundColor: COLOR.lightgray, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 15, bottom: '15%' }} onPress={() => scrollToEnd()}>
-                    <Image source={{ uri: 'https://cdn4.iconfinder.com/data/icons/navigation-40/24/chevron-force-down-512.png', }} style={{ height: 25, width: 25 }} />
-                </TouchableOpacity>)}
+                {msgType !== 'Contact' ?
+                    <View style={{ marginBottom: isFocused ? 5 : 25 }}>
+                        <ChatInputToolBar source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
+                            onFocus={() => setIsFocused(true)} value={inputText} onsend={handleSend} onPress={() => setVisible(true)}
+                        />
+                    </View>
+                    : null}
+                {showButton && (<ChatScrollEnd onPress={scrollToEnd} />)}
             </View>
         </KeyboardAvoidingView>
     );
