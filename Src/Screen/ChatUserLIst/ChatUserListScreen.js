@@ -229,7 +229,7 @@ const ChatUserListScreen = props => {
             .then(data => {
                 if (data) {
                     setAllUserData(data?.data?.userList)
-                    // console.log(data.data);
+                    // console.log(data);
                 } else {
                     Alert.alert('not user')
                 }

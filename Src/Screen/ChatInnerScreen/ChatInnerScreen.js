@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { View, Alert, Vibration, Image, LogBox, BackHandler, Modal, Linking, TouchableOpacity, FlatList, Text, TextInput, SectionList, ScrollView, KeyboardAvoidingView } from 'react-native';
 import uuid from 'react-native-uuid';
 import DocumentPicker from 'react-native-document-picker';
@@ -24,7 +24,7 @@ import MsgContact from './ChatCustomFile/MsgContact';
 import MsgDocument from './ChatCustomFile/MsgDocument';
 import DeleteChatHeader from './ChatCustomFile/DeleteChatHeader';
 import Loader from '../../Custom/Loader/loader';
-import { handleMsgText, handleUnreadeMsg } from './Function/ApiCaliing';
+import { handaleDeleteMsg, handleFileUplode, handleMsgText, handleUnreadeMsg } from './Function/ApiCaliing';
 import Timezone from 'react-native-timezone'
 import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd';
 LogBox.ignoreAllLogs();
@@ -38,9 +38,7 @@ const ChatInnerScreen = props => {
     const [change, setChange] = useState(false);
     const [loding, setLoding] = useState(false);
     const [msgType, setMsgType] = useState('Text');
-    const [file, setFile] = useState('');
-    const [cameraImage, setCameraImage] = useState('');
-    const [gallery, setGallery] = useState('');
+    const [FileUplode, setFileUpload] = useState('');
     const [contacts, setContacts] = useState([])
     const [selectedContact, setSelectedContact] = useState([])
     const [selectedMSG, setSelectedMSG] = useState([])
@@ -53,7 +51,6 @@ const ChatInnerScreen = props => {
     const scrollViewRef = useRef();
     const [showButton, setShowButton] = useState(false);
 
-
     const handleScroll = event => {
         const offsetY = event.nativeEvent.contentOffset.y;
         const contentHeight = event.nativeEvent.contentSize.height;
@@ -64,6 +61,7 @@ const ChatInnerScreen = props => {
             setShowButton(true);
         }
     };
+
     const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
     useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
     const allMessageIds = [];
@@ -83,8 +81,8 @@ const ChatInnerScreen = props => {
         getAllMessages()
         handleUnreadeMsg(token, allMessageIdsString)
         requestContactsPermission()
-
     }, [])
+
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
@@ -92,20 +90,16 @@ const ChatInnerScreen = props => {
     }, [visible]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     const selectedMsgDelete = async () => {
-        selectedMSG?.forEach(async (id) => {
-            await firestore()?.collection('messages')?.doc(id?.id)?.delete();
-            if (id?.cameraimg !== '') {
-                await storage()?.refFromURL(id?.cameraimg)?.delete()
-            } else if (id?.galleryimg !== '') {
-                for (let uri of id?.galleryimg) {
-                    await storage()?.refFromURL(uri?.url)?.delete()
-                }
-            } else if (id?.file !== '') {
-                await storage()?.refFromURL(id?.file?.url)?.delete()
-            }
-            setSelectedMSG('');
-            setIsSelected(false);
+        setLoding(true)
+
+        selectedMSG.forEach((res) => {
+            console.log(res.messageId);
+            handaleDeleteMsg(token, res.messageId)
         })
+        setSelectedMSG('')
+        getAllMessages()
+        setLoding(false)
+
     }
     const onhandaleSelected = msg => {
         if (selectedMSG.includes(msg)) {
@@ -144,36 +138,19 @@ const ChatInnerScreen = props => {
             Alert.alert('An error occurred:', error.message ?? 'Unknown error');
         }
     };
+
     const handleSend = (currentMsgData) => {
-        if (inputText.trim() == '') {
+        // getAllMessages()
+        if (inputText.trim() == '' && msgType == 'Text') {
             return null
         }
-        if (messages?.length == 0) {
-            getAllMessages()
-        }
         setMsgType('Text')
-        const time = new Date()
-        const date = new Date(time);
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        const formattedMinutes = String(minutes).padStart(2, '0');
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const hours12 = hours % 12 || 12;
-        const formattedTime = `${hours12}:${formattedMinutes} ${period}`;
-
         switch (msgType) {
             case 'Text':
-                handleMsgText(token, msgType, inputText, userId);
-                setInputText('')
-                if (messages.length !== 0) {
-                    setMessages(prevState => ({
-                        ...prevState,
-                        Today: [...prevState?.Today, { messageDetails: inputText.trim(), messageType: 'Text', sentBy: "loginUser", time: formattedTime }]
-                    }));
-                }
+                handleMsgText(token, msgType, inputText, userId); getAllMessages(); setInputText('')
                 break;
-            case 'Task':
-                Alert.alert('Task');
+            case 'Attachment':
+                handleFileUplode(token, formData, userId, msgType); getAllMessages(); setFileUpload('')
                 break;
 
             default:
@@ -181,15 +158,19 @@ const ChatInnerScreen = props => {
 
         }
     };
+    const formData = new FormData();
+    const AttachmentUri = FileUplode[0]?.uri;
+    const AttachmentName = AttachmentUri ? AttachmentUri?.split('/').pop() : ''; // Extract image name from URI
+    if (AttachmentName) {
+        formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: FileUplode[0]?.type });
+    }
     const pickDocument = async () => {
         try {
             const result = await DocumentPicker.pick({ type: [DocumentPicker.types.allFiles], });
             setVisible(false);
             setLoding(true)
-            const storageRef = storage().ref(`images/documents/${uuid.v4()}`);
-            await storageRef.putFile(result[0].uri);
-            const downloadURL = await storageRef.getDownloadURL();
-            setFile({ url: downloadURL, name: result[0].name, type: result[0].type });
+            // console.log(result);
+            setFileUpload(result)
             setLoding(false)
         }
         catch (err) { console.log(err); }
@@ -197,38 +178,30 @@ const ChatInnerScreen = props => {
     const onCamera = async () => {
         const result = await launchCamera();
         if (result?.assets[0]?.uri) {
-            setIsFocused(false); setVisible(false); setLoding(true)
-            const url = result?.assets[0]?.uri
-            setCameraImage(url)
+            setIsFocused(false); setVisible(false);
+            const url = result?.assets
+            setFileUpload(url)
+
             try {
 
             } catch (error) { console.error(error); }
             setLoding(false)
         }
     };
-    const onPhotoGallery = () => {
-        let options = {
-            mediaType: 'photo',
-            maxWidth: 300,
-            maxHeight: 550,
-            quality: 1,
-            selectionLimit: 10,
-        };
+    const onPhotoGallery = async () => {
 
-        launchImageLibrary(options, (response) => {
-            if (!response.didCancel) {
-                setLoding(true);
-                const selectedImages = response.assets;
-                const processedImages = [];
-                selectedImages.forEach((image) => {
-                    processedImages.push({ uri: image.uri }); // Change this to the actual location/path of the saved image
-                });
-                setGallery((prevImages) => [...prevImages, ...processedImages]);
-                setLoding(false);
-                setReMeCkModal(false)
 
-            }
-        });
+        const result = await launchImageLibrary();
+        if (result?.assets[0]?.uri) {
+            setIsFocused(false); setVisible(false);
+            const url = result?.assets
+            setFileUpload(url)
+
+            try {
+
+            } catch (error) { console.error(error); }
+            setLoding(false)
+        }
     };
     const customAlert = () => {
         const title = 'Permission Request';
@@ -261,25 +234,13 @@ const ChatInnerScreen = props => {
     }
     const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
     const ChatMessage = ({ message }) => {
+        // console.log();
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
-                    return <MsgText data={message} />
-
-                case 'Meeting':
-                    return (
-                        <View>
-                            <Text>{message?.messageDetails?.title}</Text>
-                            <Text>{message?.messageDetails?.mode}</Text>
-                            <Text>{message?.messageDetails?.date}</Text>
-                            <Text>{message?.messageDetails?.start_time} - {message?.messageDetails?.end_time}</Text>
-                            {message?.messageDetails?.meeting_url && (
-                                <Text>{message?.messageDetails?.meeting_url}</Text>
-                            )}
-                        </View>
-                    );
-                case 'Task Chat':
-                    return <Text>No messages</Text>;
+                    return <MsgText data={message} />;
+                case 'Attachment':
+                    return <MsgImage data={message} />;
                 case 'Task':
                     return (
                         <View>
@@ -301,6 +262,17 @@ const ChatInnerScreen = props => {
             </TouchableOpacity>
         );
     };
+    // const memoizedMessagesByDate = useMemo(() => {
+    //     return Object.keys(messages).map(date => (
+    //         <View key={date}>
+    //             <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
+    //             {messages[date]?.map(message => (
+    //                 <ChatMessage key={message?.messageId} message={message} />
+    //             ))}
+    //         </View>
+    //     ));
+    // }, [messages]);
+
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
             <View style={{ flex: 1 }}>
@@ -337,10 +309,10 @@ const ChatInnerScreen = props => {
 
                             <ScrollView ref={scrollViewRef}
                                 invertStickyHeaders={true}
-                                onScroll={handleScroll}
+                                // onScroll={handleScroll}
 
                                 scrollEventThrottle={16}>
-                                {Object?.keys(messages)?.map(date => (
+                                {Object.keys(messages).map(date => (
                                     <View key={date}>
                                         <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
                                         {messages[date]?.map(message => (
@@ -353,26 +325,20 @@ const ChatInnerScreen = props => {
 
                         </View >
                         <PlusModal
-                            //    onRequestClose={closeModal} visible={visible}
-                            //    onClose={() => setVisible(false)}
                             //    onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
                             // onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
                             //    onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
-                            //    onCamera={() => { onCamera(); setMsgType('Attachment'); }}
-                            //    onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
+                            onCamera={() => { onCamera(); setMsgType('Attachment'); }}
+                            onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
                             onContacts={() => { setMsgType('Contact'), setVisible(false); }}
                             //    onLocation={() => { Alert.alert('Location'); setVisible(false); }}
-                            //    onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
+                            onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
                             onRequestClose={closeModal} visible={visible}
                             onClose={() => setVisible(false)}
                             onCheckList={() => { setVisible(false); }}
                             onMeeting={() => { setVisible(false); }}
                             onReminder={() => { setVisible(false); }}
-                            onCamera={() => { setVisible(false) }}
-                            onPhotoGallery={() => { setVisible(false) }}
-                            // onContacts={() => { setVisible(false); }}
                             onLocation={() => { setVisible(false) }}
-                            onFiles={() => { setVisible(false) }}
                         />
                         <Modal visible={ReMeCkModal}>
                             <View style={styles.createItemModalView}>
