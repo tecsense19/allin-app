@@ -97,7 +97,6 @@ const ChatInnerScreen = props => {
             handaleDeleteMsg(token, res.messageId)
         })
         setSelectedMSG('')
-        getAllMessages()
         setLoding(false)
 
     }
