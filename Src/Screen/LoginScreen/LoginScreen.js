@@ -9,69 +9,42 @@ import VerificationCodeIcon from './VerificationCodeIcon';
 import Loader from '../../Custom/Loader/loader';
 import LoginTextInput from '../../Custom/TextInput/LoginTextInput';
 import IntlPhoneInput from 'react-native-intl-phone-input'
+import { Check_Mobile_Exists, Send_Otp } from '../../Service/actions';
+import messaging from '@react-native-firebase/messaging';
 
 const LoginScreen = props => {
     const [phoneNo, setphoneNo] = useState('');
     const [C_Code, setC_Code] = useState(91);
     const [visible, setVisible] = useState(false);
-    const [maskNumber, setMaskNumber] = useState(false);
+    const [maskNumber, setMaskNumber] = useState('');
+    const [devicetoken, setDevicetoken] = useState('');
 
+    useEffect(() => { getFcmToken }, [])
 
-    const validatePhoneNumber = () => {
-
-        setVisible(true)
-        CheckMobailNumberExists()
-
-
-
-    };
-
-    const sendOtp = async () => {
-        await fetch('https://allin.website4you.co.in/api/v1/send-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ country_code: C_Code, mobile: phoneNo, })
-        })
-            .then(response => response?.json())
-            .then(data => {
-                if (data?.message == 'OTP Sent successfully') {
-                    setVisible(false)
-                    props.navigation.navigate('verification', { mobile: phoneNo, country_code: C_Code, device_token: 'lkjiawdf32rfrvr35yghtbthrnruygutlr', type: 'login', maskNumber: maskNumber });
-                } else {
-                    setVisible(false)
-                    Alert.alert(data?.message)
-                }
-            })
-            .catch(error =>
-                setVisible(false), console.error('Error:', error));
+    const getFcmToken = async () => {
+        try {
+            const D_token = await messaging().getToken();
+            setDevicetoken(D_token)
+        } catch (error) {
+            console.error('Error getting FCM token:', error)
+        }
     }
-    const CheckMobailNumberExists = async () => {
-        await fetch('https://allin.website4you.co.in/api/v1/check-mobile-exists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ country_code: C_Code, mobile: phoneNo, })
-        })
-            .then(response => response.json())
-            .then(async (data) => {
-                if (data?.message == 'User Not Found!') {
-                    setVisible(false)
-                    Alert.alert('User not found please create account')
-                } else {
-                    await sendOtp()
-                }
+    const sendOtp = async () => {
+        setVisible(true)
+        const data = { country_code: C_Code, mobile: phoneNo, type: 'Login' }
+        await Send_Otp(data)
+            .then((res) => {
+                if (res?.status_code == 200) {
+                    setVisible(false), props.navigation.navigate('verification', { mobile: phoneNo, country_code: C_Code, device_token: devicetoken, type: 'login', maskNumber: maskNumber });
+                } else { setVisible(false), Alert.alert(res?.message,) }
             })
-            .catch(error =>
-                setVisible(false),
-                console.error('Error:', error));
     }
     const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
         // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
         setC_Code(dialCode)
         setphoneNo(unmaskedPhoneNumber)
-
         setMaskNumber(phoneNumber)
     };
-
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
             <StatusBar barStyle={'dark-content'} />
@@ -100,8 +73,7 @@ const LoginScreen = props => {
                                 containerStyle={{ borderWidth: 0, borderBottomWidth: 2, borderRadius: 0, borderColor: COLOR.black }}
                                 dialCodeTextStyle={{ fontSize: 18, fontWeight: 'bold', }} />
                         </View>
-                        {/* <LoginTextInput marginTop={50} value={phoneNo} onChangeText={text => setphoneNo(text)} label={'Enter your mobile number'} placeholderTextColor={COLOR.placeholder} placeholder={'000-000-0000'} selectedValue={(a) => setC_Code(a)} /> */}
-                        <Button bgColor={COLOR.green} title={'Submit'} color={COLOR.white} marginTop={40} marginBottom={100} onPress={validatePhoneNumber} />
+                        <Button bgColor={COLOR.green} title={'Submit'} color={COLOR.white} marginTop={40} marginBottom={100} onPress={sendOtp} />
                     </View>
                 </ScrollView>
             </View>

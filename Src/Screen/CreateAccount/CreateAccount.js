@@ -11,6 +11,7 @@ import Textinput from '../../Custom/TextInput/SimpaleTextInput';
 import ProfileModal from '../../Custom/Modal/ProfileModal';
 import IntlPhoneInput from 'react-native-intl-phone-input';
 import { BgImageCemera, BgImageGallery, profileImgCemera, profileImgGallery, requestCameraPermission, } from './Functions';
+import { Send_Otp } from '../../Service/actions';
 
 const CreateAccount = props => {
     const [fname, setFname] = useState('');
@@ -21,12 +22,9 @@ const CreateAccount = props => {
     const [countryCode, setCountryCode] = useState('91');
     const [visible, setVisible] = useState(false);
     const [loding, setLoding] = useState(false);
-    const [diviceToken, setDeviceToken] = useState('');
     const [maskNumber, setMaskNumber] = useState('');
 
     const closeModal = () => { setVisible(false); };
-
-
     const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
         // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
         setPhone(unmaskedPhoneNumber)
@@ -56,64 +54,25 @@ const CreateAccount = props => {
         console.log(profileImage);
     };
     const handleValidAccount = async () => {
-
         if (fname == '') {
             Alert.alert('Please enter your first name to proceed');
         } else if (lname == '') {
             Alert.alert('Please enter your last name to proceed');
         } else {
-            ragisterAccount()
+            sendOtp()
         }
     };
     const sendOtp = async () => {
-        await fetch('https://allin.website4you.co.in/api/v1/send-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                country_code: countryCode,
-                mobile: phone,
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data?.message == 'OTP Sent successfully') {
+        setLoding(true)
+        const dataa = { country_code: countryCode, mobile: phone, type: 'Register' }
+        await Send_Otp(dataa)
+            .then(res => {
+                if (res?.status_code == 200) {
                     setLoding(false)
                     props.navigation.navigate('verification', { mobile: phone, country_code: countryCode, first_name: fname, last_name: lname, profile: img, cover_image: bgimg, type: 'ragister', maskNumber: maskNumber });
-                } else {
-                    setLoding(false)
-                    Alert.alert(data?.message)
-                }
+                } else { setLoding(false), Alert.alert(res?.message) }
             })
-            .catch(error =>
-                setLoding(false), console.error('Error:', error));
-    }
-    const ragisterAccount = async () => {
-        setLoding(true)
-        await fetch('https://allin.website4you.co.in/api/v1/check-mobile-exists', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                country_code: countryCode,
-                mobile: phone,
-            })
-        })
-            .then(response => response.json())
-            .then(async (data) => {
-                if (data?.message == 'User Not Found!') {
-                    setLoding(false)
-                    await sendOtp()
-
-                } else {
-                    setLoding(false)
-                    Alert.alert(data?.message)
-                }
-            })
-            .catch(error =>
-                setLoding(false), console.error('Error:', error));
+            .catch(error => setLoding(false), console.error('Error:', error));
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">

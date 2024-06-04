@@ -22,11 +22,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import Timezone from 'react-native-timezone'
 import { useFocusEffect } from '@react-navigation/native';
+import { User_List, User_Logout } from '../../Service/actions';
+import Loader from '../../Custom/Loader/loader';
 
 
 
 const ChatUserListScreen = props => {
     const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [openItemId, setOpenItemId] = useState(null);
     const [allUserData, setAllUserData] = useState([]);
     const [token, setToken] = useState('');
@@ -41,9 +44,7 @@ const ChatUserListScreen = props => {
         getuser();
 
     }, [token])
-    useFocusEffect(React.useCallback(() => {
-        getuser()
-    }))
+    useFocusEffect(React.useCallback(() => { getuser() }))
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
 
     const handleSwipeableOpen = id => {
@@ -192,7 +193,7 @@ const ChatUserListScreen = props => {
         Alert.alert(
             'LOGOUT', 'You are about to logout,Are you sure you want to proceed ?',
             [{ text: 'NO', onPress: () => console.log('Cancel Pressed'), style: 'No', },
-            { text: 'YES', onPress: () => onLogOut(), style: 'destructive' },
+            { text: 'YES', onPress: () => logout(), style: 'destructive' },
             ],
         );
     const onLogOut = async () => {
@@ -216,26 +217,15 @@ const ChatUserListScreen = props => {
         // Alert.alert(userData)
 
     };
+
     const getuser = async () => {
-        await fetch('https://allin.website4you.co.in/api/v1/user-list', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ timezone: Timezone.getTimeZone() })
-        })
-            .then(response => response?.json())
-            .then(data => {
-                if (data) {
-                    setAllUserData(data?.data?.userList)
-                    // console.log(data);
-                } else {
-                    Alert.alert('not user')
-                }
-            })
-            .catch(error =>
-                console.error('Error:', error));
+        const timezone = { timezone: Timezone.getTimeZone() }
+        await User_List(timezone, token).then((res) => {
+            if (res.status_code == 200) {
+                setAllUserData(res?.data?.userList)
+                setLoading(false)
+            }
+        }).catch((e) => { console.log(e); })
     }
 
     const getFcmToken = async () => {
@@ -247,24 +237,13 @@ const ChatUserListScreen = props => {
         }
     }
     const logout = async () => {
-        try {
-            const url = 'https://allin.website4you.co.in/api/v1/logout'; // Ensure the full URL is specified
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ device_token: deviceToken }) // Stringify the body
-            });
+        setLoading(true)
 
-            const data = await response.json();
-            if (data?.message == 'Logout Successfully.') {
-                LogoutTwoButtonAlert()
-            }
-        } catch (error) {
-            console.error('Error during logout', error);
-        }
+        const d_token = { device_token: deviceToken }
+        const data = await User_Logout(d_token, token)
+        if (data?.status_code == 200) { onLogOut(), setLoading(false) }
+        else { Alert.alert(data?.message), setLoading(false) }
+
 
     }
     return (
@@ -277,7 +256,7 @@ const ChatUserListScreen = props => {
                     onRequestClose={closeModal}
                     title={'Summarize'}
                     visible={visible}
-                    onLogout={() => logout()}
+                    onLogout={() => LogoutTwoButtonAlert()}
                     onClose={() => setVisible(false)}
                     setting={() => { props.navigation.navigate('setting'); setVisible(false); }}
                     onPress={() => { Alert.alert('summarize'), setVisible(false) }}
@@ -293,6 +272,7 @@ const ChatUserListScreen = props => {
             <View style={styles.detailsview}>
                 <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
             </View>
+            <Loader visible={loading} />
         </View>
     );
 };

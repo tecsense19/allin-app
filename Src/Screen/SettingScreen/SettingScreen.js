@@ -18,22 +18,27 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import styles from './SettingScreenStyle';
 import { SettingData } from '../../StaticOBJ/OBJ';
-import { getDataFromStorage } from '../../Service/MyLocalInfo';
 import messaging from '@react-native-firebase/messaging';
+import { User_Logout } from '../../Service/actions';
+import Loader from '../../Custom/Loader/loader';
 LogBox.ignoreAllLogs();
 
 const SettingScreen = props => {
     const [language, setLanguage] = useState('English(Us)');
     const [data, setData] = useState('');
+    const [loading, setLoading] = useState('');
     const [deviceToken, setDeviceToken] = useState('');
     const mydata = data?.userDetails
     const userName = mydata?.first_name + ' ' + mydata?.last_name
     const myNumber = mydata?.country_code + ' ' + mydata?.mobile
     const token = data?.token
 
+    useEffect(() => { getData(); }, [data])
+
     const getData = async () => {
-        const data = await getDataFromStorage('myData');
-        setData(data?.data)
+        const jsonValue = await AsyncStorage.getItem('myData');
+        const userData = JSON.parse(jsonValue);
+        setData(userData?.data)
     };
     useEffect(() => {
         getFcmToken()
@@ -47,33 +52,12 @@ const SettingScreen = props => {
         }
     }
     const logout = async () => {
-        try {
-            const url = 'https://allin.website4you.co.in/api/v1/logout'; // Ensure the full URL is specified
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ device_token: deviceToken }) // Stringify the body
-            });
-
-            const data = await response.json();
-            console.log('data', data);
-            if (data?.message == 'Logout Successfully.') {
-                onLogOut()
-            } else {
-                Alert.alert('Logout Error', data?.message)
-            }
-        } catch (error) {
-            console.error('Error during logout', error);
-        }
-
+        setLoading(true)
+        const d_token = { device_token: deviceToken }
+        const data = await User_Logout(d_token, token)
+        if (data?.status_code == 200) { onLogOut(), setLoading(false) }
+        else { Alert.alert(data?.message), setLoading(false) }
     }
-    useEffect(() => {
-        getData();
-
-    }, [data])
     const createTwoButtonAlert = () =>
         Alert.alert(
             'LOGOUT',
@@ -219,6 +203,7 @@ const SettingScreen = props => {
                     />
                 </View>
             </View>
+            <Loader visible={loading} />
         </ScrollView>
     );
 };
