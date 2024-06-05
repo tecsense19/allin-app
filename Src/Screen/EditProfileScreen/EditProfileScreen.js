@@ -16,6 +16,7 @@ import Loader from '../../Custom/Loader/loader';
 import ProfileModal from '../../Custom/Modal/ProfileModal';
 import SocialMedia from '../../Custom/Modal/SocialMedia';
 import styles from '../EditProfileScreen/EditProfileScreenStyle';
+import { Edit_Profile } from '../../Service/actions';
 LogBox.ignoreAllLogs();
 const EditProfileScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -39,7 +40,6 @@ const EditProfileScreen = props => {
     const AccountID = data?.data?.userDetails?.account_id
     const myData = data?.data?.userDetails
     const token = data?.data?.token
-    // console.log(token);
     const closeModal = () => { setCoverImg(false); setViewImage(false); setVisible(false); };
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', closeModal,);
@@ -62,7 +62,6 @@ const EditProfileScreen = props => {
         setLinkedinurl(myData?.linkedin_profile_url == 'null' || myData?.linkedin_profile_url == 'undefined' ? '' : myData?.linkedin_profile_url)
     }, [myData?.first_name, myData?.last_name, myData?.profile]
     );
-
     const BgImageCemera = async () => {
         const result = await launchCamera();
         if (result?.assets[0]?.uri) {
@@ -136,9 +135,7 @@ const EditProfileScreen = props => {
 
     const UpdateDataApiCalling = async () => {
         setLoding(true)
-        const formData = new FormData();
         const regx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
-        // console.log();
 
         if (phone?.length <= 5 || phone?.length >= 14) {
             setLoding(false)
@@ -151,72 +148,17 @@ const EditProfileScreen = props => {
                 return Alert.alert('Enter Valid Email')
             }
         }
-
-        formData.append('mobile', phone);
-        formData.append('first_name', fname);
-        formData.append('last_name', lname);
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('email', email);
-        formData.append('mobile', phone);
-        formData.append('instagram_profile_url', instagramUrl);
-        formData.append('facebook_profile_url', facebookurl);
-        formData.append('twitter_profile_url', twitterurl);
-        formData.append('youtube_profile_url', youtubeurl);
-        formData.append('linkedin_profile_url', linkedinurl);
-        if (img?.uri) {
-            const profileImageUri = img?.uri;
-            const profileImageName = profileImageUri ? profileImageUri.split('/').pop() : '';
-            const profileImageType = img?.type;  // Set a default type if not provided
-            formData.append('profile', {
-                uri: profileImageUri,
-                name: profileImageName,
-                type: profileImageType
-            });
-        }
-        if (bgimg?.uri) {
-            const profileImageUri = bgimg?.uri;
-            const profileImageName = profileImageUri ? profileImageUri.split('/').pop() : '';
-            const profileImageType = bgimg?.type;  // Set a default type if not provided
-            formData.append('cover_image', {
-                uri: profileImageUri,
-                name: profileImageName,
-                type: profileImageType
-            });
-        }
-        // console.log(formData._parts);
-        try {
-            const response = await fetch('https://allin.website4you.co.in/api/v1/edit-profile', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
-                },
-                body: formData
-            });
-
-            const res = await response.json();
-
-            if (res?.message === 'User Updated Successfully!') {
-                const a = {
-                    data: {
-                        token: token,
-                        expires_in: res?.data?.expires_in,
-                        token_type: res?.data?.token_type,
-                        userDetails: res?.data?.userData
-                    }
-                };
-                await AsyncStorage.setItem('myData', JSON.stringify(a));
-                setLoding(false)
-
-
-            } else {
-                setLoding(false)
-                Alert.alert(res?.message);
-            }
-        } catch (error) {
+        const res = await Edit_Profile(token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg)
+        if (res?.status_code == 200) {
+            const a = {
+                data: { token: token, expires_in: res?.data?.expires_in, token_type: res?.data?.token_type, userDetails: res?.data?.userData }
+            };
+            console.log(res);
+            await AsyncStorage.setItem('myData', JSON.stringify(a));
             setLoding(false)
-            console.log('edit profile error');
+        } else {
+            setLoding(false)
+            Alert.alert(res?.message);
         }
     };
 

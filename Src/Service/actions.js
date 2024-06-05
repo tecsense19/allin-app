@@ -101,6 +101,7 @@ export const Clear_Chat = async (id, token) => {
     const response = await res.json()
     return response
 }
+
 export const Delete_Chat_User = async (id, token) => {
     const res = await fetch(ACTIONS.DELETE_CHAT_USER, {
         method: "POST",
@@ -112,4 +113,152 @@ export const Delete_Chat_User = async (id, token) => {
     })
     const response = await res.json()
     return response
+}
+
+export const Get_All_Messages = async (data, token) => {
+    const res = await fetch(ACTIONS.USER_DETAILS, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Chat_Text_Messages = async (token, msgType, inputText, userId) => {
+    const res = await fetch(ACTIONS.MESSAGE_TEXT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            message_type: msgType,
+            message: inputText,
+            receiver_id: userId
+        })
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Read_Unread_Messages = async (token, id) => {
+    const res = await fetch(ACTIONS.MESSAGE_READE_UNREADE, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ messageIds: id, status: 'Read' })
+    })
+    const response = await res.json()
+    if (response?.status_code == 200) {
+    } else {
+        Alert.alert(data?.message);
+
+    }
+    return response
+}
+
+export const Chat_Delete_Messages = async (token, id) => {
+    const res = await fetch(ACTIONS.MESSAGE_DELETE, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: id })
+    })
+    const response = await res.json()
+    if (response?.status_code == 200) {
+
+    } else {
+        Alert.alert(data?.message);
+
+    }
+    return response
+}
+
+export const Chat_File_Message = async (MsgType, fileName, userId, token, fileType) => {
+    const res = await fetch(ACTIONS.MESSAGE_FILE_UPLOAD, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_type: MsgType, attachment_type: fileType, receiver_id: userId, attachment: fileName })
+    })
+    const response = await res.json()
+    if (response?.status_code == 200) {
+
+    } else {
+        Alert.alert(data?.message);
+
+    }
+    return response
+}
+
+export const File_Uplode = async (token, formData,) => {
+    const res = await fetch(ACTIONS.FILE_UPLOAD, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData
+    })
+    const response = await res.json()
+
+    return response
+}
+
+export const Edit_Profile = async (token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg) => {
+
+    const formData = new FormData();
+    formData.append('mobile', phone);
+    formData.append('first_name', fname);
+    formData.append('last_name', lname);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('email', email);
+    formData.append('instagram_profile_url', instagramUrl);
+    formData.append('facebook_profile_url', facebookurl);
+    formData.append('twitter_profile_url', twitterurl);
+    formData.append('youtube_profile_url', youtubeurl);
+    formData.append('linkedin_profile_url', linkedinurl);
+    if (img?.uri) {
+        const profileImageUri = img?.uri;
+        const profileImageName = profileImageUri ? profileImageUri.split('/').pop() : '';
+        const profileImageType = img?.type;
+        formData.append('profile', {
+            uri: profileImageUri,
+            name: profileImageName,
+            type: profileImageType
+        });
+    }
+    if (bgimg?.uri) {
+        const profileImageUri = bgimg?.uri;
+        const profileImageName = profileImageUri ? profileImageUri.split('/').pop() : '';
+        const profileImageType = bgimg?.type;
+        formData.append('cover_image', {
+            uri: profileImageUri,
+            name: profileImageName,
+            type: profileImageType
+        });
+    }
+    const res = await fetch(ACTIONS.EDIT_PROFILE, {
+        method: "POST",
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+        body: formData
+    })
+    const response = await res.json()
+
+    return response
+
 }

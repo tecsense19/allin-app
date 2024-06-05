@@ -170,9 +170,9 @@ const ChatUserListScreen = props => {
                                             ? userName?.slice(0, 16) + ' . . . ' || ''
                                             : userName}
                                     </Text>
-                                    <Text style={styles.bio}>
+                                    {item?.last_message ? <Text style={styles.bio}>
                                         {item?.last_message?.length >= 30 ? item?.last_message?.slice(0, 30) : item?.last_message}
-                                    </Text>
+                                    </Text> : ''}
                                 </View>
                             </View>
                             <View style={{}}>

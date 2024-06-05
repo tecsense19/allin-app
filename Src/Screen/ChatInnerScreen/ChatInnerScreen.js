@@ -27,6 +27,7 @@ import { handaleDeleteMsg, handleFileUplode, handleMsgText, handleUnreadeMsg } f
 import Timezone from 'react-native-timezone'
 import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd';
 import MsgAttachment from './ChatCustomFile/MsgAttachment';
+import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, File_Uplode, Get_All_Messages, Read_Unread_Messages } from '../../Service/actions';
 LogBox.ignoreAllLogs();
 
 const ChatInnerScreen = props => {
@@ -45,43 +46,20 @@ const ChatInnerScreen = props => {
     const [selecthandle, setSelectHandle] = useState(false)
     const [isSelected, setIsSelected] = useState(false)
     const [userDetails, setUserDetails] = useState('')
-    const chatProfileData = props?.route?.params
-    const userId = chatProfileData?.item?.id
-
-    const scrollViewRef = useRef();
+    const [messageIds, setMessageIds] = useState('');
     const [showButton, setShowButton] = useState(false);
 
-    const handleScroll = event => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        const contentHeight = event.nativeEvent.contentSize.height;
-        const layoutHeight = event.nativeEvent.layoutMeasurement.height;
-        if (offsetY + layoutHeight >= contentHeight) {
-            setShowButton(false);
-        } else {
-            setShowButton(true);
-        }
-    };
 
-    const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
-    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
-
+    const chatProfileData = props?.route?.params
+    const userId = chatProfileData?.item?.id
+    const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
+    const scrollViewRef = useRef();
     const token = chatProfileData?.token
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
-
-
-    // // Assuming allMessageIds is an array containing message IDs
-    // const allMessageIds = [];
-    // Object.keys(messages).forEach(date => {
-    //     messages[date].forEach(message => {
-    //         if (message.sentBy === "User") {
-    //             allMessageIds.push(message.messageId);
-    //         }
-    //     });
-    // });
-    // const allMessageIdsString = allMessageIds.join(',');
-
-    const [messageIds, setMessageIds] = useState('');
+    const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
+    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
+    useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
 
     useEffect(() => {
         const extractMessageIds = () => {
@@ -102,7 +80,7 @@ const ChatInnerScreen = props => {
             await getAllMessages();
             await requestContactsPermission();
             if (messageIds) {
-                await handleUnreadeMsg(token, messageIds);
+                await Read_Unread_Messages(token, messageIds);
             }
         }
         fetchData();
@@ -112,11 +90,10 @@ const ChatInnerScreen = props => {
             'hardwareBackPress', closeModal,);
         return () => backHandler.remove();
     }, [visible]);
-    useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     const selectedMsgDelete = async () => {
         selectedMSG.forEach((res) => {
             console.log(res.messageId);
-            handaleDeleteMsg(token, res.messageId)
+            Chat_Delete_Messages(token, res?.messageId)
         })
         setSelectedMSG('')
         getAllMessages()
@@ -127,22 +104,8 @@ const ChatInnerScreen = props => {
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
     const getAllMessages = async () => {
-
-        const response = await fetch('https://allin.website4you.co.in/api/v1/user-details', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                id: userId,
-                limit: 1000,
-                start: 0,
-                timezone: Timezone.getTimeZone(),
-            })
-        });
-
-        const data = await response.json();
+        const bodyData = { id: userId, limit: 1000, start: 0, timezone: Timezone.getTimeZone(), }
+        const data = await Get_All_Messages(bodyData, token)
         if (data?.message === 'Get Data Successfully!') {
             setUserDetails(data.data.userData);
             setMessages(data?.data?.chat)
@@ -150,9 +113,25 @@ const ChatInnerScreen = props => {
             setVisible(false);
             Alert.alert(data?.message);
         }
-
     };
+    const File_Message = async () => {
+        const formData = new FormData();
+        const AttachmentUri = FileUplode[0]?.uri;
+        const AttachmentName = AttachmentUri ? AttachmentUri?.split('/').pop() : ''; // Extract image name from URI
+        if (AttachmentName) {
+            formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: FileUplode[0]?.type });
+        }
 
+        const data = await File_Uplode(token, formData, userId, msgType)
+        if (data?.status_code == 200) {
+            const fileName = data.data.image_name
+            const fileType = data.data.file_type
+            // console.log(fileType,'typr');
+            Chat_File_Message(msgType, fileName, userId, token, fileType)
+        } else {
+            Alert.alert(data?.message);
+        }
+    }
     const handleSend = (currentMsgData) => {
         getAllMessages()
         if (inputText.trim() == '' && msgType == 'Text') {
@@ -161,10 +140,10 @@ const ChatInnerScreen = props => {
         setMsgType('Text')
         switch (msgType) {
             case 'Text':
-                handleMsgText(token, msgType, inputText, userId); setInputText(''), getAllMessages()
+                Chat_Text_Messages(token, msgType, inputText, userId); setInputText(''), getAllMessages()
                 break;
             case 'Attachment':
-                handleFileUplode(token, formData, userId, msgType); setFileUpload(''), getAllMessages()
+                File_Message(); setFileUpload(''), getAllMessages()
                 break;
 
             default:
@@ -172,12 +151,6 @@ const ChatInnerScreen = props => {
 
         }
     };
-    const formData = new FormData();
-    const AttachmentUri = FileUplode[0]?.uri;
-    const AttachmentName = AttachmentUri ? AttachmentUri?.split('/').pop() : ''; // Extract image name from URI
-    if (AttachmentName) {
-        formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: FileUplode[0]?.type });
-    }
     const pickDocument = async () => {
         try {
             const result = await DocumentPicker.pick({ type: [DocumentPicker.types.allFiles], });
@@ -246,7 +219,6 @@ const ChatInnerScreen = props => {
             </TouchableOpacity>
         )
     }
-    const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
     const ChatMessage = ({ message }) => {
         // console.log();
         const renderMessage = () => {
@@ -277,6 +249,16 @@ const ChatInnerScreen = props => {
                 </TouchableOpacity> : ''}
             </View>
         );
+    };
+    const handleScroll = event => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        const contentHeight = event.nativeEvent.contentSize.height;
+        const layoutHeight = event.nativeEvent.layoutMeasurement.height;
+        if (offsetY + layoutHeight >= contentHeight) {
+            setShowButton(false);
+        } else {
+            setShowButton(true);
+        }
     };
     // const memoizedMessagesByDate = useMemo(() => {
     //     return Object.keys(messages).map(date => (
@@ -347,7 +329,6 @@ const ChatInnerScreen = props => {
                             onCamera={() => { onCamera(); setMsgType('Attachment'); }}
                             onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
                             onContacts={() => { setMsgType('Contact'), setVisible(false); }}
-                            //    onLocation={() => { Alert.alert('Location'); setVisible(false); }}
                             onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
                             onRequestClose={closeModal} visible={visible}
                             onClose={() => setVisible(false)}
