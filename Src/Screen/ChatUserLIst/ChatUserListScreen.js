@@ -22,10 +22,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import Timezone from 'react-native-timezone'
 import { useFocusEffect } from '@react-navigation/native';
-import { User_List, User_Logout } from '../../Service/actions';
+import { Clear_Chat, Delete_Chat_User, User_List, User_Logout } from '../../Service/actions';
 import Loader from '../../Custom/Loader/loader';
-
-
 
 const ChatUserListScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -35,15 +33,8 @@ const ChatUserListScreen = props => {
     const [token, setToken] = useState('');
     const [deviceToken, setDeviceToken] = useState('');
     const swipeableRef = useRef(null);
-    // console.log(allUserData);
     const closeModal = () => { setVisible(false); };
-    useEffect(() => {
-        getMyData()
-        requestContactsPermission()
-        getFcmToken()
-        getuser();
-
-    }, [token])
+    useEffect(() => { getMyData(), requestContactsPermission(), getFcmToken(), getuser(); }, [token])
     useFocusEffect(React.useCallback(() => { getuser() }))
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
 
@@ -61,8 +52,16 @@ const ChatUserListScreen = props => {
         Alert.alert(
             'Clear Chat', 'You are about to Erase,Are you sure you want to proceed ?',
             [
-                { text: 'NO', onPress: () => console.log('Cancel Pressed'), style: 'Cancel', },
-                { text: 'Clear', onPress: () => { clearMessages(id) }, style: 'destructive' },
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'Cancel', },
+                { text: 'Clear', onPress: () => { ClearChat(id), swipeableRef.current[openItemId].close(); setOpenItemId(null) }, style: 'destructive' },
+            ],)
+    }
+    const DeleteAlert = (id) => {
+        Alert.alert(
+            'Delete User', 'You are about to delete user,Are you sure you want to proceed ?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'Cancel', },
+                { text: 'Delete', onPress: () => { DeleteUser(id) }, style: 'destructive' },
             ],)
     }
     const ContactPermissionAlert = () => {
@@ -119,7 +118,7 @@ const ChatUserListScreen = props => {
                 <View style={styles.swipeView}>
                     <TouchableOpacity
                         style={styles.onbin}
-                        onPress={() => Alert.alert('Delete User')}>
+                        onPress={() => DeleteAlert(item.id)}>
                         <Image
                             source={require('../../Assets/Image/bin.png')}
                             style={styles.swipeicon}
@@ -196,6 +195,7 @@ const ChatUserListScreen = props => {
             { text: 'YES', onPress: () => logout(), style: 'destructive' },
             ],
         );
+
     const onLogOut = async () => {
         try {
             await AsyncStorage.clear();
@@ -212,10 +212,7 @@ const ChatUserListScreen = props => {
     const getMyData = async () => {
         const jsonValue = await AsyncStorage.getItem('myData');
         const userData = JSON.parse(jsonValue);
-        // console.log('===========>', userData.data.token);
         setToken(userData?.data?.token)
-        // Alert.alert(userData)
-
     };
 
     const getuser = async () => {
@@ -227,7 +224,27 @@ const ChatUserListScreen = props => {
             }
         }).catch((e) => { console.log(e); })
     }
+    const ClearChat = (id) => {
+        setLoading(true)
+        Clear_Chat(id, token)
+            .then((res) => {
+                if (res?.status_code == 200) { setLoading(false) }
+                else { Alert.alert(res?.message) }
 
+            }).catch(() => {
+                setLoading(false)
+            })
+    }
+    const DeleteUser = (id) => {
+        setLoading(true)
+        Delete_Chat_User(id, token)
+            .then((res) => {
+                if (res?.status_code == 200) { setLoading(false), getuser(), setOpenItemId(null) }
+                else { Alert.alert(res?.message) }
+            }).catch(() => {
+                setLoading(false)
+            })
+    }
     const getFcmToken = async () => {
         try {
             const D_token = await messaging().getToken();
@@ -238,7 +255,6 @@ const ChatUserListScreen = props => {
     }
     const logout = async () => {
         setLoading(true)
-
         const d_token = { device_token: deviceToken }
         const data = await User_Logout(d_token, token)
         if (data?.status_code == 200) { onLogOut(), setLoading(false) }

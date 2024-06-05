@@ -88,3 +88,28 @@ export const User_Registration = async (data, otp, deviceToken) => {
     const response = await res.json()
     return response
 }
+
+export const Clear_Chat = async (id, token) => {
+    const res = await fetch(ACTIONS.CLEAR_CHAT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ user_id: id })
+    })
+    const response = await res.json()
+    return response
+}
+export const Delete_Chat_User = async (id, token) => {
+    const res = await fetch(ACTIONS.DELETE_CHAT_USER, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: id })
+    })
+    const response = await res.json()
+    return response
+}

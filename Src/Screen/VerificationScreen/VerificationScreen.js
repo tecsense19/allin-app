@@ -51,7 +51,7 @@ const VerificationScreen = props => {
                     setVisible(false)
                 } else { setVisible(false), Alert.alert(res?.message) }
             })
-            .catch(error => setVisible(false), console.error('Error:', error));
+            .catch(error => setVisible(false));
     }
     const handleSubmit = () => {
         if (data?.type == 'ragister') {
@@ -69,7 +69,7 @@ const VerificationScreen = props => {
                 if (res?.status_code == 200) { console.log(res); setVisible(false) }
                 else { setVisible(false), Alert.alert(res?.message,) }
             })
-            .catch((e) => { console.log(e); })
+            .catch((e) => { console.log(e, 'send otp'); })
     }
     return (
         <View style={styles.container}>

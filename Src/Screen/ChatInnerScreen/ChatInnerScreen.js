@@ -18,7 +18,6 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import MsgTask from './ChatCustomFile/MsgTask';
 import CreateTask from './ChatCustomFile/CreateTask';
 import { styles } from './ChatInnerScreenStyle';
-import MsgImage from './ChatCustomFile/MsgImage';
 import MyAlert from '../../Custom/Alert/PermissionAlert';
 import MsgContact from './ChatCustomFile/MsgContact';
 import MsgDocument from './ChatCustomFile/MsgDocument';
@@ -27,6 +26,7 @@ import Loader from '../../Custom/Loader/loader';
 import { handaleDeleteMsg, handleFileUplode, handleMsgText, handleUnreadeMsg } from './Function/ApiCaliing';
 import Timezone from 'react-native-timezone'
 import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd';
+import MsgAttachment from './ChatCustomFile/MsgAttachment';
 LogBox.ignoreAllLogs();
 
 const ChatInnerScreen = props => {
@@ -64,25 +64,49 @@ const ChatInnerScreen = props => {
 
     const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
     useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
-    const allMessageIds = [];
-    Object.keys(messages).forEach(date => {
-        messages[date].forEach(message => {
-            if (message.sentBy === "User") {
-                allMessageIds.push(message.messageId.toString());
-            }
-        });
-    });
-    const allMessageIdsString = allMessageIds.toString();
+
     const token = chatProfileData?.token
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
 
-    useEffect(() => {
-        getAllMessages()
-        handleUnreadeMsg(token, allMessageIdsString)
-        requestContactsPermission()
-    }, [])
 
+    // // Assuming allMessageIds is an array containing message IDs
+    // const allMessageIds = [];
+    // Object.keys(messages).forEach(date => {
+    //     messages[date].forEach(message => {
+    //         if (message.sentBy === "User") {
+    //             allMessageIds.push(message.messageId);
+    //         }
+    //     });
+    // });
+    // const allMessageIdsString = allMessageIds.join(',');
+
+    const [messageIds, setMessageIds] = useState('');
+
+    useEffect(() => {
+        const extractMessageIds = () => {
+            const ids = [];
+            Object.keys(messages).forEach(date => {
+                messages[date].forEach(message => {
+                    if (message.sentBy === "User") {
+                        ids.push(message.messageId);
+                    }
+                });
+            });
+            setMessageIds(ids.join(','));
+        };
+        extractMessageIds();
+    }, [messages, token]);
+    useEffect(() => {
+        const fetchData = async () => {
+            await getAllMessages();
+            await requestContactsPermission();
+            if (messageIds) {
+                await handleUnreadeMsg(token, messageIds);
+            }
+        }
+        fetchData();
+    }, [messageIds, token]);
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
@@ -90,15 +114,12 @@ const ChatInnerScreen = props => {
     }, [visible]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     const selectedMsgDelete = async () => {
-        setLoding(true)
-
         selectedMSG.forEach((res) => {
             console.log(res.messageId);
             handaleDeleteMsg(token, res.messageId)
         })
         setSelectedMSG('')
-        setLoding(false)
-
+        getAllMessages()
     }
     const onhandaleSelected = msg => {
         if (selectedMSG.includes(msg)) {
@@ -106,50 +127,44 @@ const ChatInnerScreen = props => {
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
     const getAllMessages = async () => {
-        try {
-            const response = await fetch('https://allin.website4you.co.in/api/v1/user-details', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    id: userId,
-                    limit: 1000,
-                    start: 0,
-                    timezone: Timezone.getTimeZone(),
-                })
-            });
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.statusText}`);
-            }
-            const data = await response.json();
-            if (data?.message === 'Get Data Successfully!') {
-                setUserDetails(data.data.userData);
-                setMessages(data?.data?.chat)
-            } else {
-                setVisible(false);
-                Alert.alert('No message received from server.');
-            }
-        } catch (error) {
+
+        const response = await fetch('https://allin.website4you.co.in/api/v1/user-details', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                id: userId,
+                limit: 1000,
+                start: 0,
+                timezone: Timezone.getTimeZone(),
+            })
+        });
+
+        const data = await response.json();
+        if (data?.message === 'Get Data Successfully!') {
+            setUserDetails(data.data.userData);
+            setMessages(data?.data?.chat)
+        } else {
             setVisible(false);
-            console.error('Error:', error);
-            Alert.alert('An error occurred:', error.message ?? 'Unknown error');
+            Alert.alert(data?.message);
         }
+
     };
 
     const handleSend = (currentMsgData) => {
-        // getAllMessages()
+        getAllMessages()
         if (inputText.trim() == '' && msgType == 'Text') {
             return null
         }
         setMsgType('Text')
         switch (msgType) {
             case 'Text':
-                handleMsgText(token, msgType, inputText, userId); getAllMessages(); setInputText('')
+                handleMsgText(token, msgType, inputText, userId); setInputText(''), getAllMessages()
                 break;
             case 'Attachment':
-                handleFileUplode(token, formData, userId, msgType); getAllMessages(); setFileUpload('')
+                handleFileUplode(token, formData, userId, msgType); setFileUpload(''), getAllMessages()
                 break;
 
             default:
@@ -172,7 +187,7 @@ const ChatInnerScreen = props => {
             setFileUpload(result)
             setLoding(false)
         }
-        catch (err) { console.log(err); }
+        catch (err) { console.log(err, 'file'); }
     };
     const onCamera = async () => {
         const result = await launchCamera();
@@ -239,7 +254,7 @@ const ChatInnerScreen = props => {
                 case 'Text':
                     return <MsgText data={message} />;
                 case 'Attachment':
-                    return <MsgImage data={message} />;
+                    return <MsgAttachment data={message} />;
                 case 'Task':
                     return (
                         <View>
@@ -253,12 +268,14 @@ const ChatInnerScreen = props => {
         };
 
         return (
-            <TouchableOpacity style={{ marginHorizontal: 30, paddingVertical: 1, marginVertical: 2, backgroundColor: selectedMSG.includes(message) ? COLOR.green : COLOR.white }}
-                delayLongPress={500}
-                onLongPress={() => { setIsSelected(true), onhandaleSelected(message) }}
-                onPress={() => { isSelected ? onhandaleSelected(message) : '' }}>
-                {renderMessage()}
-            </TouchableOpacity>
+            <View style={{ backgroundColor: selectedMSG.includes(message) ? COLOR.green : COLOR.white, marginVertical: 2 }}>
+                {!change ? <TouchableOpacity style={{ marginHorizontal: 30, marginVertical: 2, }}
+                    delayLongPress={500}
+                    onLongPress={() => { setIsSelected(true), onhandaleSelected(message) }}
+                    onPress={() => { isSelected ? onhandaleSelected(message) : '' }}>
+                    {renderMessage()}
+                </TouchableOpacity> : ''}
+            </View>
         );
     };
     // const memoizedMessagesByDate = useMemo(() => {

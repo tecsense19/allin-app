@@ -15,28 +15,26 @@ const SplaseScreen = props => {
     }, []);
 
     const getMyData = async () => {
+
         const jsonValue = await AsyncStorage.getItem('myData');
+        if (jsonValue === null) { props.navigation.reset({ routes: [{ name: 'first' }], }); return; }
+
         const userData = JSON.parse(jsonValue);
-        const timezone = { timezone: TimeZone.getTimeZone() }
-        const token = userData?.data?.token
+        const timezone = { timezone: TimeZone.getTimeZone() };
+        const token = userData?.data?.token;
 
+        await User_List(timezone, token)
+            .then(data => {
+                if (data?.status_code === 401) {
+                    props.navigation.reset({ routes: [{ name: 'first' }] });
+                } else {
+                    props.navigation.reset({ routes: [{ name: 'home' }] });
+                }
+            })
+            .catch(error => { console.error('Error in User_List API call:', error); });
 
-        if (jsonValue == null) {
-            props.navigation.reset({
-                routes: [{ name: 'first' }],
-            });
-        } else {
-            await User_List(timezone, token)
-                .then(data => {
-                    if (data?.status_code == 401) {
-                        props.navigation.reset({ routes: [{ name: 'first' }], });
-                    } else {
-                        props.navigation.reset({ routes: [{ name: 'home' }], });
-                    }
-                })
-                .catch((a) => { console.log(a, 'some error'); })
-        }
     };
+
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor={COLOR.black} hidden={false} />

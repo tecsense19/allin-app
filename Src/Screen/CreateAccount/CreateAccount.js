@@ -72,7 +72,7 @@ const CreateAccount = props => {
                     props.navigation.navigate('verification', { mobile: phone, country_code: countryCode, first_name: fname, last_name: lname, profile: img, cover_image: bgimg, type: 'ragister', maskNumber: maskNumber });
                 } else { setLoding(false), Alert.alert(res?.message) }
             })
-            .catch(error => setLoding(false), console.error('Error:', error));
+            .catch(error => setLoding(false), console.log('register sendotp:', error));
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">

@@ -216,8 +216,7 @@ const EditProfileScreen = props => {
             }
         } catch (error) {
             setLoding(false)
-            console.error('Error:', error);
-            Alert.alert('An error occurred', error.message);
+            console.log('edit profile error');
         }
     };
 
