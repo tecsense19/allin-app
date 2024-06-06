@@ -5,8 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Button from '../../../Custom/Button/Button'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 import NavigateHeader from '../../../Custom/Header/NavigateHeader'
+import { User_List } from '../../../Service/actions'
+import Timezone from 'react-native-timezone'
 
-const CreateTask = ({ onSubmit, userId }) => {
+
+const CreateTask = ({ onSubmit, userId, token }) => {
     const [descriptions, setDescription] = useState('');
     const [title, setTitle] = useState('');
     const [isFocused, setIsFocused] = useState(false);
@@ -16,7 +19,6 @@ const CreateTask = ({ onSubmit, userId }) => {
     const [myID, setMyId] = useState('');
     const id = uuid.v4()
 
-    console.log(myID, 'myid');
     const filteredUserData = UserData?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
     const selectedUser = UserData?.filter(user => {
         if (myID !== user?.id) {
@@ -45,42 +47,40 @@ const CreateTask = ({ onSubmit, userId }) => {
 
         // } catch (e) { }
     };
-    // const getuser = () => {
-    //     let temp = [];
-    //     firestore().collection('users').get().then((res) => {
+    const getuser = async () => {
+        const timezone = { timezone: Timezone.getTimeZone() }
+        await User_List(timezone, token).then((res) => {
+            if (res.status_code == 200) {
+                setUserData(res?.data?.userList)
 
-    //         res.forEach((response) => {
-    //             if (myID !== response?.id) { // Only add if IDs are not the same myID !== response.id && userId !== response.id
-    //                 const data = { id: response.id, data: response.data() };
-    //                 temp.push(data);
-    //             }
-    //         });
-    //         setUserData(temp);
-    //     });
-    // };
-    // useEffect(() => {
-    //     getMyId()
-    //     getuser()
+            }
+        }).catch((e) => { console.log(e); })
 
-    // }, [myID])
+    };
+    useEffect(() => {
+        getMyId()
+        getuser()
+
+    }, [myID])
 
     const list = ({ item, index }) => {
+        // console.log(item);
         return (
             <View>
-                {index < 4 ? <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{
+                {index < 4 ? <Image source={{ uri: item?.profile }} style={{
                     height: 50, width: 50,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
             </View>
         )
     }
-    // const toggleItem = (itemId) => {
-    //     if (selectedItems.includes(itemId)) {
-    //         setSelectedItems(selectedItems.filter((id) => id !== itemId));
-    //     } else {
-    //         setSelectedItems([...selectedItems, itemId]);
-    //     }
-    // };
+    const toggleItem = (itemId) => {
+        if (selectedItems.includes(itemId)) {
+            setSelectedItems(selectedItems.filter((id) => id !== itemId));
+        } else {
+            setSelectedItems([...selectedItems, itemId]);
+        }
+    };
     return (
         <ScrollView
             bounces={false}
@@ -162,18 +162,22 @@ const CreateTask = ({ onSubmit, userId }) => {
                 color={COLOR.white}
             />
             <Modal visible={visible} >
-                <View style={{ flex: 1, backgroundColor: COLOR.black }}>
-                    <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
-                    <View style={{ marginTop: 10, paddingHorizontal: 18, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
+                <View style={{ flex: 1, backgroundColor: COLOR.black, }}>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
+                    </View>
+                    <View style={{ marginTop: 10, paddingHorizontal: 20, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
                         <FlatList data={selectedUser} renderItem={(({ item }) => {
+                            console.log(item);
+                            const userName = item?.first_name + ' ' + item.last_name
                             return (
                                 <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{item.data.first_name}</Text>
+                                        <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                     </View>
 
-                                    <TouchableOpacity onPress={() => toggleItem(item.id)}>
+                                    <TouchableOpacity onPress={() => toggleItem(item?.id)}>
                                         <Image
                                             source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
                                             style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}

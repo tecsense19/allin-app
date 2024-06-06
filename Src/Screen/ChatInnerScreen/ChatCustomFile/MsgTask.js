@@ -2,8 +2,7 @@
 import { View, Image, Text, TouchableOpacity, StyleSheet, Alert, } from 'react-native';
 import React, { } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-const MsgTask = ({ data, time, MYID, onPress, disabled }) => {
-    const id = data?.sendBy == MYID
+const MsgTask = ({ data, onPress, disabled }) => {
 
     const createTwoButtonAlert = () =>
         Alert.alert(
@@ -36,20 +35,20 @@ const MsgTask = ({ data, time, MYID, onPress, disabled }) => {
                 <View style={styles.View2}>
                     <Image
                         source={require('../../../Assets/Image/check.png')}
-                        style={[styles.checkImg, { tintColor: id ? COLOR.green : COLOR.slateblue, }]}
+                        style={[styles.checkImg, { tintColor: data?.sentBy == 'loginUser' ? COLOR.green : COLOR.slateblue, }]}
                     />
-                    {id ? <Text style={styles?.taskTitle}>
-                        {data?.Checklist?.title?.length > 28 ?
-                            data?.Checklist?.title?.slice(0, 28) + '...' : data?.Checklist?.title}</Text> :
+                    {data?.sentBy == 'loginUser' ? <Text style={styles?.taskTitle}>
+                        {data?.messageDetails?.task_name?.length > 28 ?
+                            data?.messageDetails?.task_name?.slice(0, 28) + '...' : data?.messageDetails?.task_name}</Text> :
                         <Text style={styles.taskTitle}>
-                            {data?.Checklist?.title?.length > 42 ?
-                                data?.Checklist?.title?.slice(0, 42) + '...' : data?.Checklist?.title}</Text>}
+                            {data?.messageDetails?.task_name?.length > 42 ?
+                                data?.messageDetails?.task_name?.slice(0, 42) + '...' : data?.messageDetails?.task_name}</Text>}
                 </View>
-                {id ? <TouchableOpacity onPress={createTwoButtonAlert} style={styles.onThreeDott}>
+                {data?.sentBy == 'loginUser' ? <TouchableOpacity onPress={createTwoButtonAlert} style={styles.onThreeDott}>
                     <Image source={require('../../../Assets/Image/dott.png')} style={styles.threedottImg} />
                 </TouchableOpacity> : null}
             </View>
-            <Text style={styles.tasktime}>{time}</Text>
+            <Text style={styles.tasktime}>{data?.time}</Text>
         </TouchableOpacity >
     );
 };

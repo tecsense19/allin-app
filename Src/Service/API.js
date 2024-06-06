@@ -15,6 +15,7 @@ export const ACTIONS = {
     MESSAGE_READE_UNREADE: BASE_PATH + '/read-unread-message',
     MESSAGE_DELETE: BASE_PATH + '/delete-message',
     CLEAR_CHAT: BASE_PATH + '/clear-message',
+    TASK_DETAILS: BASE_PATH + '/task-chat',
     EXPORT_CHAT: BASE_PATH + '/export-chat',
     FILE_UPLOAD: BASE_PATH + '/file-upload',
     CHECK_MOBILE_EXISTS: BASE_PATH + '/check-mobile-exists',

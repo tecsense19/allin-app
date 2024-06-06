@@ -10,6 +10,7 @@ export const User_List = async (timeZone, token) => {
         body: JSON.stringify(timeZone)
     })
     const response = await res.json()
+  
     return response
 }
 
@@ -261,4 +262,54 @@ export const Edit_Profile = async (token, phone, fname, lname, title, descriptio
 
     return response
 
+}
+
+export const Task_Messages = async (token, MsgType, taskData) => {
+
+    const remindId = taskData?.remind
+    var stringArray = remindId?.map(String);
+    var id = stringArray?.join(',');
+
+    const res = await fetch(ACTIONS.MESSAGE_TASK, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_type: MsgType, receiver_id: id, task_name: taskData?.tasktitle, task_description: taskData?.taskdescriptions })
+
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Task_Detail = async (token, Taskid, Timezone,) => {
+
+    const res = await fetch(ACTIONS.TASK_DETAILS, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ task_id: Taskid, timezone: Timezone, start: 0, limit: 1000 })
+
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Task_Message_Send = async (token, taskid, text, chattype, filetype, filename) => {
+
+    const res = await fetch(ACTIONS.MESSAGE_TASK_CHAT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_type: 'Task Chat', task_id: taskid, message: text, chat_type: chattype, attachment_type: filetype, attachment: filename })
+
+
+    })
+    const response = await res.json()
+    return response
 }

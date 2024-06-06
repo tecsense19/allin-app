@@ -23,19 +23,26 @@ const SplaseScreen = props => {
         const userData = JSON.parse(jsonValue);
         const timezone = { timezone: TimeZone.getTimeZone() };
         const token = userData?.data?.token;
+        if (userData !== '' || userData !== undefined || userData !== null) {
+         
+                await User_List(timezone, token)
+                    .then(data => {
 
-        if (token) {
-            await User_List(timezone, token)
-                .then(data => {
-                    if (data?.status_code === 400) {
-                        props.navigation.reset({ routes: [{ name: 'first' }] });
-                    } else {
-                        props.navigation.reset({ routes: [{ name: 'home' }] });
-                    }
-                })
-                .catch(error => { console.error('Error in User_List API call:', error); });
+                        if (data?.status_code === 400) {
+                            props.navigation.reset({ routes: [{ name: 'first' }] });
+                        } else {
+                            props.navigation.reset({ routes: [{ name: 'home' }] });
+                        }
+                    })
+                    .catch(error => { console.error('Error in User_List API call:', error); });
+
+         
 
         }
+        else{
+            getMyData()
+        }
+
     };
 
     return (

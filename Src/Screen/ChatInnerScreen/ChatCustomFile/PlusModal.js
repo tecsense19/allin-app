@@ -58,6 +58,7 @@ const PlusModal = ({ visible, onClose, onCamera, onCheckList, onMeeting, onFiles
 };
 
 export default PlusModal;
+
 const style = StyleSheet.create({
     txt: {
         color: COLOR.black,

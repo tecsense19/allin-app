@@ -27,7 +27,7 @@ import { handaleDeleteMsg, handleFileUplode, handleMsgText, handleUnreadeMsg } f
 import Timezone from 'react-native-timezone'
 import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd';
 import MsgAttachment from './ChatCustomFile/MsgAttachment';
-import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, File_Uplode, Get_All_Messages, Read_Unread_Messages } from '../../Service/actions';
+import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, File_Uplode, Get_All_Messages, Read_Unread_Messages, Task_Messages } from '../../Service/actions';
 LogBox.ignoreAllLogs();
 
 const ChatInnerScreen = props => {
@@ -106,7 +106,7 @@ const ChatInnerScreen = props => {
     const getAllMessages = async () => {
         const bodyData = { id: userId, limit: 1000, start: 0, timezone: Timezone.getTimeZone(), }
         const data = await Get_All_Messages(bodyData, token)
-        if (data?.message === 'Get Data Successfully!') {
+        if (data?.status_code == 200) {
             setUserDetails(data.data.userData);
             setMessages(data?.data?.chat)
         } else {
@@ -133,6 +133,8 @@ const ChatInnerScreen = props => {
         }
     }
     const handleSend = (currentMsgData) => {
+        // console.log(currentMsgData);
+
         getAllMessages()
         if (inputText.trim() == '' && msgType == 'Text') {
             return null
@@ -144,6 +146,10 @@ const ChatInnerScreen = props => {
                 break;
             case 'Attachment':
                 File_Message(); setFileUpload(''), getAllMessages()
+                break;
+            case 'Task':
+                Alert.alert('task')
+                Task_Messages(token, msgType, currentMsgData)
                 break;
 
             default:
@@ -220,7 +226,6 @@ const ChatInnerScreen = props => {
         )
     }
     const ChatMessage = ({ message }) => {
-        // console.log();
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -228,12 +233,7 @@ const ChatInnerScreen = props => {
                 case 'Attachment':
                     return <MsgAttachment data={message} />;
                 case 'Task':
-                    return (
-                        <View>
-                            <Text>{message?.messageDetails?.task_name}</Text>
-                            <Text>{message?.messageDetails?.task_description || 'No description'}</Text>
-                        </View>
-                    );
+                    return <MsgTask data={message} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token })} />
                 default:
                     return null;
             }
@@ -250,16 +250,16 @@ const ChatInnerScreen = props => {
             </View>
         );
     };
-    const handleScroll = event => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        const contentHeight = event.nativeEvent.contentSize.height;
-        const layoutHeight = event.nativeEvent.layoutMeasurement.height;
-        if (offsetY + layoutHeight >= contentHeight) {
-            setShowButton(false);
-        } else {
-            setShowButton(true);
-        }
-    };
+    // const handleScroll = event => {
+    //     const offsetY = event.nativeEvent.contentOffset.y;
+    //     const contentHeight = event.nativeEvent.contentSize.height;
+    //     const layoutHeight = event.nativeEvent.layoutMeasurement.height;
+    //     if (offsetY + layoutHeight >= contentHeight) {
+    //         setShowButton(false);
+    //     } else {
+    //         setShowButton(true);
+    //     }
+    // };
     // const memoizedMessagesByDate = useMemo(() => {
     //     return Object.keys(messages).map(date => (
     //         <View key={date}>
@@ -323,7 +323,7 @@ const ChatInnerScreen = props => {
 
                         </View >
                         <PlusModal
-                            //    onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
+                            onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
                             // onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
                             //    onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
                             onCamera={() => { onCamera(); setMsgType('Attachment'); }}
@@ -332,7 +332,7 @@ const ChatInnerScreen = props => {
                             onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
                             onRequestClose={closeModal} visible={visible}
                             onClose={() => setVisible(false)}
-                            onCheckList={() => { setVisible(false); }}
+                            // onCheckList={() => { setVisible(false); }}
                             onMeeting={() => { setVisible(false); }}
                             onReminder={() => { setVisible(false); }}
                             onLocation={() => { setVisible(false) }}
@@ -345,7 +345,7 @@ const ChatInnerScreen = props => {
                                 <View style={styles.createItemModalView2}>
 
                                     {msgType == 'Task' ? (
-                                        <CreateTask onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
+                                        <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
                                     ) : msgType == 'Meeting' ? (
                                         <CreateMsgMeeting onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
                                     ) : msgType == 'Reminder' ? (

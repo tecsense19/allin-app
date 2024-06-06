@@ -210,8 +210,8 @@ const ChatUserListScreen = props => {
     }, [visible]);
 
     const getMyData = async () => {
-        const jsonValue = await AsyncStorage.getItem('myData');
-        const userData = JSON.parse(jsonValue);
+        const jsonValue = await AsyncStorage?.getItem('myData');
+        const userData = JSON?.parse(jsonValue);
         setToken(userData?.data?.token)
     };
 

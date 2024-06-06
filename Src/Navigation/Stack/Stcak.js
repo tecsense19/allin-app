@@ -10,6 +10,7 @@ import HomeScreen from '../BottomTab/HomeScreen';
 import ChatInnerScreen from '../../Screen/ChatInnerScreen/ChatInnerScreen';
 import SettingScreen from '../../Screen/SettingScreen/SettingScreen';
 import EditProfileScreen from '../../Screen/EditProfileScreen/EditProfileScreen';
+import TaskChatScreen from '../../Screen/TaskChatScreen/TaskChatScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -19,7 +20,7 @@ const StackScreen = () => {
         <NavigationContainer>
             <Stack.Navigator
 
-                // initialRouteName="first"
+                // initialRouteName="task"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 <Stack.Screen name="splase" component={SplaseScreen} />
                 <Stack.Screen name="first" component={FirstScreen} />
@@ -30,6 +31,7 @@ const StackScreen = () => {
                 <Stack.Screen name="chatinner" component={ChatInnerScreen} />
                 <Stack.Screen name="setting" component={SettingScreen} />
                 <Stack.Screen name="edit" component={EditProfileScreen} />
+                <Stack.Screen name="task" component={TaskChatScreen} />
 
 
             </Stack.Navigator>
