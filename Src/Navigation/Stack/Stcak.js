@@ -33,7 +33,7 @@ const StackScreen = () => {
                 <Stack.Screen name="setting" component={SettingScreen} />
                 <Stack.Screen name="edit" component={EditProfileScreen} />
                 <Stack.Screen name="task" component={TaskChatScreen} />
-                <Stack.Screen name="language" component={LanguageScreen} />
+                {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
 
 
             </Stack.Navigator>

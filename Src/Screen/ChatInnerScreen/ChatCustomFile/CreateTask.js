@@ -87,11 +87,11 @@ const CreateTask = ({ onSubmit, userId, token }) => {
             style={{
                 backgroundColor: COLOR.white,
                 width: '100%',
-                paddingHorizontal: 10,
+                paddingHorizontal: 30,
                 borderRadius: 20,
                 marginBottom: isFocused ? '80%' : 0
             }}>
-            <Title title={'Enter Title'} />
+            <Title title={'Task Title'} />
             <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -113,7 +113,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     marginTop: 8
                 }}
             />
-            <Title title={'Enter Description'} />
+            <Title title={'Task Description'} />
             <TextInput
                 placeholder="Enter Description..."
                 multiline
@@ -141,7 +141,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     textAlign: 'left', fontSize: 14, width: '90%'
                 }}>{'Descriptions minimum 50 characters are require'}</Text>
             </View>}
-            <View style={{ alignSelf: 'center', marginTop: 20 }}>
+            <View style={{ alignSelf: 'center', marginTop: 50 }}>
                 <PickerButton title={'Remind'} onPress={() => setVisible(true)} />
             </View>
             {filteredUserData ? <View style={{

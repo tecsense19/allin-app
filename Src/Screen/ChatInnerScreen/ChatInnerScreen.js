@@ -332,7 +332,7 @@ const ChatInnerScreen = props => {
                             //    onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
                             onCamera={() => { onCamera(); setMsgType('Attachment'); }}
                             onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
-                            onContacts={() => { setMsgType('Contact'), setVisible(false); }}
+                            // onContacts={() => { setMsgType('Contact'), setVisible(false); }}
                             onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
                             onRequestClose={closeModal} visible={visible}
                             onClose={() => setVisible(false)}
@@ -340,6 +340,8 @@ const ChatInnerScreen = props => {
                             onMeeting={() => { setVisible(false); }}
                             onReminder={() => { setVisible(false); }}
                             onLocation={() => { setVisible(false) }}
+                            onContacts={() => { setVisible(false); }}
+
                         />
                         <Modal visible={ReMeCkModal}>
                             <View style={styles.createItemModalView}>
@@ -363,6 +365,8 @@ const ChatInnerScreen = props => {
                 <Loader visible={loding} />
                 {msgType !== 'Contact' ?
                     <View style={{ marginBottom: isFocused ? 5 : 25 }}>
+                        {FileUplode ? <Image style={{ height: 150, width: 150, marginBottom: 5, borderRadius: 10, marginLeft: 30 }} source={{ uri: FileUplode[0]?.uri }} /> : ''
+                        }
                         <ChatInputToolBar source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
                             onFocus={() => setIsFocused(true)} value={inputText} onsend={handleSend} onPress={() => setVisible(true)}
                         />

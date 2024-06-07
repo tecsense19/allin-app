@@ -128,7 +128,7 @@ export const SettingData = [
         icon: require('../Assets/Image/world.png'),
         name: 'Language',
 
-        navigation: 'language',
+        navigation: 'Language',
     },
     {
         id: 5,

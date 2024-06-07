@@ -23,6 +23,7 @@ const TaskChatScreen = (props) => {
     const [showButton, setShowButton] = useState(false);
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [visibleMember, setVisibleMember] = useState(false);
 
     const TaskID = props?.route?.params?.taskId
     const token = props?.route?.params?.token
@@ -194,9 +195,9 @@ const TaskChatScreen = (props) => {
                                                 borderRadius: 5, margin: WIDTH <= 390 ? 5 : 10
 
                                             }} /> : null}
-                                            <View style={[styles.listImageCountView, { backgroundColor: index + 1 == 4 ? COLOR.black : null, }]}>
+                                            <TouchableOpacity onPress={() => setVisibleMember(true)} style={[styles.listImageCountView, { backgroundColor: index + 1 == 4 ? COLOR.black : null, }]}>
                                                 <Text style={styles.countTxt} >{index + 1 == 4 ? '+' + (taskRemind?.length - 4) : ''}</Text>
-                                            </View>
+                                            </TouchableOpacity>
                                         </View>
                                     )
                                 })}
@@ -234,6 +235,36 @@ const TaskChatScreen = (props) => {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
+            <Modal visible={visibleMember} >
+                <View style={{ flex: 1, backgroundColor: COLOR.black }}>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <NavigateHeader title={'Task Membar'} color={COLOR.white} onPress={() => setVisibleMember(false)} />
+                    </View>
+                    <View style={{ flex: 1, backgroundColor: 'white', marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
+                        <ScrollView>
+                            <View style={{ marginHorizontal: 20 }}>
+                                <TouchableOpacity style={{ justifyContent: 'center', marginTop: 10 }}>
+                                    {taskRemind.map((i, index) => {
+                                        return (
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+                                                <Image source={{ uri: i?.profilePic }} style={{
+                                                    height: 55,
+                                                    width: 55,
+                                                    borderRadius: 55,
+
+                                                }} />
+                                                <Text style={{ fontSize: 18, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{i.name}</Text>
+                                            </View>
+                                        )
+                                    })}
+                                </TouchableOpacity>
+                            </View>
+
+                        </ScrollView>
+                    </View>
+
+                </View>
+            </Modal>
             <Loader visible={loading} />
         </KeyboardAvoidingView>
     )
@@ -246,10 +277,10 @@ const styles = StyleSheet.create({
     detailsTaskCheckImg: { height: 30, width: 30, resizeMode: 'contain' },
     titletxt: { fontSize: 14, fontWeight: '500', width: '85%', marginLeft: 5 },
     descriptionsView: { flexDirection: 'row', alignItems: 'center', marginLeft: 2, marginTop: 10 },
-    inviteImg: { tintColor: COLOR.DeepSkyBlue, height: 20, width: 20 },
+    inviteImg: { tintColor: COLOR.black, height: 20, width: 20 },
     descriptionsTxt: { fontSize: 14, fontWeight: '500', marginLeft: 10, width: '85%' },
     TimeView: { flexDirection: 'row', alignItems: 'center', marginLeft: 2, marginTop: 15 },
-    clockImg: { tintColor: COLOR.DeepSkyBlue, height: 25, width: 25, resizeMode: 'contain' },
+    clockImg: { tintColor: COLOR.black, height: 25, width: 25, resizeMode: 'contain' },
     timeTxt: { fontSize: 14, fontWeight: '500', marginLeft: 10, width: '85%' },
     listImageCountView: { height: 20, width: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 50, position: 'absolute', right: -5, top: 0 },
     countTxt: { fontSize: 10, fontWeight: 'bold', color: COLOR.white },

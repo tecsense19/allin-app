@@ -24,7 +24,7 @@ import Loader from '../../Custom/Loader/loader';
 LogBox.ignoreAllLogs();
 
 const SettingScreen = props => {
-    const [language, setLanguage] = useState('English(Us)');
+    const [Language, setLanguage] = useState('English(Us)');
     const [data, setData] = useState('');
     const [loading, setLoading] = useState('');
     const [deviceToken, setDeviceToken] = useState('');
@@ -37,8 +37,10 @@ const SettingScreen = props => {
 
     const getData = async () => {
         const jsonValue = await AsyncStorage.getItem('myData');
+        // const language = await AsyncStorage.getItem('language');
         const userData = JSON.parse(jsonValue);
         setData(userData?.data)
+        // setLanguage(JSON.parse(language))
     };
     useEffect(() => {
         getFcmToken()
@@ -122,7 +124,7 @@ const SettingScreen = props => {
                             color: COLOR.textcolor,
                             marginRight: 5,
                         }}>
-                        {item?.id == 4 ? language : ''}
+                        {item?.id == 4 ? Language : ''}
                     </Text>
                     <Text
                         style={{

@@ -102,7 +102,10 @@ const LanguageScreen = props => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} hidden={false} />
-            <NavigateHeader color={COLOR.white} title={'Language'} onPress={() => props.navigation.goBack()} />
+            <View style={{ paddingHorizontal: 20 }}>
+                <NavigateHeader color={COLOR.white} title={'Language'} onPress={() => props.navigation.goBack()} />
+
+            </View>
             <View style={styles.listView}>
                 <SectionList
                     sections={DATA}
@@ -119,7 +122,7 @@ const LanguageScreen = props => {
 
 export default LanguageScreen;
 const styles = StyleSheet.create({
-    container: { backgroundColor: COLOR.DeepSkyBlue, flex: 1 },
+    container: { backgroundColor: COLOR.black, flex: 1 },
     titleContainer: { padding: 15, marginLeft: 15, marginTop: 15 },
     line: {
         borderBottomWidth: 1,
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
     listView: {
         flex: 1,
         backgroundColor: COLOR.white,
-        marginTop: 30,
+        marginTop: 10,
         borderTopRightRadius: 20,
         borderTopLeftRadius: 20,
     },
