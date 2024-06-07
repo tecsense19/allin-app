@@ -4,7 +4,7 @@ import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 const MsgText = ({ data, }) => {
     const texts = data.messageDetails
     const sendBy = data?.sentBy == 'loginUser'
-    console.log(data);
+    // console.log(data);
     return (
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', alignSelf: sendBy ? 'flex-end' : 'flex-start', }}>
             {data.profilePic && !sendBy ? <Image source={{ uri: data.profilePic }} style={{

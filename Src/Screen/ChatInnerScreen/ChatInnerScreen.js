@@ -49,7 +49,6 @@ const ChatInnerScreen = props => {
     const [messageIds, setMessageIds] = useState('');
     const [showButton, setShowButton] = useState(false);
 
-
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
     const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
@@ -92,7 +91,7 @@ const ChatInnerScreen = props => {
     }, [visible]);
     const selectedMsgDelete = async () => {
         selectedMSG.forEach((res) => {
-            console.log(res.messageId);
+            // console.log(res.messageId);
             Chat_Delete_Messages(token, res?.messageId)
         })
         setSelectedMSG('')
@@ -135,20 +134,19 @@ const ChatInnerScreen = props => {
     const handleSend = (currentMsgData) => {
         // console.log(currentMsgData);
 
-        getAllMessages()
+
         if (inputText.trim() == '' && msgType == 'Text') {
             return null
         }
         setMsgType('Text')
         switch (msgType) {
             case 'Text':
-                Chat_Text_Messages(token, msgType, inputText, userId); setInputText(''), getAllMessages()
+                Chat_Text_Messages(token, msgType, inputText, userId); setInputText('')
                 break;
             case 'Attachment':
-                File_Message(); setFileUpload(''), getAllMessages()
+                File_Message(); setFileUpload('')
                 break;
             case 'Task':
-                Alert.alert('task')
                 Task_Messages(token, msgType, currentMsgData)
                 break;
 
@@ -226,6 +224,10 @@ const ChatInnerScreen = props => {
         )
     }
     const ChatMessage = ({ message }) => {
+        //  "messageType": "Task Chat"
+        //  if(message?messageType=='Task Chat'){
+
+        //  }
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -233,12 +235,12 @@ const ChatInnerScreen = props => {
                 case 'Attachment':
                     return <MsgAttachment data={message} />;
                 case 'Task':
-                    return <MsgTask data={message} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token })} />
+                    return <MsgTask data={message} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
+
                 default:
-                    return null;
+                    return;
             }
         };
-
         return (
             <View style={{ backgroundColor: selectedMSG.includes(message) ? COLOR.green : COLOR.white, marginVertical: 2 }}>
                 {!change ? <TouchableOpacity style={{ marginHorizontal: 30, marginVertical: 2, }}
@@ -270,7 +272,9 @@ const ChatInnerScreen = props => {
     //         </View>
     //     ));
     // }, [messages]);
-
+    setTimeout(() => {
+        getAllMessages()
+    }, 15000)
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
             <View style={{ flex: 1 }}>
@@ -292,7 +296,7 @@ const ChatInnerScreen = props => {
                     <View style={styles.chatMainsection}>
                         <View style={styles.chatHeaderView}>
                             {!isSelected ? <Chatheader
-                                onProfile={() => Alert.alert('Profile')}
+                                // onProfile={() => Alert.alert('Profile')}
                                 onCall={onhandalePhoneCall}
                                 value={change}
                                 onChange={() => setChange(!change)}
@@ -304,23 +308,23 @@ const ChatInnerScreen = props => {
                                 <DeleteChatHeader Count={selectedMSG ? selectedMSG?.length : null} onDelete={() => { selectedMsgDelete() }} onBack={() => { setIsSelected(false); setSelectedMSG('') }} />}
                         </View>
                         <View style={styles.GiftedChat}>
-
                             <ScrollView ref={scrollViewRef}
                                 invertStickyHeaders={true}
                                 // onScroll={handleScroll}
-
                                 scrollEventThrottle={16}>
                                 {Object.keys(messages).map(date => (
                                     <View key={date}>
                                         <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
-                                        {messages[date]?.map(message => (
-                                            <ChatMessage key={message?.messageId} message={message} />
-                                        ))}
+                                        {messages[date]?.map(message => {
+                                            if (message.messageType == 'Task Chat') {
+                                                return null
+                                            }
+                                            return (
+                                                <ChatMessage key={message?.messageId} message={message} />)
+                                        })}
                                     </View>
                                 ))}
-
                             </ScrollView>
-
                         </View >
                         <PlusModal
                             onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}

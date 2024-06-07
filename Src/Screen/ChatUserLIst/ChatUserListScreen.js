@@ -9,7 +9,7 @@ import {
     BackHandler,
     Alert,
 } from 'react-native';
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
@@ -34,8 +34,7 @@ const ChatUserListScreen = props => {
     const [deviceToken, setDeviceToken] = useState('');
     const swipeableRef = useRef(null);
     const closeModal = () => { setVisible(false); };
-    useEffect(() => { getMyData(), requestContactsPermission(), getFcmToken(), getuser(); }, [token])
-    useFocusEffect(React.useCallback(() => { getuser() }))
+    useEffect(() => { getMyData(), requestContactsPermission(), getFcmToken() }, [])
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
 
     const handleSwipeableOpen = id => {
@@ -111,7 +110,6 @@ const ChatUserListScreen = props => {
                 return `${time.toDateString().split(" ")[2]} ${time.toDateString().split(" ")[1]}`;
             }
         };
-
         const userName = item?.first_name + ' ' + item.last_name
         const swipeRightSide = () => {
             return (
@@ -195,7 +193,6 @@ const ChatUserListScreen = props => {
             { text: 'YES', onPress: () => logout(), style: 'destructive' },
             ],
         );
-
     const onLogOut = async () => {
         try {
             await AsyncStorage.clear();
@@ -203,27 +200,29 @@ const ChatUserListScreen = props => {
             setVisible(false);
         } catch (e) { }
     };
-    useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress', closeModal,);
-        return () => backHandler.remove();
-    }, [visible]);
-
     const getMyData = async () => {
         const jsonValue = await AsyncStorage?.getItem('myData');
         const userData = JSON?.parse(jsonValue);
-        setToken(userData?.data?.token)
-    };
+        setToken(userData?.data?.token);
 
+        return userData?.data?.token;
+    };
     const getuser = async () => {
+        const token = await getMyData();
         const timezone = { timezone: Timezone.getTimeZone() }
+
         await User_List(timezone, token).then((res) => {
             if (res.status_code == 200) {
                 setAllUserData(res?.data?.userList)
                 setLoading(false)
             }
-        }).catch((e) => { console.log(e); })
+        }).catch((e) => { console.log(token, '=======>>>>', e, 'userListApihome screen'); })
     }
+
+    useFocusEffect(useCallback(() => {
+        getuser();
+    }, []));
+
     const ClearChat = (id) => {
         setLoading(true)
         Clear_Chat(id, token)

@@ -3,12 +3,10 @@ import React from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 const MsgAttachment = ({ data, }) => {
     const uri = data?.messageDetails?.attachment_path
-
     const sendBy = data?.sentBy == 'loginUser'
-    // console.log(data.attachmentType);
     return (
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', alignSelf: sendBy ? 'flex-end' : 'flex-start', }}>
-             {data.profilePic && !sendBy ? <Image source={{ uri: data.profilePic }} style={{
+            {data.profilePic && !sendBy ? <Image source={{ uri: data.profilePic }} style={{
                 height: 35, width: 35, borderRadius: 35, marginRight: 5
             }} /> : null}
             <View style={{

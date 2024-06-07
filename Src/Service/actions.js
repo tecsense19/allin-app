@@ -1,6 +1,9 @@
+import { Alert } from "react-native";
 import { ACTIONS } from "./API"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const User_List = async (timeZone, token) => {
+    // console.log('request', token);
     const res = await fetch(ACTIONS.USER_LIST, {
         method: "POST",
         headers: {
@@ -10,10 +13,34 @@ export const User_List = async (timeZone, token) => {
         body: JSON.stringify(timeZone)
     })
     const response = await res.json()
-  
+    // console.log('response', response);
+
     return response
 }
 
+// export const User_List = async (timeZone, token) => {
+//     try {
+//         const res = await fetch(ACTIONS.USER_LIST, {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 'Authorization': `Bearer ${token}`
+//             },
+//             body: JSON.stringify(timeZone)
+//         });
+
+//         const response = await res.json();
+//         if (response.message == 'Token Expired' && response.status_code == 401) {
+//             Alert.alert('expire')
+//             const newToken = await refreshToken(token);
+//             return User_List(timeZone, newToken);
+//         }
+//         return response;
+//     } catch (error) {
+//         console.error('Error in User_List:', error);
+//         throw error;
+//     }
+// };
 export const User_Logout = async (device_token, token) => {
     const res = await fetch(ACTIONS.LOGOUT, {
         method: "POST",
@@ -313,3 +340,30 @@ export const Task_Message_Send = async (token, taskid, text, chattype, filetype,
     const response = await res.json()
     return response
 }
+
+
+
+export const Refresh_Token = async (token) => {
+    try {
+        const response = await fetch(ACTIONS.REFRESH_TOKEN, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+
+        });
+
+
+
+        const data = await response.json();
+        console.log(data, 'tokendata=========>>>>>>>');
+
+        // await AsyncStorage.setItem('myData', JSON.stringify({ data: { token: newToken } }));
+
+        return newToken;
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        throw error;
+    }
+};

@@ -44,7 +44,9 @@ const MsgTask = ({ data, onPress, disabled }) => {
                             {data?.messageDetails?.task_name?.length > 42 ?
                                 data?.messageDetails?.task_name?.slice(0, 42) + '...' : data?.messageDetails?.task_name}</Text>}
                 </View>
-                {data?.sentBy == 'loginUser' ? <TouchableOpacity onPress={createTwoButtonAlert} style={styles.onThreeDott}>
+                {data?.sentBy == 'loginUser' ? <TouchableOpacity
+                    //  onPress={createTwoButtonAlert}
+                    style={styles.onThreeDott}>
                     <Image source={require('../../../Assets/Image/dott.png')} style={styles.threedottImg} />
                 </TouchableOpacity> : null}
             </View>
