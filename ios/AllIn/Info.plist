@@ -36,7 +36,10 @@
 	<key>NSContactsUsageDescription</key>
 	<string>needs access to your camera </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+<string>Your app needs access to your location while you're using it.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Your app needs access to your location to provide you with location-based services.</string>
+
 	<key>NSMicrophoneUsageDescription</key>
 	<string>MicrophoneUsageDescription</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

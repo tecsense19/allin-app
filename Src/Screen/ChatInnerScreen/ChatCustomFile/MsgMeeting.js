@@ -1,24 +1,13 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-export const MsgMeeting = ({ data, time, onPress, MYID, }) => {
+export const MsgMeeting = ({ data, onPress, MYID, }) => {
     const id = data?.sendBy == MYID;
     const [selectUserData, setSelectUserData] = useState()
 
-    // const getidimag = async () => {
-    //     const a = data?.meeting?.remind
-    //     const temp = [];
-
-    //     for (let tempId of a) {
-    //         const doc = await firestore().collection('users').doc(tempId).get();
-    //         if (doc.exists) {
-    //             temp.push(doc.data());
-    //         }
-    //     } setSelectUserData(temp);
-    // };
-    // useEffect(() => {
-    //     getidimag()
-    // }, [])
+    // console.log('====================================');
+    // console.log(data);
+    // console.log('====================================');
     const list = ({ item, index }) => {
         return (
             <View>
@@ -30,25 +19,25 @@ export const MsgMeeting = ({ data, time, onPress, MYID, }) => {
         )
     }
     return (
-        <View style={{ alignSelf: id ? 'flex-end' : 'flex-start', width: '90%', }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 }}>Meeting</Text>
+        <View style={{ alignSelf: data?.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', width: '90%', }}>
+            {/* {/* <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 }}>Meeting</Text> */}
 
             <View
                 onPress={onPress}
                 style={{
-                    backgroundColor: id ? COLOR.lightgreen : COLOR.verylightgray,
+                    backgroundColor: data?.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray,
                     height: 'auto',
 
                     borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 20
 
 
                 }}>
-                <Text style={styles.Heading}>Title: <Text style={styles.HeadingContent}>{data.meeting.title}</Text></Text>
-                <Text style={styles.Heading}>Description: <Text style={styles.HeadingContent}>{data?.meeting?.descriptions?.length > 60 ? data?.meeting?.descriptions.slice(0, 60) + '....' : data?.meeting?.descriptions}</Text></Text>
-                <Text style={styles.Heading}>Meeting Date: <Text style={styles.HeadingContent}>{data.meeting.date}</Text></Text>
-                <Text style={styles.Heading}>Meeting Time: < Text style={styles.HeadingContent}>{data.meeting.time}</Text></Text>
+                <Text style={styles.Heading}>Title: <Text style={styles.HeadingContent}>{data.messageDetails.title}</Text></Text>
+                <Text style={styles.Heading}>Description: <Text style={styles.HeadingContent}>{data?.messageDetails.description?.length > 60 ? data?.messageDetails.description.slice(0, 60) + '....' : data?.messageDetails.description}</Text></Text>
+                <Text style={styles.Heading}>Meeting Date: <Text style={styles.HeadingContent}>{data.messageDetails.date}</Text></Text>
+                <Text style={styles.Heading}>Meeting Time: < Text style={styles.HeadingContent}>{data.messageDetails.start_time}</Text></Text>
                 <Text style={styles.Heading}>Location: < Text style={styles.HeadingContent}>{'India'}</Text></Text>
-                {selectUserData ? <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
+                {/* {selectUserData ? <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
                     <View style={{
                         width: selectUserData?.length < 2 ? 65 : selectUserData?.length <= 2 ? 85 : 110,
                         alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
@@ -57,8 +46,8 @@ export const MsgMeeting = ({ data, time, onPress, MYID, }) => {
                             style={{}} />
                         <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{'+' + selectUserData?.length}</Text>
                     </View>
-                </View> : null}
-                <Text style={styles.time}>{time}</Text>
+                </View> : null} */}
+                <Text style={styles.time}>{data.time}</Text>
             </View>
         </View>
     );

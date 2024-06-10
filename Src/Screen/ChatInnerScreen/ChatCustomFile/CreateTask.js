@@ -39,14 +39,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
             setDescription(null)
         }
     };
-    const getMyId = async () => {
-        // try {
-        //     const jsonValue = await AsyncStorage.getItem('userData');
-        //     const myid = JSON.parse(jsonValue);
-        //     setMyId(myid.id);
 
-        // } catch (e) { }
-    };
     const getuser = async () => {
         const timezone = { timezone: Timezone.getTimeZone() }
         await User_List(timezone, token).then((res) => {
@@ -58,7 +51,6 @@ const CreateTask = ({ onSubmit, userId, token }) => {
 
     };
     useEffect(() => {
-        getMyId()
         getuser()
 
     }, [myID])

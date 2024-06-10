@@ -12,6 +12,7 @@ export const ACTIONS = {
     MESSAGE_TASK_CHAT: BASE_PATH + '/message-task-chat',
     MESSAGE_LOCATION: BASE_PATH + '/message-location',
     MESSAGE_MEETING: BASE_PATH + '/message-meeting',
+    MESSAGE_REMINDER: BASE_PATH + '/add-reminder',
     MESSAGE_READE_UNREADE: BASE_PATH + '/read-unread-message',
     MESSAGE_DELETE: BASE_PATH + '/delete-message',
     CLEAR_CHAT: BASE_PATH + '/clear-message',

@@ -7,9 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 import Button from '../../../Custom/Button/Button'
 import NavigateHeader from '../../../Custom/Header/NavigateHeader'
+import Timezone from 'react-native-timezone'
+import { User_List } from '../../../Service/actions'
 
 
-const CreateReminder = ({ onSubmit, userId }) => {
+
+const CreateReminder = ({ onSubmit, userId, token }) => {
     const [descriptions, setDescription] = useState('');
     const [title, setTitle] = useState('');
     const [isFocused, setIsFocused] = useState(false);
@@ -24,14 +27,8 @@ const CreateReminder = ({ onSubmit, userId }) => {
     const [UserData, setUserData] = useState();
     const [visible, setVisible] = useState(false);
     const [selectedItems, setSelectedItems] = useState([userId]);
-    const [myID, setMyId] = useState('');
-    const id = uuid.v4()
     const filteredUserData = UserData?.filter(user => selectedItems?.includes(user?.id)); //show selected user by defualt one user for chat
-    const selectedUser = UserData?.filter(user => {
-        if (myID !== user?.id) {
-            return user?.id
-        }
-    })// by defualt selected user not show
+
     const handleSubmit = () => {
         const data = { type: 'Reminder', reminddescriptions: descriptions, remindtitle: title, remindtime, remind: selectedItems }
         if (descriptions == '') {
@@ -53,36 +50,24 @@ const CreateReminder = ({ onSubmit, userId }) => {
         }
     };
 
-    // const getMyId = async () => {
-    //     try {
-    //         const jsonValue = await AsyncStorage.getItem('userData');
-    //         const myid = JSON.parse(jsonValue);
-    //         setMyId(myid.id);
+    const getuser = async () => {
+        const timezone = { timezone: Timezone.getTimeZone() }
+        await User_List(timezone, token).then((res) => {
+            if (res.status_code == 200) {
+                setUserData(res?.data?.userList)
 
-    //     } catch (e) { }
-    // };
-    // const getuser = () => {
-    //     let temp = [];
-    //     firestore().collection('users').get().then((res) => {
+            }
+        }).catch((e) => { console.log(e); })
 
-    //         res.forEach((response) => {
-    //             if (myID !== response?.id) { // Only add if IDs are not the same myID !== response.id && userId !== response.id
-    //                 const data = { id: response.id, data: response.data() };
-    //                 temp.push(data);
-    //             }
-    //         });
-    //         setUserData(temp);
-    //     });
-    // };
-    // useEffect(() => {
-    //     getMyId()
-    //     getuser()
+    };
+    useEffect(() => {
+        getuser()
 
-    // }, [myID])
+    }, [])
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 4 ? <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{
+                {index < 4 ? <Image source={{ uri: item.profile }} style={{
                     height: 50, width: 50,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
@@ -95,7 +80,7 @@ const CreateReminder = ({ onSubmit, userId }) => {
             style={{
                 backgroundColor: COLOR.white,
                 width: '100%',
-                paddingHorizontal: 10,
+                paddingHorizontal: 30,
                 borderRadius: 20,
                 marginBottom: isFocused ? '80%' : 0
             }}>
@@ -105,9 +90,9 @@ const CreateReminder = ({ onSubmit, userId }) => {
                 <PickerButton title={remindtime} onPress={() => setOpenTime(true)} />
 
             </View>
-            <Title title={'Enter Title'} />
+            <Title title={'Reminder Title'} />
             <TextInput
-                placeholder="Enter Descriptions....."
+                placeholder="Enter Title....."
 
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -126,7 +111,7 @@ const CreateReminder = ({ onSubmit, userId }) => {
                 }}
 
             />
-            <Title title={'Enter Description'} />
+            <Title title={'Reminder Description'} />
             <TextInput
                 placeholder="Enter Descriptions....."
                 multiline
@@ -211,18 +196,22 @@ const CreateReminder = ({ onSubmit, userId }) => {
                 }}
             />
             <Modal visible={visible} >
-                <View style={{ flex: 1, backgroundColor: COLOR.black }}>
-                    <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
-                    <View style={{ marginTop: 10, paddingHorizontal: 18, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
-                        <FlatList data={selectedUser} renderItem={(({ item }) => {
+                <View style={{ flex: 1, backgroundColor: COLOR.black, }}>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
+                    </View>
+                    <View style={{ marginTop: 10, paddingHorizontal: 20, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
+                        <FlatList data={UserData} renderItem={(({ item }) => {
+                            // console.log(item);
+                            const userName = item?.first_name + ' ' + item.last_name
                             return (
                                 <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{item.data.first_name}</Text>
+                                        <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                     </View>
 
-                                    <TouchableOpacity onPress={() => toggleItem(item.id)}>
+                                    <TouchableOpacity onPress={() => toggleItem(item?.id)}>
                                         <Image
                                             source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
                                             style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}

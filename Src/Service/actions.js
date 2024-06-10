@@ -341,7 +341,66 @@ export const Task_Message_Send = async (token, taskid, text, chattype, filetype,
     return response
 }
 
+export const Meeting_Messages = async (token, MsgType, taskData) => {
+    const remindId = taskData?.remind
+    var stringArray = remindId?.map(String);
+    var id = stringArray?.join(',');
 
+    const res = await fetch(ACTIONS.MESSAGE_MEETING, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            message_type: 'Meeting',
+            receiver_id: id, mode: 'Offline',
+            title: taskData.meetingtitle,
+            description: taskData.meetingdescription,
+            date: taskData.meetingdate,
+            start_time: taskData.meetingtime,
+            end_time: taskData.meetingtime,
+            meeting_url: ''
+        })
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Reminder_Messages = async (token, MsgType, taskData) => {
+    const remindId = taskData?.remind
+    var stringArray = remindId?.map(String);
+    var id = stringArray?.join(',');
+    console.log('MsgType', MsgType);
+    console.log('taskData', taskData);
+    console.log('id', id);
+    const res = await fetch(ACTIONS.MESSAGE_REMINDER, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title: taskData.remindtitle, description: taskData.reminddescriptions, date: taskData.remindtime, time: taskData.remindtime, users: id })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
+
+export const Location_Messages = async (token, data, id) => {
+
+    const res = await fetch(ACTIONS.MESSAGE_LOCATION, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_type: 'Location', receiver_id: id, latitude: data.latitude, longitude: data.longitude, location_url: `https://www.google.com/maps?q=${data?.latitude},${data.longitude}` })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
 
 export const Refresh_Token = async (token) => {
     try {
@@ -351,16 +410,10 @@ export const Refresh_Token = async (token) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-
         });
-
-
-
         const data = await response.json();
         console.log(data, 'tokendata=========>>>>>>>');
-
         // await AsyncStorage.setItem('myData', JSON.stringify({ data: { token: newToken } }));
-
         return newToken;
     } catch (error) {
         console.error('Error refreshing token:', error);

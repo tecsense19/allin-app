@@ -6,20 +6,7 @@ const MsgReminder = ({ data, time, onPress, MYID }) => {
     const id = data.sendBy == MYID
     const [selectUserData, setSelectUserData] = useState()
 
-    // const getidimag = async () => {
-    //     const a = data?.reminder?.remind
-    //     const temp = [];
 
-    //     for (let tempId of a) {
-    //         const doc = await firestore().collection('users').doc(tempId).get();
-    //         if (doc.exists) {
-    //             temp.push(doc.data());
-    //         }
-    //     } setSelectUserData(temp);
-    // };
-    // useEffect(() => {
-    //     getidimag()
-    // }, [])
     const list = ({ item, index }) => {
         return (
             <View>

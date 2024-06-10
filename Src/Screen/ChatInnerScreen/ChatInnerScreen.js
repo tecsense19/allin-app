@@ -4,7 +4,7 @@ import uuid from 'react-native-uuid';
 import DocumentPicker from 'react-native-document-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Contacts from 'react-native-contacts';
-import { PERMISSIONS, openSettings, request } from 'react-native-permissions';
+import { PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 import Chatheader from './ChatInnerHeader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import PlusModal from './ChatCustomFile/PlusModal';
@@ -20,15 +20,20 @@ import CreateTask from './ChatCustomFile/CreateTask';
 import { styles } from './ChatInnerScreenStyle';
 import MyAlert from '../../Custom/Alert/PermissionAlert';
 import MsgContact from './ChatCustomFile/MsgContact';
-import MsgDocument from './ChatCustomFile/MsgDocument';
+
 import DeleteChatHeader from './ChatCustomFile/DeleteChatHeader';
 import Loader from '../../Custom/Loader/loader';
 import { handaleDeleteMsg, handleFileUplode, handleMsgText, handleUnreadeMsg } from './Function/ApiCaliing';
 import Timezone from 'react-native-timezone'
 import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd';
 import MsgAttachment from './ChatCustomFile/MsgAttachment';
-import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, File_Uplode, Get_All_Messages, Read_Unread_Messages, Task_Messages } from '../../Service/actions';
+import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, File_Uplode, Get_All_Messages, Location_Messages, Meeting_Messages, Read_Unread_Messages, Reminder_Messages, Task_Messages } from '../../Service/actions';
+import MapView, { Marker } from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
+import Button from '../../Custom/Button/Button';
+import MsgMapImage from './ChatCustomFile/MsgMapView';
 LogBox.ignoreAllLogs();
+
 
 const ChatInnerScreen = props => {
     const [messages, setMessages] = useState([]);
@@ -48,6 +53,10 @@ const ChatInnerScreen = props => {
     const [userDetails, setUserDetails] = useState('')
     const [messageIds, setMessageIds] = useState('');
     const [showButton, setShowButton] = useState(false);
+    const [location, setLocation] = useState(null);
+    const [error, setError] = useState(null);
+
+
 
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
@@ -59,7 +68,7 @@ const ChatInnerScreen = props => {
     const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
     useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
-
+    // console.log(token);
     useEffect(() => {
         const extractMessageIds = () => {
             const ids = [];
@@ -149,6 +158,18 @@ const ChatInnerScreen = props => {
             case 'Task':
                 Task_Messages(token, msgType, currentMsgData)
                 break;
+            case 'Meeting':
+                // Alert.alert('Meeting')
+                Meeting_Messages(token, msgType, currentMsgData)
+                break;
+            case 'Reminder':
+                Reminder_Messages(token, msgType, currentMsgData)
+                break;
+
+            case 'Location':
+                Location_Messages(token, location, userId)
+                break;
+
 
             default:
                 console.warn(`Unhandled message type: ${msgType}`);
@@ -223,11 +244,28 @@ const ChatInnerScreen = props => {
             </TouchableOpacity>
         )
     }
+    // const requestLocationPermission = async () => {
+    //     try {
+    //         const granted = await request(
+    //             Platform.OS === 'ios'
+    //                 ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+    //                 : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+    //         );
+    //         if (granted === RESULTS.GRANTED) {
+    //             console.log('Location permission granted', Geolocation.watchPosition((r) => {
+    //                 console.log('====================================');
+    //                 console.log(r);
+    //                 console.log('====================================');
+    //             }));
+    //         } else {
+    //             console.log('Location permission denied');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error requesting location permission:', error);
+    //     }
+    // };
     const ChatMessage = ({ message }) => {
-        //  "messageType": "Task Chat"
-        //  if(message?messageType=='Task Chat'){
 
-        //  }
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -236,7 +274,10 @@ const ChatInnerScreen = props => {
                     return <MsgAttachment data={message} />;
                 case 'Task':
                     return <MsgTask data={message} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
-
+                case 'Meeting':
+                    return <MsgMeeting data={message} />
+                case 'Location':
+                    return <MsgMapImage data={message} />
                 default:
                     return;
             }
@@ -275,105 +316,135 @@ const ChatInnerScreen = props => {
     setTimeout(() => {
         getAllMessages()
     }, 15000)
+
+    useEffect(() => {
+
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                setLocation({ latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
+            },
+            error => {
+                setError(error.message);
+            },
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    }, []);
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
-            <View style={{ flex: 1 }}>
-                {msgType == 'Contact' ?
-                    <View style={styles.contactContainer}>
-                        <View style={{ paddingHorizontal: 20 }}>
-                            <NavigateHeader title={'Contacts'} onPress={() => setMsgType('Text')} color={COLOR.white} smallTitleSize={15} />
-                        </View>
-                        <View style={styles.contactListContainer}>
-                            {selectedContact?.length > 0 ? <Text style={styles.selectedContactTxt}>{' Selected(' + selectedContact.length + ')'} </Text> : null}
-                            <TextInput placeholder='Search here...' style={styles.contactSearchInput} />
-                            <FlatList data={contacts} renderItem={list} style={styles.ContactFlatList} />
-                        </View>
-                        {selectedContact.length > 0 ?
-                            <TouchableOpacity style={styles.OncontactScreenSend} onPress={() => { handleSend(selectedContact); setMsgType('Text') }}>
-                                <Text style={styles.sendTxt}>Send</Text>
-                            </TouchableOpacity> : null}
-                    </View> :
-                    <View style={styles.chatMainsection}>
-                        <View style={styles.chatHeaderView}>
-                            {!isSelected ? <Chatheader
-                                // onProfile={() => Alert.alert('Profile')}
-                                onCall={onhandalePhoneCall}
-                                value={change}
-                                onChange={() => setChange(!change)}
-                                source={{ uri: chatProfileData?.item?.profile }}
-                                title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName}
-                                onSearch={() => Alert.alert('search')}
-                                onBack={() => props.navigation.goBack()}
-                            /> :
-                                <DeleteChatHeader Count={selectedMSG ? selectedMSG?.length : null} onDelete={() => { selectedMsgDelete() }} onBack={() => { setIsSelected(false); setSelectedMSG('') }} />}
-                        </View>
-                        <View style={styles.GiftedChat}>
-                            <ScrollView ref={scrollViewRef}
-                                invertStickyHeaders={true}
-                                // onScroll={handleScroll}
-                                scrollEventThrottle={16}>
-                                {Object.keys(messages).map(date => (
-                                    <View key={date}>
-                                        <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
-                                        {messages[date]?.map(message => {
-                                            if (message.messageType == 'Task Chat') {
-                                                return null
-                                            }
-                                            return (
-                                                <ChatMessage key={message?.messageId} message={message} />)
-                                        })}
-                                    </View>
-                                ))}
-                            </ScrollView>
-                        </View >
-                        <PlusModal
-                            onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
-                            // onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
-                            //    onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
-                            onCamera={() => { onCamera(); setMsgType('Attachment'); }}
-                            onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
-                            // onContacts={() => { setMsgType('Contact'), setVisible(false); }}
-                            onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
-                            onRequestClose={closeModal} visible={visible}
-                            onClose={() => setVisible(false)}
-                            // onCheckList={() => { setVisible(false); }}
-                            onMeeting={() => { setVisible(false); }}
-                            onReminder={() => { setVisible(false); }}
-                            onLocation={() => { setVisible(false) }}
-                            onContacts={() => { setVisible(false); }}
+            {msgType == 'Location' ?
+                <View style={{ flex: 1 }}>
+                    <MapView
+                        style={{ flex: 1 }}
+                        initialRegion={location}
+                        showsUserLocation={true}
+                        followsUserLocation={true}
+                    >
+                        <Text style={{ textAlign: 'right', marginTop: 80, marginRight: 30, fontSize: 12, color: COLOR.black, fontWeight: 'bold', marginBottom: 5 }}>{location?.latitude}</Text>
+                        <Text style={{ textAlign: 'right', marginRight: 30, fontSize: 12, color: COLOR.black, fontWeight: 'bold' }}>{location?.longitude}</Text>
 
-                        />
-                        <Modal visible={ReMeCkModal}>
-                            <View style={styles.createItemModalView}>
-                                <View style={{ paddingHorizontal: 15, padding: 15 }}>
-                                    <NavigateHeader color={COLOR.white} title={msgType == 'Task' ? 'Create Task' : msgType == 'Meeting' ? 'Create Meeting' : msgType == 'Reminder' ? 'Create Remind' : null} onPress={() => { setMsgType('Text'); setReMeCkModal(false) }} />
-                                </View>
-                                <View style={styles.createItemModalView2}>
-
-                                    {msgType == 'Task' ? (
-                                        <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
-                                    ) : msgType == 'Meeting' ? (
-                                        <CreateMsgMeeting onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
-                                    ) : msgType == 'Reminder' ? (
-                                        <CreateReminder onSubmit={(reminddata) => { handleSend(reminddata); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
-                                    ) : null}
-                                </View>
+                        {/* <Marker coordinate={{ latitude: location.latitude, longitude: location.longitude }} /> */}
+                    </MapView>
+                    <View style={{ position: 'absolute', bottom: 55, left: 30, right: 30 }}>
+                        <Button title={'Send'} bgColor={COLOR.black} color={COLOR.white} onPress={handleSend} />
+                    </View>
+                </View>
+                : <View style={{ flex: 1 }}>
+                    {msgType == 'Contact' ?
+                        <View style={styles.contactContainer}>
+                            <View style={{ paddingHorizontal: 20 }}>
+                                <NavigateHeader title={'Contacts'} onPress={() => setMsgType('Text')} color={COLOR.white} smallTitleSize={15} />
                             </View>
-                        </Modal>
-                    </View>
-                }
-                <Loader visible={loding} />
-                {msgType !== 'Contact' ?
-                    <View style={{ marginBottom: isFocused ? 5 : 25 }}>
-                        {FileUplode ? <Image style={{ height: 150, width: 150, marginBottom: 5, borderRadius: 10, marginLeft: 30 }} source={{ uri: FileUplode[0]?.uri }} /> : ''
-                        }
-                        <ChatInputToolBar source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
-                            onFocus={() => setIsFocused(true)} value={inputText} onsend={handleSend} onPress={() => setVisible(true)}
-                        />
-                    </View>
-                    : null}
-                {showButton && (<ChatScrollEnd onPress={scrollToEnd} />)}
-            </View>
+                            <View style={styles.contactListContainer}>
+                                {selectedContact?.length > 0 ? <Text style={styles.selectedContactTxt}>{' Selected(' + selectedContact.length + ')'} </Text> : null}
+                                <TextInput placeholder='Search here...' style={styles.contactSearchInput} />
+                                <FlatList data={contacts} renderItem={list} style={styles.ContactFlatList} />
+                            </View>
+                            {selectedContact.length > 0 ?
+                                <TouchableOpacity style={styles.OncontactScreenSend} onPress={() => { handleSend(selectedContact); setMsgType('Text') }}>
+                                    <Text style={styles.sendTxt}>Send</Text>
+                                </TouchableOpacity> : null}
+                        </View> :
+                        <View style={styles.chatMainsection}>
+                            <View style={styles.chatHeaderView}>
+                                {!isSelected ? <Chatheader
+                                    // onProfile={() => Alert.alert('Profile')}
+                                    onCall={onhandalePhoneCall}
+                                    value={change}
+                                    onChange={() => setChange(!change)}
+                                    source={{ uri: chatProfileData?.item?.profile }}
+                                    title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName}
+                                    onSearch={() => Alert.alert('search')}
+                                    onBack={() => props.navigation.goBack()}
+                                /> :
+                                    <DeleteChatHeader Count={selectedMSG ? selectedMSG?.length : null} onDelete={() => { selectedMsgDelete() }} onBack={() => { setIsSelected(false); setSelectedMSG('') }} />}
+                            </View>
+                            <View style={styles.GiftedChat}>
+                                <ScrollView ref={scrollViewRef}
+                                    invertStickyHeaders={true}
+                                    // onScroll={handleScroll}
+                                    scrollEventThrottle={16}>
+                                    {Object.keys(messages).map(date => (
+                                        <View key={date}>
+                                            <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
+                                            {messages[date]?.map(message => {
+                                                if (message.messageType == 'Task Chat') {
+                                                    return null
+                                                }
+                                                return (
+                                                    <ChatMessage key={message?.messageId} message={message} />)
+                                            })}
+                                        </View>
+                                    ))}
+                                </ScrollView>
+                            </View >
+                            <PlusModal
+                                onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
+                                onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
+                                onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
+                                onCamera={() => { onCamera(); setMsgType('Attachment'); }}
+                                onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
+                                // onContacts={() => { setMsgType('Contact'), setVisible(false); }}
+                                onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
+                                onRequestClose={closeModal} visible={visible}
+                                onClose={() => setVisible(false)}
+                                onLocation={() => { setVisible(false), setMsgType('Location') }}
+                                onContacts={() => { setVisible(false); }}
+
+                            />
+                            <Modal visible={ReMeCkModal}>
+                                <View style={styles.createItemModalView}>
+                                    <View style={{ paddingHorizontal: 15, padding: 15 }}>
+                                        <NavigateHeader color={COLOR.white} title={msgType == 'Task' ? 'Create Task' : msgType == 'Meeting' ? 'Create Meeting' : msgType == 'Reminder' ? 'Create Remind' : null} onPress={() => { setMsgType('Text'); setReMeCkModal(false) }} />
+                                    </View>
+                                    <View style={styles.createItemModalView2}>
+
+                                        {msgType == 'Task' ? (
+                                            <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
+                                        ) : msgType == 'Meeting' ? (
+                                            <CreateMsgMeeting token={token} onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
+                                        ) : msgType == 'Reminder' ? (
+                                            <CreateReminder token={token} onSubmit={(reminddata) => { handleSend(reminddata); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
+                                        ) : null}
+                                    </View>
+                                </View>
+                            </Modal>
+                        </View>
+                    }
+                    <Loader visible={loding} />
+                    {msgType !== 'Contact' ?
+                        <View style={{ marginBottom: isFocused ? 5 : 25 }}>
+                            {FileUplode ? <Image style={{ height: 150, width: 200, marginBottom: 5, borderRadius: 5, marginLeft: 30, position: 'absolute', bottom: 50, }} source={{ uri: FileUplode[0]?.uri }} /> : ''
+                            }
+                            <ChatInputToolBar source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
+                                onFocus={() => setIsFocused(true)} value={inputText} onsend={handleSend} onPress={() => setVisible(true)}
+                            />
+                        </View>
+                        : null}
+                    {showButton && (<ChatScrollEnd onPress={scrollToEnd} />)}
+                </View>
+            }
+
         </KeyboardAvoidingView>
     );
 };

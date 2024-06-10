@@ -39,6 +39,8 @@
 #import "react/renderer/components/safeareacontext/States.h"
 #import "rnasyncstorage/rnasyncstorage.h"
 #import "rnasyncstorageJSI.h"
+#import "RNCGeolocationSpec/RNCGeolocationSpec.h"
+#import "RNCGeolocationSpecJSI.h"
 #import "RNDatePickerSpecs/RNDatePickerSpecs.h"
 #import "RNDatePickerSpecsJSI.h"
 #import "rndocumentpicker/rndocumentpicker.h"

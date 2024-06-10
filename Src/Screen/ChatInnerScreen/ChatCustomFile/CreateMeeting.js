@@ -12,12 +12,14 @@ import {
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-native-date-picker';
 import uuid from 'react-native-uuid'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 import Button from '../../../Custom/Button/Button';
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
+import Timezone from 'react-native-timezone'
+import { User_List } from '../../../Service/actions';
 
-const CreateMsgMeeting = ({ onSubmit, userId }) => {
+
+const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const [title, setTitle] = useState('');
     const [search, setSearch] = useState('');
     const [descriptions, setDescription] = useState('');
@@ -35,12 +37,18 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
     const [selectedItems, setSelectedItems] = useState([userId]);
     const [myID, setMyId] = useState('');
     const id = uuid.v4()
-    let hours = Time.getHours().toString().padStart(2, '0')
-    const minutes = Time.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // Handle midnight (0:00) as 12 AM
-    const meetingtime = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+
+    const time = new Date(Time);
+    time.setHours(time.getHours() + 2);
+    time.setMinutes(time.getMinutes() + 23);
+    const hours = String(time.getHours()).padStart(2, '0');
+    const minutes = String(time.getMinutes()).padStart(2, '0');
+    const seconds = String(time.getSeconds()).padStart(2, '0');
+    const meetingtime = `${hours}:${minutes}:${seconds}`;
+    const formattedHours = hours % 12 || 12;
+    const period = hours < 12 ? 'AM' : 'PM';
+    const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
+
 
     const handleSubmit = () => {
         const data = { type: 'Meeting', meetingtitle: title, meetingdescription: descriptions, meetingdate: meetingdate, meetingtime: meetingtime, remind: selectedItems }
@@ -63,42 +71,15 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
 
     const filteredUserData = UserData?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
     const selectedUser = UserData?.filter(user => {
-        if (myID !== user?.id) {
-            return user?.id
-        }
+
+        return user?.id
+
     })// by defualt selected user not show
 
-
-    // const getMyId = async () => {
-    //     try {
-    //         const jsonValue = await AsyncStorage.getItem('userData');
-    //         const myid = JSON.parse(jsonValue);
-    //         setMyId(myid.id);
-
-    //     } catch (e) { }
-    // };
-    // const getuser = () => {
-    //     let temp = [];
-    //     firestore().collection('users').get().then((res) => {
-
-    //         res.forEach((response) => {
-    //             if (myID !== response?.id) { // Only add if IDs are not the same myID !== response.id && userId !== response.id
-    //                 const data = { id: response.id, data: response.data() };
-    //                 temp.push(data);
-    //             }
-    //         });
-    //         setUserData(temp);
-    //     });
-    // };
-    // useEffect(() => {
-    //     getMyId()
-    //     getuser()
-
-    // }, [myID])
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 4 ? <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{
+                {index < 4 ? <Image source={{ uri: item.profile }} style={{
                     height: 50, width: 50,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
@@ -112,22 +93,36 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
             setSelectedItems([...selectedItems, itemId]);
         }
     };
+
+    const getuser = async () => {
+        const timezone = { timezone: Timezone.getTimeZone() }
+        await User_List(timezone, token).then((res) => {
+            if (res.status_code == 200) {
+                setUserData(res?.data?.userList)
+
+            }
+        }).catch((e) => { console.log(e); })
+
+    };
+    useEffect(() => {
+        getuser()
+
+    }, [myID])
     return (
         <ScrollView
             bounces={false}
             style={{
                 backgroundColor: COLOR.white,
                 width: '100%',
-                paddingHorizontal: 15,
+                paddingHorizontal: 30,
                 borderRadius: 20,
                 marginBottom: isFocused ? '80%' : 0
             }}>
-            <Title title={'Enter Title'} />
+            <Title title={'Meeting Title'} />
             <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-
-                placeholder="Enter Meeting Title"
+                placeholder="Enter Title..."
                 onChangeText={res => setTitle(res)}
                 value={title}
                 placeholderTextColor={COLOR.placeholder}
@@ -141,7 +136,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                     color: COLOR.textcolor, marginTop: 5
                 }}
             />
-            <Title title={'Enter Description'} />
+            <Title title={'Meeting Description'} />
             <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -167,7 +162,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                 <Image source={require('../../../Assets/Image/notice.png')} style={{ height: 15, width: 15, marginRight: 5, tintColor: COLOR.orange }} />
                 <Text style={{
                     color: COLOR.orange, fontWeight: '500',
-                    textAlign: 'left', fontSize: 14,
+                    textAlign: 'left', fontSize: 14, width: '90%',
                 }}>{'Descriptions Minimum 50 Characters Are Require'}</Text>
             </View>}
 
@@ -176,12 +171,11 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginTop: 30,
+                    marginTop: 25,
                 }}>
                 <PickerButton title={meetingdate} onPress={() => { setOpen(true) }} />
-                <PickerButton title={meetingtime} onPress={() => { setOpenTime(true) }} />
+                <PickerButton title={meetingDesplayTime} onPress={() => { setOpenTime(true) }} />
                 <PickerButton title={'Remind'} onPress={() => setVisible(true)} />
-
             </View>
             <TextInput
                 onFocus={() => setIsFocused(true)}
@@ -198,7 +192,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                     paddingLeft: 10,
                     fontWeight: '500',
                     fontSize: 16,
-                    color: COLOR.textcolor, marginTop: 20
+                    color: COLOR.textcolor, marginTop: 25
                 }}
             />
             <View style={{
@@ -212,7 +206,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                 width: filteredUserData?.length < 2 ? 80
                     : filteredUserData?.length < 3 ? 110
                         : filteredUserData?.length < 4 ? 140 : 170,
-                alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginVertical: 10
+                alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginTop: 40
             }}>
                 <FlatList data={filteredUserData} renderItem={list} horizontal bounces={false}
                     style={{}} />
@@ -220,7 +214,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
             </View> : null}
             <Button
                 onPress={handleSubmit}
-                marginTop={20}
+                marginTop={40}
                 marginBottom={30}
                 title={'Submit'}
                 bgColor={COLOR.green}
@@ -235,7 +229,7 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                 onConfirm={(date) => {
                     setOpen(false)
                     setDate(date)
-                    console.log(date);
+                    // console.log(date);
                 }}
                 onCancel={() => {
                     setOpen(false)
@@ -249,25 +243,29 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
                 onConfirm={(time) => {
                     setOpenTime(false)
                     setTime(time)
-                    console.log(time);
+                    // console.log(time);
                 }}
                 onCancel={() => {
                     setOpen(false)
                 }}
             />
             <Modal visible={visible} >
-                <View style={{ flex: 1, backgroundColor: COLOR.black }}>
-                    <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
-                    <View style={{ marginTop: 10, paddingHorizontal: 18, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
+                <View style={{ flex: 1, backgroundColor: COLOR.black, }}>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
+                    </View>
+                    <View style={{ marginTop: 10, paddingHorizontal: 20, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
                         <FlatList data={selectedUser} renderItem={(({ item }) => {
+                            // console.log(item);
+                            const userName = item?.first_name + ' ' + item.last_name
                             return (
                                 <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={item.data.profile_image ? { uri: item.data.profile_image } : require('../../../Assets/Image/userimg.png')} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{item.data.first_name}</Text>
+                                        <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                     </View>
 
-                                    <TouchableOpacity onPress={() => toggleItem(item.id)}>
+                                    <TouchableOpacity onPress={() => toggleItem(item?.id)}>
                                         <Image
                                             source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
                                             style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
@@ -290,10 +288,12 @@ const CreateMsgMeeting = ({ onSubmit, userId }) => {
 export default CreateMsgMeeting;
 const PickerButton = ({ title, onPress }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 10, borderRadius: 10, borderColor: COLOR.bordercolor }}>
+        <TouchableOpacity onPress={onPress} style={{
+            flexDirection: 'row', alignItems: 'center', borderWidth: 1, height: 40, paddingHorizontal: 8, borderRadius: 10, borderColor: COLOR.bordercolor
+        }}>
             <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.titlecolor }}>{title}</Text>
             <Image source={require('../../../Assets/Image/down.png')}
-                style={{ height: 18, width: 18, resizeMode: 'contain', marginTop: -5, marginLeft: 5, tintColor: COLOR.green }} />
+                style={{ height: 15, width: 15, resizeMode: 'contain', marginTop: -5, marginLeft: 5, tintColor: COLOR.green }} />
         </TouchableOpacity>
     )
 }
