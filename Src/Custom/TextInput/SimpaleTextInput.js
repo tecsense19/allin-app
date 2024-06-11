@@ -35,7 +35,7 @@ export default Textinput;
 const styles = StyleSheet.create({
     label: {
         color: COLOR.titlecolor,
-        fontWeight: '600',
+        fontWeight: 'bold',
         marginLeft: 5,
         fontSize: 18,
     },
@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontSize: 16,
         height: 45,
-        paddingLeft: 15,
+        paddingLeft: 10,
     },
 });

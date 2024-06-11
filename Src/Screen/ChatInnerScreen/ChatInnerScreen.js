@@ -316,9 +316,7 @@ const ChatInnerScreen = props => {
     setTimeout(() => {
         getAllMessages()
     }, 15000)
-
     useEffect(() => {
-
         Geolocation.getCurrentPosition(
             position => {
                 const { latitude, longitude } = position.coords;
@@ -368,7 +366,7 @@ const ChatInnerScreen = props => {
                         <View style={styles.chatMainsection}>
                             <View style={styles.chatHeaderView}>
                                 {!isSelected ? <Chatheader
-                                    // onProfile={() => Alert.alert('Profile')}
+                                    onProfile={() => props.navigation.navigate('profile', userDetails)}
                                     onCall={onhandalePhoneCall}
                                     value={change}
                                     onChange={() => setChange(!change)}

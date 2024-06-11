@@ -80,6 +80,7 @@ const ChatUserListScreen = props => {
         }
     };
     const list = ({ item }) => {
+        // console.log(item.profile);
         const getTime = () => {
             const time = new Date(item?.last_message_date);
             const now = new Date();
@@ -215,6 +216,7 @@ const ChatUserListScreen = props => {
             if (res.status_code == 200) {
                 setAllUserData(res?.data?.userList)
                 setLoading(false)
+                // console.log(res?.data?.userList);
             }
         }).catch((e) => { console.log(token, '=======>>>>', e, 'userListApihome screen'); })
     }

@@ -25,7 +25,10 @@ export const ACTIONS = {
     USER_LIST: BASE_PATH + '/user-list',
     USER_DETAILS: BASE_PATH + '/user-details',
     EDIT_PROFILE: BASE_PATH + '/edit-profile',
-    DELETE_CHAT_USER: BASE_PATH + '/delete-chat-user'
+    DELETE_CHAT_USER: BASE_PATH + '/delete-chat-user',
+    ADD_WORK_HOURS: BASE_PATH + '/add-work-hours',
+    WORK_HOURS: BASE_PATH + '/work-hours',
+
 
 
 

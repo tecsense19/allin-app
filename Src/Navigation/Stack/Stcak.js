@@ -12,6 +12,9 @@ import SettingScreen from '../../Screen/SettingScreen/SettingScreen';
 import EditProfileScreen from '../../Screen/EditProfileScreen/EditProfileScreen';
 import TaskChatScreen from '../../Screen/TaskChatScreen/TaskChatScreen';
 import LanguageScreen from '../../Screen/LanguageScreen/LanguageScreen';
+import CreateNote from '../../Screen/ProjectManagement.js/CreateNote/CreateNote';
+import WorkHours from '../../Screen/ProjectManagement.js/WorkHours/WorkHours';
+import ChatProfileScreen from '../../Screen/ChatProfileScreen/ChatProfileScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -20,8 +23,7 @@ const StackScreen = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-
-                // initialRouteName="location"
+                // initialRouteName="profile"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 <Stack.Screen name="splase" component={SplaseScreen} />
                 <Stack.Screen name="first" component={FirstScreen} />
@@ -33,6 +35,9 @@ const StackScreen = () => {
                 <Stack.Screen name="setting" component={SettingScreen} />
                 <Stack.Screen name="edit" component={EditProfileScreen} />
                 <Stack.Screen name="task" component={TaskChatScreen} />
+                <Stack.Screen name="note" component={CreateNote} />
+                <Stack.Screen name="work" component={WorkHours} />
+                <Stack.Screen name="profile" component={ChatProfileScreen} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
 
 

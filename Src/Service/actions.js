@@ -402,6 +402,30 @@ export const Location_Messages = async (token, data, id) => {
     return response
 }
 
+export const Add_Work_Hour = async (token, Start, End, Summary) => {
+    const res = await fetch(ACTIONS.ADD_WORK_HOURS, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ start_date_time: Start, end_date_time: End, summary: Summary })
+    })
+    const response = await res.json()
+    return response
+}
+export const Work_Hour = async (token) => {
+
+    const res = await fetch(ACTIONS.WORK_HOURS, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    const response = await res.json()
+    return response
+}
 export const Refresh_Token = async (token) => {
     try {
         const response = await fetch(ACTIONS.REFRESH_TOKEN, {
