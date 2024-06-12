@@ -19,7 +19,7 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import RoundPlus from '../../Custom/RoundPlus/RoundPlus';
 import Button from '../../Custom/Button/Button';
 import { getToken } from '../../Service/AsyncStorage';
-
+import { styles } from './ProjectManagementStyle';
 const ProjectManagementScreen = props => {
     const [data, setData] = useState([]);
     const [visible, setVisible] = useState(false);
@@ -30,16 +30,11 @@ const ProjectManagementScreen = props => {
     useFocusEffect(
         React.useCallback(() => {
             loadTasks();
-            const get = async () => {
-                const token = await getToken()
-                setToken(token)
-
-            }
+            const get = async () => { const token = await getToken(); setToken(token) }
             return get
 
         }, []),
     );
-
     const HIGHT = Dimensions.get('screen').height
     const loadTasks = async () => {
         const savedTasks = await AsyncStorage.getItem('note');
@@ -87,79 +82,28 @@ const ProjectManagementScreen = props => {
         return (
             <TouchableOpacity
                 onPress={() => props.navigation.navigate(item.navigation, token)}
-                style={{
-                    alignSelf: 'center',
-                    height: 60,
-                    width: '95%',
-                    backgroundColor: COLOR.white,
-                    marginVertical: 8,
-                    justifyContent: 'space-between',
-                    borderRadius: 10,
-                    shadowColor: "#000", flexDirection: 'row', alignItems: 'center',
-                    shadowOffset: { width: 0, height: 1, },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 3,
-
-
-                }}>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-
-                    }}>
-                    <View style={{ backgroundColor: COLOR.lightgreen, alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 50, marginLeft: 10, marginRight: 10 }}>
-                        <Image
-                            source={item.img}
-                            style={{
-                                tintColor: COLOR.green,
-                                height: 33,
-                                width: 33,
-                            }}
-                        />
+                style={styles.note_List_Container}>
+                <View style={styles.listFirstView}>
+                    <View style={styles.listuserView}>
+                        <Image source={item.img} style={styles.listImage} />
                     </View>
-                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{item.listname}</Text>
+                    <Text style={styles.listname}>{item.listname}</Text>
                 </View>
-                <Image source={require('../../Assets/Image/rightarrow.png')} style={{ height: 25, width: 25, marginRight: 15 }} />
-
+                <Image source={require('../../Assets/Image/rightarrow.png')} style={styles.listarrow} />
             </TouchableOpacity>
         );
     };
-    const create = new Date(viewNote?.createdAt);
-    // const createdDate = ConvertDate(create);
-    const update = new Date(viewNote?.updatedAt);
-    // const updatedDate = ConvertDate(update);
-    // console.log(updatedDate);
-
     return (
-        // <SafeAreaView>
         <ScrollView bounces={false}>
-
-            <View style={{ flex: 1, backgroundColor: COLOR.white, padding: 10 }}>
-
+            <View style={styles.mainContainer}>
                 <StatusBar barStyle={'dark-content'} />
-                <Text style={{ fontSize: 20, color: COLOR.black, fontWeight: 'bold', marginLeft: 10, marginBottom: 10, marginTop: 60 }}>Project Management</Text>
+                <Text style={styles.P_M_Text}>Project Management</Text>
                 <FlatList
                     data={Data}
                     scrollEnabled={false}
                     renderItem={list} style={{ marginTop: 10 }} />
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginHorizontal: 20,
-                        marginTop: 20,
-                        marginBottom: 15,
-                    }}>
-                    <Text
-                        style={{
-                            fontSize: 20,
-                            fontWeight: 'bold',
-                            color: COLOR.titlecolor,
-                        }}>
-                        Notes
-                    </Text>
+                <View style={styles.noteTitleView}>
+                    <Text style={styles.note_T}> Notes </Text>
                     <TouchableOpacity
                         style={{ alignSelf: 'center' }}
                         onPress={() => props.navigation.navigate('note')}>
@@ -171,119 +115,40 @@ const ProjectManagementScreen = props => {
                     data={data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => {
-
                         return (
-                            <TouchableOpacity
-                                style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    backgroundColor: COLOR.lightgreen,
-                                    padding: 10,
-                                    marginTop: 10,
-                                    borderRadius: 10,
-                                    height: 45, marginHorizontal: 10,
-                                }}
-                                onPress={() => {
-                                    setVisible(true);
-                                    setViewNote(item);
-                                }}>
-                                <Text
-                                    style={{
-                                        width: 180,
-                                        fontSize: 16,
-                                        fontWeight: '600',
-                                        color: COLOR.titlecolor,
-                                    }}>
-
-                                    {item.title.length > 21
-                                        ? item.title.slice(0, 21) + '...'
-                                        : item.title}
+                            <TouchableOpacity style={styles.notelistview}
+                                onPress={() => { setVisible(true); setViewNote(item); }}>
+                                <Text style={styles.notelisttitle}>
+                                    {item.title.length > 21 ? item.title.slice(0, 21) + '...' : item.title}
                                 </Text>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                                    <Text
-                                        style={{
-                                            fontSize: 12,
-                                            fontWeight: '500',
-                                            color: COLOR.textcolor,
-                                        }}>
-                                        {formatted}
-                                    </Text>
-                                    <TouchableOpacity style={{ padding: 10, }}
-                                        onPress={() => { getnoteData() }}
-                                    >
-                                        <Image
-                                            source={require('../../Assets/Image/pen.png')}
-                                            style={{
-                                                height: 25,
-                                                width: 25,
-
-                                            }}
-                                        />
+                                    <Text style={styles.notedatetime}>{'formatted'}</Text>
+                                    <TouchableOpacity style={{ padding: 10, }} onPress={() => { getnoteData() }} >
+                                        <Image source={require('../../Assets/Image/pen.png')} style={styles.listpenicon} />
                                     </TouchableOpacity>
                                 </View>
                                 {Edit ? <View style={{ height: 50, width: 50 }}></View> : null}
                             </TouchableOpacity>
                         );
                     }}
-
                 />
-
                 <Modal visible={visible}>
                     <View style={{ flex: 1, backgroundColor: COLOR.white }}>
                         <NavigateHeader onPress={() => setVisible(false)} />
-                        <ScrollView
-                            style={{
-                                padding: 15,
-                                backgroundColor: COLOR.white,
-                                marginTop: 20,
-                            }}
-                            bounces={false}>
-                            <Text
-                                style={{
-                                    fontSize: 23,
-                                    fontWeight: '600',
-                                    color: COLOR.black,
-                                }}>
-                                {viewNote.title}
-                            </Text>
-                            <Text
-                                style={{
-                                    fontSize: 15,
-                                    color: COLOR.gray,
-                                    fontWeight: '500',
-                                    marginTop: 10,
-                                }}>
+                        <ScrollView style={styles.modalscrollview} bounces={false}>
+                            <Text style={styles.noteviewtitle}>{viewNote.title}</Text>
+                            <Text style={styles.notecreatedtimedate}>
                                 {/* Created:- {createdDate}{'\n'} */}
                                 {/* {viewNote.updatedAt ? "Updated:- " + updatedDate : null} */}
                             </Text>
-                            <Text
-                                style={{
-                                    fontSize: 18,
-                                    marginTop: 10,
-                                    fontWeight: '600',
-
-                                    lineHeight: 30,
-                                    color: COLOR.textcolor,
-                                }}>
-                                {viewNote.note}
-                            </Text>
-                            <Button
-                                title={'Close'}
-                                bgColor={COLOR.green}
-                                marginTop={30}
-                                marginBottom={40}
-                                onPress={() => {
-                                    setVisible(false);
-                                }}
-                            />
+                            <Text style={styles.noteTextindetails}>{viewNote.note}</Text>
+                            <Button title={'Close'} bgColor={COLOR.green} marginTop={30} marginBottom={40} onPress={() => { setVisible(false); }} />
                         </ScrollView>
                     </View>
                 </Modal>
             </View>
         </ScrollView>
 
-        // </SafeAreaView>
     );
 };
 export default ProjectManagementScreen

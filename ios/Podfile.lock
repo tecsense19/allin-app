@@ -1021,6 +1021,8 @@ PODS:
     - React-Core
   - react-native-maps (1.15.6):
     - React-Core
+  - react-native-month-year-picker (1.9.0):
+    - React
   - react-native-safe-area-context (4.10.1):
     - React-Core
   - react-native-timezone (3.0.1):
@@ -1374,6 +1376,7 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - react-native-month-year-picker (from `../node_modules/react-native-month-year-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-timezone (from `../node_modules/react-native-timezone`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
@@ -1494,6 +1497,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@bam.tech/react-native-image-resizer"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-month-year-picker:
+    :path: "../node_modules/react-native-month-year-picker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-timezone:
@@ -1606,6 +1611,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: d83c33b93b45f1db2ead17c12965550ee17178f1
   react-native-image-resizer: 669454edae94399b11e49c840e4da14482302293
   react-native-maps: 7b2c2cee95271592a92ba485eea1dec66a363a6e
+  react-native-month-year-picker: 948797e981ca502427024a34b17f545eb321bbff
   react-native-safe-area-context: dcab599c527c2d7de2d76507a523d20a0b83823d
   react-native-timezone: f5c56af58c43b6979a7e802a71565acdd1f36069
   React-nativeconfig: 21d89c65ca39875fad2c5c465e0e013e514eba21

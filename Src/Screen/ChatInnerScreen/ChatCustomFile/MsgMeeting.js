@@ -2,25 +2,21 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react
 import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 export const MsgMeeting = ({ data, onPress, MYID, }) => {
-    const id = data?.sendBy == MYID;
-    const [selectUserData, setSelectUserData] = useState()
 
-    // console.log('====================================');
-    // console.log(data);
-    // console.log('====================================');
+    const Member = data.messageDetails.users
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 3 ? <Image source={item?.profile_image ? { uri: item?.profile_image } : require('../../../Assets/Image/admin.jpg')} style={{
-                    height: 40, width: 40,
-                    borderRadius: 100, marginLeft: index == 0 ? 0 : -20
+                {index < 3 ? <Image source={{ uri: item?.profile }} style={{
+                    height: 25, width: 25,
+                    borderRadius: 100, marginLeft: index == 0 ? 0 : -10
                 }} /> : ''}
             </View>
         )
     }
     return (
         <View style={{ alignSelf: data?.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', width: '90%', }}>
-            {/* {/* <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 }}>Meeting</Text> */}
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 }}>Meeting</Text>
 
             <View
                 onPress={onPress}
@@ -28,7 +24,7 @@ export const MsgMeeting = ({ data, onPress, MYID, }) => {
                     backgroundColor: data?.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray,
                     height: 'auto',
 
-                    borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 20
+                    borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 15
 
 
                 }}>
@@ -37,23 +33,23 @@ export const MsgMeeting = ({ data, onPress, MYID, }) => {
                 <Text style={styles.Heading}>Meeting Date: <Text style={styles.HeadingContent}>{data.messageDetails.date}</Text></Text>
                 <Text style={styles.Heading}>Meeting Time: < Text style={styles.HeadingContent}>{data.messageDetails.start_time}</Text></Text>
                 <Text style={styles.Heading}>Location: < Text style={styles.HeadingContent}>{'India'}</Text></Text>
-                {/* {selectUserData ? <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                     <View style={{
-                        width: selectUserData?.length < 2 ? 65 : selectUserData?.length <= 2 ? 85 : 110,
-                        alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+                        width: data.messageDetails.users?.length <= 2 ? 60 : 75,
+                        alignSelf: 'center', flexDirection: 'row', alignItems: 'center', position: 'absolute', right: data.messageDetails.users?.length <= 2 ? -20 : 0, bottom: 30
                     }}>
-                        <FlatList data={selectUserData} renderItem={list} horizontal bounces={false}
+                        <FlatList data={Member} renderItem={list} horizontal bounces={false}
                             style={{}} />
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{'+' + selectUserData?.length}</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, }}>{Member?.length == 2 ? '' : '+' + (Member?.length - 3)}</Text>
                     </View>
-                </View> : null} */}
+                </View>
                 <Text style={styles.time}>{data.time}</Text>
             </View>
         </View>
     );
 };
 const styles = StyleSheet.create({
-    Heading: { alignSelf: 'flex-start', marginTop: 15, fontWeight: 'bold', color: COLOR.black, fontSize: 15 },
-    HeadingContent: { color: COLOR.black, fontSize: 14, fontWeight: '500' },
+    Heading: { alignSelf: 'flex-start', marginTop: 10, fontWeight: 'bold', color: COLOR.black, fontSize: 13 },
+    HeadingContent: { color: COLOR.black, fontSize: 12, fontWeight: '500' },
     time: { alignSelf: 'flex-end', margin: 5, fontWeight: '700', color: COLOR.placeholder, fontSize: 12 }
 })

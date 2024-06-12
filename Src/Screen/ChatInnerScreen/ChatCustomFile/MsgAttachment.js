@@ -26,16 +26,28 @@ const MsgAttachment = ({ data, }) => {
                             color: COLOR.placeholder, textAlign: 'right'
                         }}>{data.time}</Text>
                     </View>
-                    :
-                    <View >
-                        <View style={{ backgroundColor: 'white', justifyContent: 'center', height: 60, paddingHorizontal: 8, borderRadius: 10 }}>
-                            <Text style={{ fontSize: 15, fontWeight: '600', color: COLOR.black, marginVertical: 5 }}>{data?.messageDetails?.attachment_name}</Text>
+                    : data.attachmentType == 'mp3' || data.attachmentType == 'wav' || data.attachmentType == 'aac' || data.attachmentType == 'flac' || data.attachmentType == 'ogg' || data.attachmentType == 'm4a' ?
+                        <View style={{ height: 60, width: '100%', paddingHorizontal: 10 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 5 }}>
+                                <Image source={require('../../../Assets/Image/rcg.png')} style={{ height: 30, width: '75%', resizeMode: 'contain', }} />
+                                <View style={{ height: 35, width: 35, borderRadius: 40, backgroundColor: COLOR.green, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Image source={require('../../../Assets/Image/Play.png')} style={{ height: 20, width: 20, resizeMode: 'contain', }} />
+                                </View>
+                            </View>
+                            <Text style={{
+                                fontSize: 12, fontWeight: '700', marginVertical: 5,
+                                color: COLOR.placeholder, textAlign: 'right'
+                            }}>{data.time}</Text>
+                        </View> :
+                        <View >
+                            <View style={{ backgroundColor: 'white', justifyContent: 'center', height: 60, paddingHorizontal: 8, borderRadius: 10 }}>
+                                <Text style={{ fontSize: 15, fontWeight: '600', color: COLOR.black, marginVertical: 5 }}>{data?.messageDetails?.attachment_name}</Text>
+                            </View>
+                            <Text style={{
+                                fontSize: 12, fontWeight: '700', marginTop: 5,
+                                color: COLOR.placeholder, textAlign: 'right'
+                            }}>{data.time}</Text>
                         </View>
-                        <Text style={{
-                            fontSize: 12, fontWeight: '700', marginTop: 5,
-                            color: COLOR.placeholder, textAlign: 'right'
-                        }}>{data.time}</Text>
-                    </View>
                 }
             </View>
             {data.profilePic && sendBy ? <Image source={{ uri: data.profilePic }} style={{

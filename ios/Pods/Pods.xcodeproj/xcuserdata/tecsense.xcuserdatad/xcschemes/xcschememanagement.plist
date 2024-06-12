@@ -464,6 +464,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>react-native-month-year-picker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>react-native-safe-area-context.xcscheme</key>
 		<dict>
 			<key>isShown</key>

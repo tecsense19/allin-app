@@ -367,23 +367,21 @@ export const Meeting_Messages = async (token, MsgType, taskData) => {
     return response
 }
 
-export const Reminder_Messages = async (token, MsgType, taskData) => {
+export const Reminder_Messages = async (token, taskData) => {
     const remindId = taskData?.remind
     var stringArray = remindId?.map(String);
     var id = stringArray?.join(',');
-    console.log('MsgType', MsgType);
-    console.log('taskData', taskData);
-    console.log('id', id);
+    const a = { title: taskData.remindtitle, description: taskData.reminddescriptions, date: taskData.remindtime, time: taskData.apiTime, date: taskData.apiDate, users: id }
+    console.log(a);
     const res = await fetch(ACTIONS.MESSAGE_REMINDER, {
         method: "POST",
         headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title: taskData.remindtitle, description: taskData.reminddescriptions, date: taskData.remindtime, time: taskData.remindtime, users: id })
+        body: JSON.stringify({ title: taskData.remindtitle, description: taskData.reminddescriptions, date: taskData.remindtime, date: taskData.apiDate, time: taskData.apiTime, users: id })
     })
     const response = await res.json()
-    console.log(response);
     return response
 }
 
@@ -412,6 +410,7 @@ export const Add_Work_Hour = async (token, Start, End, Summary) => {
         body: JSON.stringify({ start_date_time: Start, end_date_time: End, summary: Summary })
     })
     const response = await res.json()
+    console.log(response);
     return response
 }
 export const Work_Hour = async (token) => {
@@ -422,8 +421,10 @@ export const Work_Hour = async (token) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
+        // body: JSON.stringify({ })
     })
     const response = await res.json()
+    console.log(response);
     return response
 }
 export const Refresh_Token = async (token) => {

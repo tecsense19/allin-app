@@ -6,6 +6,7 @@ import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import WorkNoteModal from '../../../Custom/Modal/WorkNoteModal';
 import { Add_Work_Hour, Work_Hour } from '../../../Service/actions';
 import Loader from '../../../Custom/Loader/loader';
+import MonthPicker from 'react-native-month-year-picker'
 
 
 const WorkHours = props => {
@@ -103,6 +104,17 @@ const WorkHours = props => {
                 console.log(e, 'workhour');
             })
     }
+
+    const showPicker = useCallback((value) => setShow(value), []);
+    const onValueChange = useCallback(
+        (event, newDate) => {
+            const selectedDate = newDate || date;
+            showPicker(false);
+            setDate(selectedDate);
+            console.log(selectedDate);
+        },
+        [date, showPicker],
+    );
     return (
         <View
             style={{
@@ -133,18 +145,26 @@ const WorkHours = props => {
 
             />
             <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
-            {show ? <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
-                <FlatList renderItem={({ item }) => (
-                    <TouchableOpacity style={{ padding: 8, backgroundColor: COLOR.verylightgray, marginTop: 10 }} onPress={() => { setSelectedMonth(item), setShow(false) }}>
-                        <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: '600' }}>{item}</Text>
-                    </TouchableOpacity>
-                )} data={months} style={{}} />
-            </View>
+            {show ?
+                <View style={{ marginTop:'70%' }} >
+                    <MonthPicker
+                        onChange={onValueChange}
+                        value={date}
+                    />
+                </View>
+                //  <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
+                //     <FlatList renderItem={({ item }) => (
+                //         <TouchableOpacity style={{ padding: 8, backgroundColor: COLOR.verylightgray, marginTop: 10 }} onPress={() => { setSelectedMonth(item), setShow(false) }}>
+                //             <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: '600' }}>{item}</Text>
+                //         </TouchableOpacity>
+                //     )} data={months} style={{}} />
+                // </View>
                 :
                 <FlatList renderItem={list} data={WorkHourData} style={{ paddingHorizontal: 30 }} />}
             <ScrollView>
                 <WorkNoteModal visible={showWorkModal} onPress={() => { setShowWorkModal(false); setClear(true), AddWorkHours(), setLoading(true) }} startTime={startTimeDate} EndTime={endTimeDate} onChangeText={(res) => setSummary(res)} />
             </ScrollView>
+          
             <Loader visible={loading} />
         </View>
     );

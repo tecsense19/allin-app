@@ -15,6 +15,7 @@ import LanguageScreen from '../../Screen/LanguageScreen/LanguageScreen';
 import CreateNote from '../../Screen/ProjectManagement.js/CreateNote/CreateNote';
 import WorkHours from '../../Screen/ProjectManagement.js/WorkHours/WorkHours';
 import ChatProfileScreen from '../../Screen/ChatProfileScreen/ChatProfileScreen';
+import CallScreen from '../../Screen/CallScreen/CallScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -38,6 +39,7 @@ const StackScreen = () => {
                 <Stack.Screen name="note" component={CreateNote} />
                 <Stack.Screen name="work" component={WorkHours} />
                 <Stack.Screen name="profile" component={ChatProfileScreen} />
+                <Stack.Screen name="call" component={CallScreen} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
 
 

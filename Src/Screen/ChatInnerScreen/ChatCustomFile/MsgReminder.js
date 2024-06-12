@@ -2,49 +2,41 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList } from 'react
 import React, { useEffect, useState } from 'react'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 
-const MsgReminder = ({ data, time, onPress, MYID }) => {
-    const id = data.sendBy == MYID
-    const [selectUserData, setSelectUserData] = useState()
-
-
+const MsgReminder = ({ data, }) => {
+    const member = data.messageDetails.users
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 3 ? <Image source={item?.profile_image ? { uri: item?.profile_image } : require('../../../Assets/Image/admin.jpg')} style={{
-                    height: 40, width: 40,
-                    borderRadius: 100, marginLeft: index == 0 ? 0 : -20
+                {index < 3 ? <Image source={{ uri: item?.profile }} style={{
+                    height: 25, width: 25,
+                    borderRadius: 100, marginLeft: index == 0 ? 0 : -10
                 }} /> : ''}
             </View>
         )
     }
     return (
-        <View style={{ alignSelf: id ? 'flex-end' : 'flex-start', width: '90%' }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 3, marginLeft: 3, color: COLOR.black, }}>Remind</Text>
-
+        <View style={{ alignSelf: data.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', width: '90%' }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginHorizontal: 5, color: COLOR.black, }}>Remind</Text>
             <View
-                onPress={onPress}
                 style={{
-                    backgroundColor: id ? COLOR.lightgreen : COLOR.verylightgray,
+                    backgroundColor: data.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray,
                     height: 'auto',
-                    borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 20
-
-
+                    borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 10
                 }}>
-                <Text style={styles.HeadingContent}><Text style={styles.Heading}>Title: </Text>{data.reminder.title}</Text>
-                <Text style={styles.HeadingContent}><Text style={styles.Heading}>Description: </Text>{data.reminder.descriptions}</Text>
-                <Text style={styles.HeadingContent}><Text style={styles.Heading}>Remind Time: </Text>{data.reminder.time}</Text>
-                {selectUserData ? <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
+                <Text style={styles.HeadingContent}><Text style={styles.Heading}>Title: </Text>{data.messageDetails.title}</Text>
+                <Text style={styles.HeadingContent}><Text style={styles.Heading}>Description: </Text>{data.messageDetails.description}</Text>
+                <Text style={styles.HeadingContent}><Text style={styles.Heading}>Remind Time: </Text>{data.messageDetails.time}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                     <View style={{
-                        width: selectUserData?.length < 2 ? 65 : selectUserData?.length <= 2 ? 85 : 110,
-                        alignSelf: 'center', flexDirection: 'row', alignItems: 'center',
+                        width: member?.length <= 2 ? 65 : 75,
+                        alignSelf: 'center', flexDirection: 'row', alignItems: 'center', position: 'absolute', bottom: -5, right: member?.length <= 2 ? -20 : 0
                     }}>
-                        <FlatList data={selectUserData} renderItem={list} horizontal bounces={false}
+                        <FlatList data={member} renderItem={list} horizontal bounces={false}
                             style={{}} />
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{'+' + selectUserData?.length}</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor }}>{member?.length <= 2 ? '' : '+' + (member.length - 3)}</Text>
                     </View>
-                </View> : null}
-                <Text style={styles.time}>{time}</Text>
-
+                </View>
+                <Text style={styles.time}>{data.time}</Text>
             </View>
         </View>
     )
@@ -52,7 +44,7 @@ const MsgReminder = ({ data, time, onPress, MYID }) => {
 
 export default MsgReminder
 const styles = StyleSheet.create({
-    Heading: { color: COLOR.black, fontSize: 15, fontWeight: 'bold', },
-    HeadingContent: { fontWeight: '500', color: COLOR.black, fontSize: 14, marginTop: 15 },
-    time: { alignSelf: 'flex-end', margin: 5, fontWeight: '700', color: COLOR.placeholder, fontSize: 12 }
+    Heading: { color: COLOR.black, fontSize: 13, fontWeight: 'bold', },
+    HeadingContent: { fontWeight: '500', color: COLOR.black, fontSize: 12, marginTop: 10 },
+    time: { alignSelf: 'flex-end', margin: 5, fontWeight: '700', color: COLOR.placeholder, fontSize: 12, marginTop: 15 }
 })

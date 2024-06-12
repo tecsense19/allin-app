@@ -75,3 +75,47 @@ const styles = StyleSheet.create({
         top: '35%',
     }
 })
+
+
+// import { View, StatusBar, Image, StyleSheet, Alert, } from 'react-native';
+// import React, { useCallback, useEffect, useState, } from 'react';
+// import { COLOR } from '../../Assets/AllFactors/AllFactors';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { notificationsPermission } from '../../Service/Functions';
+// import TimeZone from 'react-native-timezone'
+// import { User_List } from '../../Service/actions';
+// import { useFocusEffect } from '@react-navigation/native';
+// import { getToken } from '../../Service/AsyncStorage';
+
+// const SplaseScreen = props => {
+//     useEffect(() => {
+//         getMyData()
+//     }, []);
+
+
+//     const getMyData = async () => {
+//         const token = await getToken()
+//         console.log(token);
+//     };
+//     return (
+//         <View style={styles.container}>
+//             <StatusBar backgroundColor={COLOR.black} hidden={false} />
+//             <Image
+//                 source={require('../../Assets/Image/allin_logo.png')}
+//                 style={styles.logoimg}
+//             />
+//         </View>
+//     );
+// };
+// export default SplaseScreen;
+// const styles = StyleSheet.create({
+//     container: { flex: 1, backgroundColor: COLOR.white },
+//     logoimg: {
+//         height: '15%',
+//         width: '30%',
+//         resizeMode: 'contain',
+//         position: 'absolute',
+//         alignSelf: 'center',
+//         top: '35%',
+//     }
+// })

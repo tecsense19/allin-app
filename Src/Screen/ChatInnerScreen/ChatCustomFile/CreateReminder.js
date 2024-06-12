@@ -1,36 +1,43 @@
 import { View, Text, TouchableOpacity, Image, TextInput, Alert, ScrollView, FlatList, Modal } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import DatePicker from 'react-native-date-picker'
-
-import uuid from 'react-native-uuid'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 import Button from '../../../Custom/Button/Button'
 import NavigateHeader from '../../../Custom/Header/NavigateHeader'
 import Timezone from 'react-native-timezone'
 import { User_List } from '../../../Service/actions'
 
-
-
 const CreateReminder = ({ onSubmit, userId, token }) => {
     const [descriptions, setDescription] = useState('');
     const [title, setTitle] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [opentime, setOpenTime] = useState(false);
-    const [Time, setTime] = useState(new Date());
-    let hours = Time.getHours().toString().padStart(2, '0')
-    const minutes = Time.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // Handle midnight (0:00) as 12 AM
-    const remindtime = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
     const [UserData, setUserData] = useState();
     const [visible, setVisible] = useState(false);
     const [selectedItems, setSelectedItems] = useState([userId]);
+    const [Time, setTime] = useState(new Date());
+    const [open, setOpen] = useState(false);
+
+    let hours = Time.getHours().toString().padStart(2, '0')
+    const minutes = Time.getMinutes().toString().padStart(2, '0');
+    const Second = Time.getSeconds().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const remindtime = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    // const apiTime = `${hours.toString().padStart(2, '0')}:${minutes}:${Second} `;
+
+    const timestamp = new Date(Time);
+    const apiTime = (timestamp.getUTCHours().toString().padStart(2, '0')) + ':' + (timestamp.getUTCMinutes().toString().padStart(2, '0')) + ':' + timestamp.getUTCSeconds().toString().padStart(2, '0')
+
+    // timestamp.setDate(timestamp.getDate() - 25);
+    // const apiDate = timestamp.toISOString().slice(0, 10).replace("T", " ");
+    const apiDate = (timestamp.getUTCFullYear()) + '-' + (timestamp.getUTCMonth() + 1) + '-' + timestamp.getUTCDate()
+
     const filteredUserData = UserData?.filter(user => selectedItems?.includes(user?.id)); //show selected user by defualt one user for chat
 
     const handleSubmit = () => {
-        const data = { type: 'Reminder', reminddescriptions: descriptions, remindtitle: title, remindtime, remind: selectedItems }
+        const data = { type: 'Reminder', reminddescriptions: descriptions, remindtitle: title, apiTime, apiDate, remind: selectedItems }
         if (descriptions == '') {
             Alert.alert('Please enter title and description');
         }
@@ -68,7 +75,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
         return (
             <View>
                 {index < 4 ? <Image source={{ uri: item.profile }} style={{
-                    height: 50, width: 50,
+                    height: 40, width: 40,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
             </View>
@@ -144,29 +151,11 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
 
 
 
-            <TextInput
-                placeholder="Search Users....."
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                // value={searchLocation}
-                // onChangeText={(res) => setSearchLocation(res)}
-                placeholderTextColor={COLOR.placeholder}
-                style={{
-                    backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 1, width: 1 },
-                    height: 45,
-                    borderRadius: 5,
-                    paddingLeft: 10,
-                    fontWeight: '500',
-                    fontSize: 16,
-                    color: COLOR.textcolor, marginTop: 20
-                }}
 
-
-            />
             {filteredUserData ? <View style={{
-                width: filteredUserData?.length < 2 ? 80
-                    : filteredUserData?.length < 3 ? 110
-                        : filteredUserData?.length < 4 ? 140 : 170,
+                width: filteredUserData?.length < 2 ? 65
+                    : filteredUserData?.length < 3 ? 85
+                        : filteredUserData?.length < 4 ? 105 : 125,
                 alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginVertical: 10
             }}>
                 <FlatList data={filteredUserData} renderItem={list} horizontal bounces={false}
@@ -183,7 +172,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
 
             <DatePicker
                 modal
-                mode='time'
+                mode='datetime'
                 open={opentime}
                 date={Time}
                 onConfirm={(time) => {

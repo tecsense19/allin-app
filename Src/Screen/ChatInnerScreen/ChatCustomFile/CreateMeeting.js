@@ -49,7 +49,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const period = hours < 12 ? 'AM' : 'PM';
     const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
 
-
+console.log();
     const handleSubmit = () => {
         const data = { type: 'Meeting', meetingtitle: title, meetingdescription: descriptions, meetingdate: meetingdate, meetingtime: meetingtime, remind: selectedItems }
         if (title == '' || descriptions == '') {
@@ -62,13 +62,8 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             onSubmit(data);
             setTitle(null)
             setDescription(null)
-
         }
     };
-
-
-
-
     const filteredUserData = UserData?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
     const selectedUser = UserData?.filter(user => {
 

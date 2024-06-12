@@ -7,7 +7,7 @@ const MsgMapImage = ({ data }) => {
     const latitude = data?.messageDetails.latitude
     const longitude = data?.messageDetails.longitude
 
-    console.log(data);
+    // console.log(data);
     return (
         <View style={{ alignSelf: data.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', padding: 5, backgroundColor: data.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray, borderRadius: 10 }}>
             <MapView

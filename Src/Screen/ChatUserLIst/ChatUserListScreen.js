@@ -24,6 +24,7 @@ import Timezone from 'react-native-timezone'
 import { useFocusEffect } from '@react-navigation/native';
 import { Clear_Chat, Delete_Chat_User, User_List, User_Logout } from '../../Service/actions';
 import Loader from '../../Custom/Loader/loader';
+import { getToken } from '../../Service/AsyncStorage';
 
 const ChatUserListScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -34,7 +35,7 @@ const ChatUserListScreen = props => {
     const [deviceToken, setDeviceToken] = useState('');
     const swipeableRef = useRef(null);
     const closeModal = () => { setVisible(false); };
-    useEffect(() => { getMyData(), requestContactsPermission(), getFcmToken() }, [])
+    useEffect(() => { requestContactsPermission(), getFcmToken() }, [])
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
 
     const handleSwipeableOpen = id => {
@@ -80,7 +81,6 @@ const ChatUserListScreen = props => {
         }
     };
     const list = ({ item }) => {
-        // console.log(item.profile);
         const getTime = () => {
             const time = new Date(item?.last_message_date);
             const now = new Date();
@@ -201,24 +201,18 @@ const ChatUserListScreen = props => {
             setVisible(false);
         } catch (e) { }
     };
-    const getMyData = async () => {
-        const jsonValue = await AsyncStorage?.getItem('myData');
-        const userData = JSON?.parse(jsonValue);
-        setToken(userData?.data?.token);
-
-        return userData?.data?.token;
-    };
     const getuser = async () => {
-        const token = await getMyData();
+        const Token = await getToken();
+        setToken(Token)
         const timezone = { timezone: Timezone.getTimeZone() }
 
-        await User_List(timezone, token).then((res) => {
+        await User_List(timezone, Token).then((res) => {
             if (res.status_code == 200) {
                 setAllUserData(res?.data?.userList)
                 setLoading(false)
                 // console.log(res?.data?.userList);
             }
-        }).catch((e) => { console.log(token, '=======>>>>', e, 'userListApihome screen'); })
+        }).catch((e) => { console.log(e, 'userList screen'); })
     }
 
     useFocusEffect(useCallback(() => {
@@ -280,7 +274,7 @@ const ChatUserListScreen = props => {
                 // props.navigation.navigate('summarize'), setVisible(false);
                 />
                 <ChatHeader
-                    onCall={() => Alert.alert('call')}
+                    onCall={() => props.navigation.navigate('call', allUserData)}
                     tintColor={COLOR.white}
                     onMenu={() => setVisible(true)}
                     onInvite={() => Alert.alert('Group')}

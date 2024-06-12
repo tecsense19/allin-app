@@ -56,8 +56,6 @@ const ChatInnerScreen = props => {
     const [location, setLocation] = useState(null);
     const [error, setError] = useState(null);
 
-
-
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
     const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
@@ -100,7 +98,6 @@ const ChatInnerScreen = props => {
     }, [visible]);
     const selectedMsgDelete = async () => {
         selectedMSG.forEach((res) => {
-            // console.log(res.messageId);
             Chat_Delete_Messages(token, res?.messageId)
         })
         setSelectedMSG('')
@@ -141,9 +138,6 @@ const ChatInnerScreen = props => {
         }
     }
     const handleSend = (currentMsgData) => {
-        // console.log(currentMsgData);
-
-
         if (inputText.trim() == '' && msgType == 'Text') {
             return null
         }
@@ -160,20 +154,16 @@ const ChatInnerScreen = props => {
                 break;
             case 'Meeting':
                 // Alert.alert('Meeting')
-                Meeting_Messages(token, msgType, currentMsgData)
+                Meeting_Messages(token, currentMsgData)
                 break;
             case 'Reminder':
-                Reminder_Messages(token, msgType, currentMsgData)
+                Reminder_Messages(token, currentMsgData)
                 break;
-
             case 'Location':
                 Location_Messages(token, location, userId)
                 break;
-
-
             default:
                 console.warn(`Unhandled message type: ${msgType}`);
-
         }
     };
     const pickDocument = async () => {
@@ -181,7 +171,6 @@ const ChatInnerScreen = props => {
             const result = await DocumentPicker.pick({ type: [DocumentPicker.types.allFiles], });
             setVisible(false);
             setLoding(true)
-            // console.log(result);
             setFileUpload(result)
             setLoding(false)
         }
@@ -265,7 +254,6 @@ const ChatInnerScreen = props => {
     //     }
     // };
     const ChatMessage = ({ message }) => {
-
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -276,6 +264,8 @@ const ChatInnerScreen = props => {
                     return <MsgTask data={message} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
                 case 'Meeting':
                     return <MsgMeeting data={message} />
+                case 'Reminder':
+                    return <MsgReminder data={message} />
                 case 'Location':
                     return <MsgMapImage data={message} />
                 default:
@@ -315,7 +305,7 @@ const ChatInnerScreen = props => {
     // }, [messages]);
     setTimeout(() => {
         getAllMessages()
-    }, 15000)
+    }, 30000)
     useEffect(() => {
         Geolocation.getCurrentPosition(
             position => {
