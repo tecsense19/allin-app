@@ -3,62 +3,60 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, StyleSheet,
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import Textinput from '../../../Custom/TextInput/SimpaleTextInput';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
+import { Add_Note, Delete_Note, Edit_Note } from '../../../Service/actions';
+import { getToken } from '../../../Service/AsyncStorage';
+import Loader from '../../../Custom/Loader/loader';
 
 const CreateNote = props => {
     const [title, setTitle] = useState('');
     const [note, setNote] = useState('');
+    const [token, setToken] = useState('');
     const [editableData, setEditableData] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        loadTasks();
+        gettoken()
         setEditableData(props?.route?.params);
         setTitle(editableData?.title);
-        setNote(editableData?.note);
-    }, [editableData]);
-    console.log(editableData);
-
-    const loadTasks = async () => {
-    };
-    const DeleteNote = async () => {
-
+        setNote(editableData?.description);
+    }, [editableData, token]);
+    const AddNote = async () => {
+        setLoading(true)
+        const res = await Add_Note(token, title, note)
+        if (res.status_code == 200) {
+            props.navigation.goBack()
+            setLoading(false)
+        }
     }
+    const gettoken = async () => {
+        setLoading(true)
+        const Token = await getToken()
+        setToken(Token)
+        setLoading(false)
+    }
+    const EditNote = async () => {
+        setLoading(true)
+        await Edit_Note(token, editableData.id, title, note)
+            .then((res) => {
+                if (res.status_code === 200) {
+                    props.navigation.goBack()
+                    setLoading(false)
 
-    const SaveTask = async () => {
-        let noteData = storedTasks ? JSON.parse(storedTasks) : [];
+                }
+            });
+    }
+    const DeleteNote = async () => {
+        setLoading(true)
+        await Delete_Note(token, editableData.id)
+            .then((res) => {
+                console.log(res);
+                if (res.status_code === 200) {
+                    props.navigation.goBack()
+                    setLoading(false)
 
-        if (editableData) {
-            const updatedData = {
-                id: editableData?.id,
-                title: title,
-                note: note,
-                createdAt: editableData?.createdAt,
-                updatedAt: Date.parse(new Date())
-
-            };
-            const dataIndex = noteData.findIndex(item => item.id === editableData?.id);
-            if (dataIndex !== -1) {
-                noteData[dataIndex] = updatedData;
-                firestore().collection('note').doc(editableData?.noteId).update(updatedData)
-            }
-        } else {
-            const newData = {
-                id: new Date().getTime().toString(),
-                title: title,
-                note: note,
-                createdAt: Date.parse(new Date()),
-                updatedAt: ''
-            };
-            noteData.push(newData);
-
-        }
-
-        if (!title == '' && !note == '') {
-            props.navigation.goBack();
-        } else {
-            Alert.alert('Enter title and task');
-        }
-    };
-
+                }
+            });
+    }
     return (
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
@@ -115,7 +113,12 @@ const CreateNote = props => {
                     <TouchableOpacity
                         style={styles.onSave}
                         onPress={() => {
-                            SaveTask();
+                            if (!editableData) {
+                                AddNote()
+
+                            } else {
+                                EditNote()
+                            }
                         }}>
                         <Text style={styles.saveTxt}> {editableData ? 'Update' : '  Save  '} </Text>
                     </TouchableOpacity>
@@ -135,6 +138,7 @@ const CreateNote = props => {
                 behavior={
                     Platform.OS === 'ios' ? 'padding' : 'height'
                 }></KeyboardAvoidingView>
+            <Loader visible={loading} />
         </View>
     );
 };

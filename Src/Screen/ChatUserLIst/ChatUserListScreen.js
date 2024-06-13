@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     BackHandler,
     Alert,
+    TextInput,
 } from 'react-native';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
@@ -28,11 +29,13 @@ import { getToken } from '../../Service/AsyncStorage';
 
 const ChatUserListScreen = props => {
     const [visible, setVisible] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
     const [loading, setLoading] = useState(true);
     const [openItemId, setOpenItemId] = useState(null);
     const [allUserData, setAllUserData] = useState([]);
     const [token, setToken] = useState('');
     const [deviceToken, setDeviceToken] = useState('');
+    const [search, setSearch] = useState('');
     const swipeableRef = useRef(null);
     const closeModal = () => { setVisible(false); };
     useEffect(() => { requestContactsPermission(), getFcmToken() }, [])
@@ -204,9 +207,9 @@ const ChatUserListScreen = props => {
     const getuser = async () => {
         const Token = await getToken();
         setToken(Token)
-        const timezone = { timezone: Timezone.getTimeZone() }
+        const bodydata = { timezone: Timezone.getTimeZone(), search: search }
 
-        await User_List(timezone, Token).then((res) => {
+        await User_List(bodydata, Token).then((res) => {
             if (res.status_code == 200) {
                 setAllUserData(res?.data?.userList)
                 setLoading(false)
@@ -214,11 +217,9 @@ const ChatUserListScreen = props => {
             }
         }).catch((e) => { console.log(e, 'userList screen'); })
     }
-
     useFocusEffect(useCallback(() => {
         getuser();
     }, []));
-
     const ClearChat = (id) => {
         setLoading(true)
         Clear_Chat(id, token)
@@ -260,7 +261,6 @@ const ChatUserListScreen = props => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
-
             <View style={styles.headerView}>
                 <MainMenu
                     QR={() => { Alert.alert('Website QR'), setVisible(false) }}
@@ -273,12 +273,18 @@ const ChatUserListScreen = props => {
                     onPress={() => { Alert.alert('summarize'), setVisible(false) }}
                 // props.navigation.navigate('summarize'), setVisible(false);
                 />
-                <ChatHeader
+                {!showSearch ? <ChatHeader
                     onCall={() => props.navigation.navigate('call', allUserData)}
                     tintColor={COLOR.white}
                     onMenu={() => setVisible(true)}
                     onInvite={() => Alert.alert('Group')}
-                    onSearch={() => Alert.alert('search')} />
+                    onSearch={() => setShowSearch(true)} /> :
+                    <View style={{ backgroundColor: COLOR.white, marginTop: 65, height: 45, marginHorizontal: 25, borderRadius: 10, flexDirection: 'row', alignItems: 'center' }}>
+                        <TextInput autoFocus value={search} onChangeText={(res) => { setSearch(res); getuser() }} placeholder='WHO TO SEND' style={{ backgroundColor: COLOR.white, height: 45, flex: 1, borderRadius: 10, paddingLeft: 10, fontSize: 16, fontWeight: 'bold' }} />
+                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { setShowSearch(false), setSearch(''), getuser() }}>
+                            <Image source={require('../../Assets/Image/search.png')} style={{ tintColor: COLOR.green, height: 35, width: 35, marginHorizontal: 5 }} />
+                        </TouchableOpacity>
+                    </View>}
             </View>
             <View style={styles.detailsview}>
                 <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />

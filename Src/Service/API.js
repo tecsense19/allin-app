@@ -28,6 +28,12 @@ export const ACTIONS = {
     DELETE_CHAT_USER: BASE_PATH + '/delete-chat-user',
     ADD_WORK_HOURS: BASE_PATH + '/add-work-hours',
     WORK_HOURS: BASE_PATH + '/work-hours',
+    EDIT_WORK_HOURS_NOTE: BASE_PATH + '/edit-work-hours-summary',
+    NOTE_LIST: BASE_PATH + '/note',
+    ADD_NOTE: BASE_PATH + '/add-note',
+    EDIT_NOTE: BASE_PATH + '/edit-note',
+    EDIT_NOTE: BASE_PATH + '/edit-note',
+    DELETE_NOTE: BASE_PATH + '/delete-note',
 
 
 

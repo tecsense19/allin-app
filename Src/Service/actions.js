@@ -2,7 +2,7 @@ import { Alert } from "react-native";
 import { ACTIONS } from "./API"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const User_List = async (timeZone, token) => {
+export const User_List = async (timeZone, token,Search) => {
     // console.log('request', token);
     const res = await fetch(ACTIONS.USER_LIST, {
         method: "POST",
@@ -17,7 +17,6 @@ export const User_List = async (timeZone, token) => {
 
     return response
 }
-
 // export const User_List = async (timeZone, token) => {
 //     try {
 //         const res = await fetch(ACTIONS.USER_LIST, {
@@ -41,6 +40,7 @@ export const User_List = async (timeZone, token) => {
 //         throw error;
 //     }
 // };
+
 export const User_Logout = async (device_token, token) => {
     const res = await fetch(ACTIONS.LOGOUT, {
         method: "POST",
@@ -310,7 +310,7 @@ export const Task_Messages = async (token, MsgType, taskData) => {
     return response
 }
 
-export const Task_Detail = async (token, Taskid, Timezone,) => {
+export const Task_Detail = async (token, Taskid, Timezone, ) => {
 
     const res = await fetch(ACTIONS.TASK_DETAILS, {
         method: "POST",
@@ -318,7 +318,7 @@ export const Task_Detail = async (token, Taskid, Timezone,) => {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ task_id: Taskid, timezone: Timezone, start: 0, limit: 1000 })
+        body: JSON.stringify({ task_id: Taskid, timezone: Timezone, start: 0, limit: 1000,})
 
     })
     const response = await res.json()
@@ -400,20 +400,21 @@ export const Location_Messages = async (token, data, id) => {
     return response
 }
 
-export const Add_Work_Hour = async (token, Start, End, Summary) => {
+export const Add_Work_Hour = async (token, Start, End, Summary, timeZone) => {
     const res = await fetch(ACTIONS.ADD_WORK_HOURS, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ start_date_time: Start, end_date_time: End, summary: Summary })
+        body: JSON.stringify({ start_date_time: Start, end_date_time: End, summary: Summary, timezone: timeZone })
     })
     const response = await res.json()
     console.log(response);
     return response
 }
-export const Work_Hour = async (token) => {
+
+export const Work_Hour = async (token, Month) => {
 
     const res = await fetch(ACTIONS.WORK_HOURS, {
         method: "POST",
@@ -421,12 +422,79 @@ export const Work_Hour = async (token) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        // body: JSON.stringify({ })
+        body: JSON.stringify({ month: Month })
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Edit_Work_Hour_Summary = async (token, Id, summary) => {
+
+    const res = await fetch(ACTIONS.EDIT_WORK_HOURS_NOTE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, summary: summary })
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Add_Note = async (token, Title, Description) => {
+
+    const res = await fetch(ACTIONS.ADD_NOTE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title: Title, description: Description })
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Get_Note = async (token) => {
+    const res = await fetch(ACTIONS.NOTE_LIST, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    const response = await res.json()
+    return response
+}
+export const Edit_Note = async (token, Id, Title, Description) => {
+    const res = await fetch(ACTIONS.EDIT_NOTE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, title: Title, description: Description })
     })
     const response = await res.json()
     console.log(response);
     return response
 }
+
+export const Delete_Note = async (token, Id,) => {
+    const res = await fetch(ACTIONS.DELETE_NOTE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
+
 export const Refresh_Token = async (token) => {
     try {
         const response = await fetch(ACTIONS.REFRESH_TOKEN, {

@@ -4,9 +4,11 @@ import { Stopwatch } from 'react-native-stopwatch-timer';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import WorkNoteModal from '../../../Custom/Modal/WorkNoteModal';
-import { Add_Work_Hour, Work_Hour } from '../../../Service/actions';
+import { Add_Work_Hour, Edit_Work_Hour_Summary, Work_Hour } from '../../../Service/actions';
 import Loader from '../../../Custom/Loader/loader';
 import MonthPicker from 'react-native-month-year-picker'
+import TimeZone from 'react-native-timezone'
+import { getToken } from '../../../Service/AsyncStorage';
 
 
 const WorkHours = props => {
@@ -24,14 +26,17 @@ const WorkHours = props => {
     const [WorkHourData, setWorkHourData] = useState([])
     const [loading, setLoading] = useState(false)
     const [hours, minutes, seconds] = time.split(':');
+    const [isUpdate, setIsUpdate] = useState(false)
+    const [summaryId, setSummaryID] = useState('')
+    const [token, setToken] = useState('')
 
-    useEffect(() => {
-        GetWorkHours()
-    }, [clear])
-    const token = props?.route?.params
+
+    // const token = props?.route?.params
     const monthIndex = date.getMonth();
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const month = months[monthIndex];
+    const month = months[monthIndex] + '-' + date.getFullYear();
+    const apiformattedMonth = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+    const apiMonthyear = (date.getFullYear()) + '-' + apiformattedMonth
     const newTime = `${minutes}:${seconds}`;
     const listTime = `${hours}h:${minutes}mi`;
     const options = {
@@ -44,11 +49,10 @@ const WorkHours = props => {
     };
     const totalDuration = 10;
     const timestamp = new Date();
-    timestamp.setDate(timestamp.getDate() - 25);
-    timestamp.setHours(timestamp.getHours() - 14);
-    timestamp.setMinutes(timestamp.getMinutes() - 44);
+    timestamp.setDate(timestamp.getDate());
+    timestamp.setHours(timestamp.getHours());
+    timestamp.setMinutes(timestamp.getMinutes());
     const formattedDate = timestamp.toISOString().slice(0, 19).replace("T", " ");
-
     const onhandleLap = async () => {
         let newData = [...timerData];
         newData.push({ id: timerData == null ? 1 : timerData?.length + 1, time: listTime, note: 'hello', o: 'peeeee', date: Date.parse(new Date()) })
@@ -63,17 +67,25 @@ const WorkHours = props => {
             setClear(false)
         }
     }
+
     const list = ({ item }) => {
-        const originalDate = new Date(item.created_at);
+        const originalDate = new Date(item.start_date_time);
         const day = originalDate.getDate();
         const month = originalDate.getMonth() + 1;
         const year = originalDate.getFullYear();
         const formattedDay = day < 10 ? "0" + day : day;
         const formattedMonth = month < 10 ? "0" + month : month;
         const convertedDateString = `${formattedDay}/${formattedMonth}/${year}`;
-
-
-
+        const startDateTime = item.start_date_time.toString().slice(0, 19).replace("T", " ");
+        const EndDateTime = item.end_date_time.toString().slice(0, 19).replace("T", " ");
+        const oneClickPluse = async () => {
+            setIsUpdate(true)
+            setSummaryID(item.id)
+            setStartTimeDate(startDateTime)
+            setEndTimeDate(EndDateTime)
+            setSummary(item?.summary)
+            setShowWorkModal(true)
+        }
         return (
             <TouchableOpacity style={{ backgroundColor: COLOR.lightgreen, borderRadius: 10, height: 70, padding: 10, marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <View>
@@ -82,7 +94,7 @@ const WorkHours = props => {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.black }}>{item.total_hours}</Text>
-                    <TouchableOpacity style={{ backgroundColor: COLOR.white, height: 25, width: 25, alignItems: 'center', justifyContent: 'center', borderRadius: 50, marginLeft: 10 }}>
+                    <TouchableOpacity onPress={() => { oneClickPluse() }} style={{ backgroundColor: COLOR.white, height: 25, width: 25, alignItems: 'center', justifyContent: 'center', borderRadius: 50, marginLeft: 10 }}>
                         <Text style={{ fontSize: 18, fontWeight: '500', color: COLOR.green, marginBottom: 1.5 }}>+</Text>
                     </TouchableOpacity>
                 </View>
@@ -90,28 +102,44 @@ const WorkHours = props => {
         )
     }
     const AddWorkHours = async () => {
-        await Add_Work_Hour(token, startTimeDate, endTimeDate, summary)
+        const timeZone = TimeZone.getTimeZone()
+        await Add_Work_Hour(token, startTimeDate, endTimeDate, summary, timeZone)
+    }
+    const EditWorkHours = async () => {
+        await Edit_Work_Hour_Summary(token, summaryId, summary)
+    }
+    useEffect(() => {
+        GetWorkHours()
+        get()
+
+    }, [clear, apiMonthyear])
+    const get = async () => {
+        const Token = await getToken()
+        if (Token) {
+            setToken(Token)
+        } else {
+            get()
+        }
     }
     const GetWorkHours = async () => {
         setLoading(true)
-        await Work_Hour(token)
+        await Work_Hour(token, apiMonthyear)
             .then((res) => {
+                // console.log(res);
                 setWorkHourData(res.data.workHours);
                 setLoading(false)
             })
             .catch((e) => {
                 setLoading(false)
-                console.log(e, 'workhour');
+                // console.log(e, 'workhour');
             })
     }
-
     const showPicker = useCallback((value) => setShow(value), []);
     const onValueChange = useCallback(
         (event, newDate) => {
             const selectedDate = newDate || date;
             showPicker(false);
             setDate(selectedDate);
-            console.log(selectedDate);
         },
         [date, showPicker],
     );
@@ -142,16 +170,15 @@ const WorkHours = props => {
                 options={options}
                 totalDuration={totalDuration}
                 reset={clear}
-
             />
             <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
             {show ?
-                <View style={{ marginTop:'70%' }} >
-                    <MonthPicker
-                        onChange={onValueChange}
-                        value={date}
-                    />
-                </View>
+                <MonthPicker
+                    onChange={onValueChange}
+                    value={date}
+                    maximumDate={new Date()}
+
+                />
                 //  <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
                 //     <FlatList renderItem={({ item }) => (
                 //         <TouchableOpacity style={{ padding: 8, backgroundColor: COLOR.verylightgray, marginTop: 10 }} onPress={() => { setSelectedMonth(item), setShow(false) }}>
@@ -162,9 +189,22 @@ const WorkHours = props => {
                 :
                 <FlatList renderItem={list} data={WorkHourData} style={{ paddingHorizontal: 30 }} />}
             <ScrollView>
-                <WorkNoteModal visible={showWorkModal} onPress={() => { setShowWorkModal(false); setClear(true), AddWorkHours(), setLoading(true) }} startTime={startTimeDate} EndTime={endTimeDate} onChangeText={(res) => setSummary(res)} />
+                <WorkNoteModal Close={() => { setShowWorkModal(false) }} title={isUpdate ? 'Update Summary' : 'Add Summary'} visible={showWorkModal} buttonTitle={isUpdate ? 'Update' : 'Save'}
+                    onPress={() => {
+                        if (isUpdate) {
+                            EditWorkHours()
+                            setShowWorkModal(false);
+
+                        } else {
+                            setShowWorkModal(false);
+                            setClear(true);
+                            AddWorkHours();
+                            setLoading(true);
+                        }
+                    }}
+                    startTime={startTimeDate} EndTime={endTimeDate} summary={summary} onChangeText={(res) => setSummary(res)} />
             </ScrollView>
-          
+
             <Loader visible={loading} />
         </View>
     );

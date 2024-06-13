@@ -1,13 +1,17 @@
 import { Modal, Text, TextInput, View } from "react-native"
 import { COLOR } from "../../Assets/AllFactors/AllFactors"
 import Button from "../Button/Button"
+import NavigateHeader from "../Header/NavigateHeader"
 
-const WorkNoteModal = ({ visible, onPress, summary, onChangeText, startTime, EndTime }) => {
+const WorkNoteModal = ({ visible, onPress, summary, Close, onChangeText, startTime, EndTime, title, buttonTitle }) => {
     return (
         <Modal visible={visible} transparent>
             <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ height: '60%', width: '100%', backgroundColor: COLOR.white, borderRadius: 10, }}>
-                    <Text style={{ fontSize: 20, color: COLOR.black, fontWeight: 'bold', margin: 20, textAlign: 'center' }}>Add Summary</Text>
+                    <View style={{ marginTop: -45, paddingHorizontal: 20 }}>
+                        <NavigateHeader title={title} color={COLOR.black} onPress={Close} />
+                        {/* <Text style={{ fontSize: 20, color: COLOR.black, fontWeight: 'bold', margin: 20, textAlign: 'center' }}>{title}</Text> */}
+                    </View>
                     <Text
                         style={{
                             marginTop: 10,
@@ -72,7 +76,7 @@ const WorkNoteModal = ({ visible, onPress, summary, onChangeText, startTime, End
                             height: 150, marginBottom: 40
                         }}
                     />
-                    <Button onPress={onPress} color={COLOR.white} bgColor={COLOR.green} title={'Save'} marginHorizontal={20} />
+                    <Button onPress={onPress} color={COLOR.white} bgColor={COLOR.green} title={buttonTitle} marginHorizontal={20} />
                 </View>
             </View>
         </Modal>

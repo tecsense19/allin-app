@@ -55,6 +55,7 @@ const ChatInnerScreen = props => {
     const [showButton, setShowButton] = useState(false);
     const [location, setLocation] = useState(null);
     const [error, setError] = useState(null);
+    const [Filter, setFilter] = useState(null);
 
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
@@ -90,7 +91,7 @@ const ChatInnerScreen = props => {
             }
         }
         fetchData();
-    }, [messageIds, token]);
+    }, [messageIds, token, change, Filter]);
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
@@ -109,13 +110,14 @@ const ChatInnerScreen = props => {
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
     const getAllMessages = async () => {
-        const bodyData = { id: userId, limit: 1000, start: 0, timezone: Timezone.getTimeZone(), }
+        const bodyData = { id: userId, limit: 1000, start: 0, timezone: Timezone.getTimeZone(), filter: change == true ? 'filter' : null }
         const data = await Get_All_Messages(bodyData, token)
         if (data?.status_code == 200) {
             setUserDetails(data.data.userData);
             setMessages(data?.data?.chat)
+            setLoding(false);
         } else {
-            setVisible(false);
+            setLoding(false);
             Alert.alert(data?.message);
         }
     };
@@ -168,7 +170,19 @@ const ChatInnerScreen = props => {
     };
     const pickDocument = async () => {
         try {
-            const result = await DocumentPicker.pick({ type: [DocumentPicker.types.allFiles], });
+            const result = await DocumentPicker.pick({
+                type: [
+                    DocumentPicker.types.audio,
+                    DocumentPicker.types.plainText,
+                    DocumentPicker.types.pdf,
+                    DocumentPicker.types.csv,
+                    DocumentPicker.types.doc,
+                    DocumentPicker.types.docx,
+                    DocumentPicker.types.images,
+                    DocumentPicker.types.plainText,
+                    DocumentPicker.types.xls,
+                ],
+            });
             setVisible(false);
             setLoding(true)
             setFileUpload(result)
@@ -190,8 +204,6 @@ const ChatInnerScreen = props => {
         }
     };
     const onPhotoGallery = async () => {
-
-
         const result = await launchImageLibrary();
         if (result?.assets[0]?.uri) {
             setIsFocused(false); setVisible(false);
@@ -274,12 +286,12 @@ const ChatInnerScreen = props => {
         };
         return (
             <View style={{ backgroundColor: selectedMSG.includes(message) ? COLOR.green : COLOR.white, marginVertical: 2 }}>
-                {!change ? <TouchableOpacity style={{ marginHorizontal: 30, marginVertical: 2, }}
+                <TouchableOpacity style={{ marginHorizontal: 30, marginVertical: 2, }}
                     delayLongPress={500}
                     onLongPress={() => { setIsSelected(true), onhandaleSelected(message) }}
                     onPress={() => { isSelected ? onhandaleSelected(message) : '' }}>
                     {renderMessage()}
-                </TouchableOpacity> : ''}
+                </TouchableOpacity>
             </View>
         );
     };
@@ -318,6 +330,9 @@ const ChatInnerScreen = props => {
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );
     }, []);
+    // const onChange = () => {
+    //     setChange(!change), setLoding(true)
+    // }
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
             {msgType == 'Location' ?
@@ -359,7 +374,7 @@ const ChatInnerScreen = props => {
                                     onProfile={() => props.navigation.navigate('profile', userDetails)}
                                     onCall={onhandalePhoneCall}
                                     value={change}
-                                    onChange={() => setChange(!change)}
+                                    onChange={() => { setChange(!change), setLoding(true), getAllMessages() }}
                                     source={{ uri: chatProfileData?.item?.profile }}
                                     title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName}
                                     onSearch={() => Alert.alert('search')}

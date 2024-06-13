@@ -39,7 +39,7 @@ const Chatheader = ({
                         style={[styles.icon, { tintColor: COLOR.green }]}
                     />
                 </TouchableOpacity>
-                {/* <TouchableOpacity onPress={onChange} style={{ marginRight: 7, }}>
+                <TouchableOpacity onPress={onChange} style={{ marginRight: 7, }}>
                     {value ? <Image
                         source={require('../../Assets/Image/chatnext.png')}
                         style={styles.icon}
@@ -47,7 +47,7 @@ const Chatheader = ({
                         source={require('../../Assets/Image/chatnext.png')}
                         style={[styles.icon, { transform: [{ rotate: '180deg' }] }]}
                     />}
-                </TouchableOpacity> */}
+                </TouchableOpacity>
                 {/* <TouchableOpacity onPress={onSearch}>
             <Image
               source={require('../../assets/search.png')}
