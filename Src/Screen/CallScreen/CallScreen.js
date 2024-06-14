@@ -13,13 +13,33 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import styles from './CallScreenStyle';
 import { getToken } from '../../Service/AsyncStorage';
+import TimeZone from 'react-native-timezone'
+import { User_List } from '../../Service/actions';
 
 const CallScreen = (props) => {
     const [data, setData] = useState([])
+    const [search, setSearch] = useState('')
+    const [token, setToken] = useState('')
     useEffect(() => {
-        setData(props.route.params)
-    }, [])
+        getuser();
+    }, [search.length>2]);
 
+    const getuser = async () => {
+        const Token = await getToken();
+        setToken(Token);
+        const bodydata = { timezone: TimeZone.getTimeZone(), search: search };
+
+        await User_List(bodydata, Token)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    setData(res?.data?.userList);
+                    setLoading(false);
+                }
+            })
+            .catch((e) => {
+                console.log(e, 'userList screen');
+            });
+    };
     const list = ({ item }) => {
         console.log(item);
         const onhandalePhoneCall = () => {
@@ -96,7 +116,8 @@ const CallScreen = (props) => {
                     />
 
                     <TextInput
-                        onSubmitEditing={() => setShowSearch(false)}
+                        value={search}
+                        onChangeText={(text) => setSearch(text)}
                         style={{
                             fontSize: 16,
                             flex: 1,

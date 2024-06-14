@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native'
 import React from 'react'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count }) => {
+const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count, onForword }) => {
     const createDeleteAlert = () =>
         Alert.alert(
             'Deleted Messages...?',
@@ -29,17 +29,23 @@ const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count }) => {
             </View>
             <View
                 style={{ flexDirection: 'row', alignItems: 'center', marginRight: 5 }}>
-                <TouchableOpacity onPress={onReply} style={{ marginRight: 15 }}>
+                {/* <TouchableOpacity onPress={onReply} style={{ marginRight: 15 }}>
                     <Image
                         source={require('../../../Assets/Image/reply.png')}
                         style={{ height: 22, width: 22, tintColor: COLOR.white, marginRight: 20 }}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity onPress={createDeleteAlert} style={{ marginRight: 30 }}>
                     <Image
                         source={require('../../../Assets/Image/bin.png')}
                         style={{ height: 20, width: 20 }}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onForword} style={{ marginRight: 15 }}>
+                    <Image
+                        source={require('../../../Assets/Image/reply.png')}
+                        style={{ height: 22, width: 22, tintColor: COLOR.white, marginRight: 20, transform: [{ scaleX: -1 }] }}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onMenu} style={{}}>

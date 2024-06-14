@@ -399,6 +399,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwiftAudioEx.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Yoga.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -480,6 +485,11 @@
 			<false/>
 		</dict>
 		<key>react-native-timezone.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>react-native-track-player.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

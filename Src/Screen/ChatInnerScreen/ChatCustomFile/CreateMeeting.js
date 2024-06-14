@@ -31,7 +31,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const year = date.getUTCFullYear();
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Add 1 to the month and pad with zero
     const day = date.getUTCDate().toString().padStart(2, '0'); // Pad with zero
-    const meetingdate = day + '/' + month + '/' + year
+    const meetingdate = year + '-' + month + '-' + day
     const [visible, setVisible] = useState(false);
     const [UserData, setUserData] = useState();
     const [selectedItems, setSelectedItems] = useState([userId]);
@@ -49,7 +49,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const period = hours < 12 ? 'AM' : 'PM';
     const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
 
-console.log();
+    // console.log(sel);
     const handleSubmit = () => {
         const data = { type: 'Meeting', meetingtitle: title, meetingdescription: descriptions, meetingdate: meetingdate, meetingtime: meetingtime, remind: selectedItems }
         if (title == '' || descriptions == '') {
@@ -238,7 +238,6 @@ console.log();
                 onConfirm={(time) => {
                     setOpenTime(false)
                     setTime(time)
-                    // console.log(time);
                 }}
                 onCancel={() => {
                     setOpen(false)

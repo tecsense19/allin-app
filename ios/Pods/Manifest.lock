@@ -1046,6 +1046,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-track-player (4.1.1):
+    - React-Core
+    - SwiftAudioEx (= 1.1.0)
   - React-nativeconfig (0.74.1)
   - React-NativeModulesApple (0.74.1):
     - glog
@@ -1337,6 +1340,7 @@ PODS:
   - RNSoundPlayer (0.14.2):
     - React-Core
   - SocketRocket (0.7.0)
+  - SwiftAudioEx (1.1.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1381,6 +1385,7 @@ DEPENDENCIES:
   - react-native-month-year-picker (from `../node_modules/react-native-month-year-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-timezone (from `../node_modules/react-native-timezone`)
+  - react-native-track-player (from `../node_modules/react-native-track-player`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1426,6 +1431,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - SocketRocket
+    - SwiftAudioEx
 
 EXTERNAL SOURCES:
   boost:
@@ -1506,6 +1512,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-timezone:
     :path: "../node_modules/react-native-timezone"
+  react-native-track-player:
+    :path: "../node_modules/react-native-track-player"
   React-nativeconfig:
     :path: "../node_modules/react-native/ReactCommon"
   React-NativeModulesApple:
@@ -1619,6 +1627,7 @@ SPEC CHECKSUMS:
   react-native-month-year-picker: 948797e981ca502427024a34b17f545eb321bbff
   react-native-safe-area-context: dcab599c527c2d7de2d76507a523d20a0b83823d
   react-native-timezone: f5c56af58c43b6979a7e802a71565acdd1f36069
+  react-native-track-player: 82ef1756ffeea61140fea17519ecd6d64ec3cf3e
   React-nativeconfig: 21d89c65ca39875fad2c5c465e0e013e514eba21
   React-NativeModulesApple: 4fea05fb8360a9364b6307a0b996657de6b821d2
   React-perflogger: 3d31e0d1e8ad891e43a09ac70b7b17a79773003a
@@ -1650,6 +1659,7 @@ SPEC CHECKSUMS:
   RNScreens: baa80504a942be4a5bf669dc97ea0bb8997d6867
   RNSoundPlayer: 917b6e9d8e440b5a5070f714df3b6179def12414
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
+  SwiftAudioEx: f6aa653770f3a0d3851edaf8d834a30aee4a7646
   Yoga: dafebc41bc66910af33077aaa41078e89fd635bf
 
 PODFILE CHECKSUM: 0f0fd09c187be51d40374ee916d15fe7504e3ec1

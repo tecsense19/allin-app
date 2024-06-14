@@ -9,6 +9,7 @@ import Loader from '../../../Custom/Loader/loader';
 import MonthPicker from 'react-native-month-year-picker'
 import TimeZone from 'react-native-timezone'
 import { getToken } from '../../../Service/AsyncStorage';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const WorkHours = props => {
@@ -112,7 +113,8 @@ const WorkHours = props => {
         GetWorkHours()
         get()
 
-    }, [clear, apiMonthyear])
+    }, [clear, apiMonthyear,])
+    console.log(apiMonthyear);
     const get = async () => {
         const Token = await getToken()
         if (Token) {
@@ -121,16 +123,20 @@ const WorkHours = props => {
             get()
         }
     }
+    useFocusEffect(useCallback(() => {
+        GetWorkHours()
+    }, [WorkHourData]))
     const GetWorkHours = async () => {
-        setLoading(true)
+
         await Work_Hour(token, apiMonthyear)
             .then((res) => {
-                // console.log(res);
+
                 setWorkHourData(res.data.workHours);
                 setLoading(false)
             })
             .catch((e) => {
                 setLoading(false)
+
                 // console.log(e, 'workhour');
             })
     }

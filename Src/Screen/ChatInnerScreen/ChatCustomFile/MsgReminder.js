@@ -33,7 +33,7 @@ const MsgReminder = ({ data, }) => {
                     }}>
                         <FlatList data={member} renderItem={list} horizontal bounces={false}
                             style={{}} />
-                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor }}>{member?.length <= 2 ? '' : '+' + (member.length - 3)}</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor }}>{member?.length <= 3 ? '' : '+' + (member.length - 3)}</Text>
                     </View>
                 </View>
                 <Text style={styles.time}>{data.time}</Text>

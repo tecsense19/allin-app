@@ -1,8 +1,7 @@
 import { Alert } from "react-native";
 import { ACTIONS } from "./API"
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const User_List = async (timeZone, token,Search) => {
+export const User_List = async (timeZone, token, Search) => {
     // console.log('request', token);
     const res = await fetch(ACTIONS.USER_LIST, {
         method: "POST",
@@ -229,6 +228,25 @@ export const Chat_File_Message = async (MsgType, fileName, userId, token, fileTy
     return response
 }
 
+export const Forword_Messages = async (token, msgId, userID) => {
+    const res = await fetch(ACTIONS.FORWORD_MESSAGES, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: msgId, user_id: userID })
+    })
+    const response = await res.json()
+    if (response?.status_code == 200) {
+
+    } else {
+        Alert.alert(data?.message);
+
+    }
+    return response
+}
+
 export const File_Uplode = async (token, formData,) => {
     const res = await fetch(ACTIONS.FILE_UPLOAD, {
         method: "POST",
@@ -310,7 +328,7 @@ export const Task_Messages = async (token, MsgType, taskData) => {
     return response
 }
 
-export const Task_Detail = async (token, Taskid, Timezone, ) => {
+export const Task_Detail = async (token, Taskid, Timezone,) => {
 
     const res = await fetch(ACTIONS.TASK_DETAILS, {
         method: "POST",
@@ -318,7 +336,7 @@ export const Task_Detail = async (token, Taskid, Timezone, ) => {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ task_id: Taskid, timezone: Timezone, start: 0, limit: 1000,})
+        body: JSON.stringify({ task_id: Taskid, timezone: Timezone, start: 0, limit: 1000, })
 
     })
     const response = await res.json()
@@ -341,7 +359,7 @@ export const Task_Message_Send = async (token, taskid, text, chattype, filetype,
     return response
 }
 
-export const Meeting_Messages = async (token, MsgType, taskData) => {
+export const Meeting_Messages = async (token, taskData) => {
     const remindId = taskData?.remind
     var stringArray = remindId?.map(String);
     var id = stringArray?.join(',');
@@ -394,6 +412,21 @@ export const Location_Messages = async (token, data, id) => {
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ message_type: 'Location', receiver_id: id, latitude: data.latitude, longitude: data.longitude, location_url: `https://www.google.com/maps?q=${data?.latitude},${data.longitude}` })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
+
+export const Contact_Message = async (token, data) => {
+
+    const res = await fetch(ACTIONS.MESSAGE_CONTACT, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ contact_details: data })
     })
     const response = await res.json()
     console.log(response);
@@ -489,6 +522,20 @@ export const Delete_Note = async (token, Id,) => {
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ id: Id, })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
+
+export const Delete_Account = async (token,) => {
+    const res = await fetch(ACTIONS.DELETE_ACCOUNT, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+
     })
     const response = await res.json()
     console.log(response);

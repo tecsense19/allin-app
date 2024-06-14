@@ -4,7 +4,6 @@ import { View, TouchableOpacity, StatusBar, ImageBackground, Image, LogBox, Scro
 import { PERMISSIONS, openSettings, request } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { useFocusEffect } from '@react-navigation/native';
 // import Sound from '../../custom/SoundListEditProfile/Sound';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
@@ -16,7 +15,7 @@ import Loader from '../../Custom/Loader/loader';
 import ProfileModal from '../../Custom/Modal/ProfileModal';
 import SocialMedia from '../../Custom/Modal/SocialMedia';
 import styles from '../EditProfileScreen/EditProfileScreenStyle';
-import { Edit_Profile } from '../../Service/actions';
+import { Delete_Account, Edit_Profile } from '../../Service/actions';
 LogBox.ignoreAllLogs();
 const EditProfileScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -161,7 +160,13 @@ const EditProfileScreen = props => {
             Alert.alert(res?.message);
         }
     };
-
+    const deleteAccount = async () => {
+        await Delete_Account(token).then((res) => {
+            if (res.status_code === 200) {
+                props.navigation.navigate('splase')
+            }
+        })
+    }
     return (
         <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
             <View style={styles.container}>
@@ -212,7 +217,7 @@ const EditProfileScreen = props => {
                         <SocialMedia source={require('../../Assets/Image/linkedin.png')} placeholder={'Paste link here'} onChangeText={(res) => { setLinkedinurl(res) }} value={linkedinurl} />
                         <Button onPress={() => UpdateDataApiCalling()} title={'Update'} color={COLOR.white} bgColor={COLOR.green} marginTop={35} marginHorizontal={10} />
                         {/* <Button onPress={() => Alert.alert('Auto Delete Task')} title={'Auto Delete Tasks'} color={COLOR.white} bgColor={COLOR.green} marginTop={10} marginHorizontal={10} /> */}
-                        <Button title={'Delete Account '} color={COLOR.white} bgColor={COLOR.orange} marginTop={10} marginBottom={50} marginHorizontal={10} />
+                        <Button onPress={() => deleteAccount()} title={'Delete Account '} color={COLOR.white} bgColor={COLOR.orange} marginTop={10} marginBottom={50} marginHorizontal={10} />
                         <ProfileModal onRequestClose={closeModal} visible={visible} onClose={() => setVisible(false)} onCemera={() => { requestCameraPermission(); profileImgCemera(); }} onGallery={() => { profileImgGallery(); }} />
                     </View>
 

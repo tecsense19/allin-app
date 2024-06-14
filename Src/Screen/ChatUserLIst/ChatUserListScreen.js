@@ -9,6 +9,7 @@ import {
     BackHandler,
     Alert,
     TextInput,
+    Linking,
 } from 'react-native';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
@@ -38,7 +39,7 @@ const ChatUserListScreen = props => {
     const [search, setSearch] = useState('');
     const swipeableRef = useRef(null);
     const closeModal = () => { setVisible(false); };
-    useEffect(() => { requestContactsPermission(), getFcmToken() }, [])
+    useEffect(() => { getFcmToken() }, [])
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
 
     const handleSwipeableOpen = id => {
@@ -67,22 +68,7 @@ const ChatUserListScreen = props => {
                 { text: 'Delete', onPress: () => { DeleteUser(id) }, style: 'destructive' },
             ],)
     }
-    const ContactPermissionAlert = () => {
-        const title = 'Permission Request';
-        const Descriptions =
-            'This app would like to view your contacts';
-        const Deny = () => console.log('Deny');
-        const Allow = () => openSettings();
-        MyAlert(title, Descriptions, Allow, Deny);
-    };
-    const requestContactsPermission = async () => {
-        const result = await request(PERMISSIONS.IOS.CONTACTS);
-        if (!result === 'granted') {
-            Contacts.getAll().then(contacts => {
-                ContactPermissionAlert();
-            })
-        }
-    };
+
     const list = ({ item }) => {
         const getTime = () => {
             const time = new Date(item?.last_message_date);
@@ -258,6 +244,26 @@ const ChatUserListScreen = props => {
 
 
     }
+    const requestLocationPermission = async () => {
+        try {
+            const granted = await request(
+                Platform.OS === 'ios'
+                    ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+                    : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+            );
+            if (granted === RESULTS.GRANTED) {
+                console.log('Location permission granted', Geolocation.watchPosition((r) => {
+                    console.log('====================================');
+                    console.log(r);
+                    console.log('====================================');
+                }));
+            } else {
+                Linking.openSettings()
+            }
+        } catch (error) {
+            console.error('Error requesting location permission:', error);
+        }
+    };
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
@@ -280,9 +286,9 @@ const ChatUserListScreen = props => {
                     onInvite={() => Alert.alert('Group')}
                     onSearch={() => setShowSearch(true)} /> :
                     <View style={{ backgroundColor: COLOR.white, marginTop: 65, height: 45, marginHorizontal: 25, borderRadius: 10, flexDirection: 'row', alignItems: 'center' }}>
-                        <TextInput autoFocus value={search} onChangeText={(res) => { setSearch(res); getuser() }} placeholder='WHO TO SEND' style={{ backgroundColor: COLOR.white, height: 45, flex: 1, borderRadius: 10, paddingLeft: 10, fontSize: 16, fontWeight: 'bold' }} />
+                        <TextInput onSubmitEditing={() => setShowSearch(false)} autoFocus value={search} onChangeText={(res) => { setSearch(res); getuser() }} placeholder='Search User...' style={{ backgroundColor: COLOR.white, height: 45, flex: 1, borderRadius: 10, paddingLeft: 10, fontSize: 16, fontWeight: 'bold' }} />
                         <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { setShowSearch(false), setSearch(''), getuser() }}>
-                            <Image source={require('../../Assets/Image/search.png')} style={{ tintColor: COLOR.green, height: 35, width: 35, marginHorizontal: 5 }} />
+                            <Image source={require('../../Assets/Image/search.png')} style={{ tintColor: COLOR.green, height: 30, width: 30, marginHorizontal: 5 }} />
                         </TouchableOpacity>
                     </View>}
             </View>

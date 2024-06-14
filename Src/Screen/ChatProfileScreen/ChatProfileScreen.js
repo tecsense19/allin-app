@@ -117,7 +117,7 @@ export default ChatProfileScreen;
 const CallMsg = ({ img, onPress }) => {
     return (
         <TouchableOpacity onPress={onPress} style={{ backgroundColor: COLOR.green, margin: 5, borderRadius: 10 }} >
-            <Image source={img} style={{ height: 25, width: 25, margin: 10, marginHorizontal: 20 }} />
+            <Image source={img} style={{ height: 25, width: 25, margin: 10, marginHorizontal: 20, tintColor: COLOR.white }} />
         </TouchableOpacity>
     )
 }

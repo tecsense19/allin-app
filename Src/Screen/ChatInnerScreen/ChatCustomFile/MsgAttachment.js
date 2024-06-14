@@ -1,11 +1,32 @@
 import { View, Image, Text, TouchableOpacity, } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
+import TrackPlayer from 'react-native-track-player';
 const MsgAttachment = ({ data, }) => {
-    const [play, setPlay] = useState(false)
     const uri = data?.messageDetails?.attachment_path
     const sendBy = data?.sentBy == 'loginUser'
-    console.log(data);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    useEffect(() => {
+        initializeTrackPlayer();
+    }, []);
+
+    const initializeTrackPlayer = async () => {
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.add({
+            url: uri,
+        });
+    };
+
+    const togglePlayback = async () => {
+        if (isPlaying) {
+            await TrackPlayer.stop();
+            await TrackPlayer.seekTo(0);
+        } else {
+            await TrackPlayer.play();
+        }
+        setIsPlaying(!isPlaying);
+    };
     return (
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', alignSelf: sendBy ? 'flex-end' : 'flex-start', }}>
             {data.profilePic && !sendBy ? <Image source={{ uri: data.profilePic }} style={{
@@ -32,8 +53,8 @@ const MsgAttachment = ({ data, }) => {
                         <View style={{ height: 65, width: '100%', paddingHorizontal: 10 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
                                 <Image source={require('../../../Assets/Image/rcg.png')} style={{ height: 30, width: '75%', resizeMode: 'contain', }} />
-                                <TouchableOpacity onPress={() => setPlay(!play)} style={{ height: 35, width: 35, borderRadius: 40, backgroundColor: COLOR.green, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Image source={play ? require('../../../Assets/Image/pause.png') : require('../../../Assets/Image/Play.png')} style={{ height: 20, width: 20, resizeMode: 'contain', }} />
+                                <TouchableOpacity onPress={() => togglePlayback()} style={{ height: 35, width: 35, borderRadius: 40, backgroundColor: COLOR.green, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Image source={isPlaying ? require('../../../Assets/Image/pause.png') : require('../../../Assets/Image/Play.png')} style={{ height: 20, width: 20, resizeMode: 'contain', }} />
                                 </TouchableOpacity>
                             </View>
                             <Text style={{

@@ -56,6 +56,9 @@ const ChatInnerScreen = props => {
     const [location, setLocation] = useState(null);
     const [error, setError] = useState(null);
     const [Filter, setFilter] = useState(null);
+    const [forwordId, setForwordID] = useState();
+
+    console.log(selectedContact,);
 
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
@@ -67,7 +70,6 @@ const ChatInnerScreen = props => {
     const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
     useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
-    // console.log(token);
     useEffect(() => {
         const extractMessageIds = () => {
             const ids = [];
@@ -85,7 +87,6 @@ const ChatInnerScreen = props => {
     useEffect(() => {
         const fetchData = async () => {
             await getAllMessages();
-            await requestContactsPermission();
             if (messageIds) {
                 await Read_Unread_Messages(token, messageIds);
             }
@@ -97,6 +98,49 @@ const ChatInnerScreen = props => {
             'hardwareBackPress', closeModal,);
         return () => backHandler.remove();
     }, [visible]);
+    useEffect(() => {
+        if (selectedMSG.length > 0) {
+            const id = selectedMSG?.map((res) => res?.messageId);
+            setForwordID(id?.join(','))
+        }
+    }, [selectedMSG]);
+    setTimeout(() => {
+        getAllMessages()
+    }, 60000)
+    const requestLocationPermission = async () => {
+        try {
+            const granted = await request(
+                Platform.OS === 'ios'
+                    ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+                    : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+            );
+            if (granted === RESULTS.GRANTED) {
+                console.log('Location permission granted', Geolocation.watchPosition((r) => {
+                }));
+            } else {
+                const title = 'Permission Request';
+                const Descriptions = 'This app would like to view your Location';
+                const Deny = () => console.log('Deny');
+                const Allow = () => Linking.openSettings();
+                MyAlert(title, Descriptions, Allow, Deny);
+            }
+        } catch (error) {
+            console.error('Error requesting location permission:', error);
+        }
+    };
+    useEffect(() => {
+
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                setLocation({ latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
+            },
+            error => {
+                setError(error.message);
+            },
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    }, []);
     const selectedMsgDelete = async () => {
         selectedMSG.forEach((res) => {
             Chat_Delete_Messages(token, res?.messageId)
@@ -155,7 +199,7 @@ const ChatInnerScreen = props => {
                 Task_Messages(token, msgType, currentMsgData)
                 break;
             case 'Meeting':
-                // Alert.alert('Meeting')
+                Alert.alert('Meeting')
                 Meeting_Messages(token, currentMsgData)
                 break;
             case 'Reminder':
@@ -231,7 +275,7 @@ const ChatInnerScreen = props => {
     const list = ({ item }) => {
         const IsContact = selectedContact.includes(item)
         const toggleItem = (itemId) => {
-            if (IsContact) { setSelectedContact(selectedContact.filter((id) => id !== itemId)); }
+            if (IsContact) { setSelectedContact(selectedContact?.filter((id) => id !== itemId)); }
             else { setSelectedContact([...selectedContact, itemId]); }
         };
         return (
@@ -240,31 +284,11 @@ const ChatInnerScreen = props => {
                 <Image source={require('../../Assets/Image/admin.jpg')} style={styles.adminImg} />
                 <View>
                     <Text style={styles.contactName}>{item.givenName.length > 20 ? item.givenName.slice(0, 20) + '...' : item.givenName}</Text>
-                    <Text style={styles.contactNumber}>{item.phoneNumbers[0].number}</Text>
+                    <Text style={styles.contactNumber}>{item?.phoneNumbers[0]?.number}</Text>
                 </View>
             </TouchableOpacity>
         )
     }
-    // const requestLocationPermission = async () => {
-    //     try {
-    //         const granted = await request(
-    //             Platform.OS === 'ios'
-    //                 ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-    //                 : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-    //         );
-    //         if (granted === RESULTS.GRANTED) {
-    //             console.log('Location permission granted', Geolocation.watchPosition((r) => {
-    //                 console.log('====================================');
-    //                 console.log(r);
-    //                 console.log('====================================');
-    //             }));
-    //         } else {
-    //             console.log('Location permission denied');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error requesting location permission:', error);
-    //     }
-    // };
     const ChatMessage = ({ message }) => {
         const renderMessage = () => {
             switch (message?.messageType) {
@@ -295,44 +319,13 @@ const ChatInnerScreen = props => {
             </View>
         );
     };
-    // const handleScroll = event => {
-    //     const offsetY = event.nativeEvent.contentOffset.y;
-    //     const contentHeight = event.nativeEvent.contentSize.height;
-    //     const layoutHeight = event.nativeEvent.layoutMeasurement.height;
-    //     if (offsetY + layoutHeight >= contentHeight) {
-    //         setShowButton(false);
-    //     } else {
-    //         setShowButton(true);
-    //     }
-    // };
-    // const memoizedMessagesByDate = useMemo(() => {
-    //     return Object.keys(messages).map(date => (
-    //         <View key={date}>
-    //             <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
-    //             {messages[date]?.map(message => (
-    //                 <ChatMessage key={message?.messageId} message={message} />
-    //             ))}
-    //         </View>
-    //     ));
-    // }, [messages]);
-    setTimeout(() => {
-        getAllMessages()
-    }, 30000)
-    useEffect(() => {
-        Geolocation.getCurrentPosition(
-            position => {
-                const { latitude, longitude } = position.coords;
-                setLocation({ latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
-            },
-            error => {
-                setError(error.message);
-            },
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-        );
-    }, []);
-    // const onChange = () => {
-    //     setChange(!change), setLoding(true)
-    // }
+
+    const SendFormetedContactArray = selectedContact.map(obj => ({
+        givenName: obj.givenName,
+        phoneNumbers: obj.phoneNumbers.map(phone => phone.number)
+    }));
+    console.log(SendFormetedContactArray);
+
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
             {msgType == 'Location' ?
@@ -360,7 +353,7 @@ const ChatInnerScreen = props => {
                             </View>
                             <View style={styles.contactListContainer}>
                                 {selectedContact?.length > 0 ? <Text style={styles.selectedContactTxt}>{' Selected(' + selectedContact.length + ')'} </Text> : null}
-                                <TextInput placeholder='Search here...' style={styles.contactSearchInput} />
+                                {/* <TextInput placeholder='Search here...' style={styles.contactSearchInput} /> */}
                                 <FlatList data={contacts} renderItem={list} style={styles.ContactFlatList} />
                             </View>
                             {selectedContact.length > 0 ?
@@ -380,7 +373,9 @@ const ChatInnerScreen = props => {
                                     onSearch={() => Alert.alert('search')}
                                     onBack={() => props.navigation.goBack()}
                                 /> :
-                                    <DeleteChatHeader Count={selectedMSG ? selectedMSG?.length : null} onDelete={() => { selectedMsgDelete() }} onBack={() => { setIsSelected(false); setSelectedMSG('') }} />}
+                                    <DeleteChatHeader onForword={() => { props.navigation.navigate('forword', forwordId), setSelectedMSG([]) }}
+                                        Count={selectedMSG ? selectedMSG?.length : null} onDelete={() => { selectedMsgDelete() }}
+                                        onBack={() => { setIsSelected(false); setSelectedMSG([]) }} />}
                             </View>
                             <View style={styles.GiftedChat}>
                                 <ScrollView ref={scrollViewRef}
@@ -407,21 +402,18 @@ const ChatInnerScreen = props => {
                                 onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
                                 onCamera={() => { onCamera(); setMsgType('Attachment'); }}
                                 onPhotoGallery={() => { onPhotoGallery(); setMsgType('Attachment'); }}
-                                // onContacts={() => { setMsgType('Contact'), setVisible(false); }}
+                                onContacts={() => { requestContactsPermission(), setMsgType('Contact'), setVisible(false); }}
                                 onFiles={() => { pickDocument(); setMsgType('Attachment'); }}
                                 onRequestClose={closeModal} visible={visible}
                                 onClose={() => setVisible(false)}
-                                onLocation={() => { setVisible(false), setMsgType('Location') }}
-                                onContacts={() => { setVisible(false); }}
+                                onLocation={() => { requestLocationPermission(), setVisible(false), setMsgType('Location') }}
+                            // onContacts={() => { setVisible(false); }}
 
                             />
-                            <Modal visible={ReMeCkModal}>
+                            <Modal visible={ReMeCkModal} animationType='fade'>
                                 <View style={styles.createItemModalView}>
-                                    <View style={{ paddingHorizontal: 15, padding: 15 }}>
-                                        <NavigateHeader color={COLOR.white} title={msgType == 'Task' ? 'Create Task' : msgType == 'Meeting' ? 'Create Meeting' : msgType == 'Reminder' ? 'Create Remind' : null} onPress={() => { setMsgType('Text'); setReMeCkModal(false) }} />
-                                    </View>
+                                    <CtrateHeader source={chatProfileData.item.profile} onBack={() => setReMeCkModal(false)} title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName} />
                                     <View style={styles.createItemModalView2}>
-
                                         {msgType == 'Task' ? (
                                             <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
                                         ) : msgType == 'Meeting' ? (
@@ -452,3 +444,36 @@ const ChatInnerScreen = props => {
     );
 };
 export default ChatInnerScreen;
+
+const CtrateHeader = ({ source, onBack, title }) => {
+    return (
+        <View style={{ paddingHorizontal: 15, padding: 15, marginTop: 35, flexDirection: 'row', alignItems: 'center', marginBottom: -15 }}>
+            <TouchableOpacity onPress={onBack} style={{
+                backgroundColor: COLOR.green,
+                borderRadius: 50,
+                height: 30,
+                width: 30,
+                alignItems: 'center',
+                justifyContent: 'center', marginRight: 5
+            }}>
+                <Image
+                    source={require('../../Assets/Image/back.png')}
+                    style={{
+                        height: 16,
+                        width: 16,
+                        resizeMode: 'contain', tintColor: COLOR.black, marginLeft: -2
+                    }}
+                />
+            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image source={{ uri: source }} style={{ height: 45, width: 45, marginLeft: 8, borderRadius: 50 }} />
+                <Text style={{
+                    color: COLOR.white,
+                    fontSize: 18,
+                    fontWeight: '600',
+                    marginLeft: 10,
+                }}>{title}</Text>
+            </View>
+        </View>
+    )
+}

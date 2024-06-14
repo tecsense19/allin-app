@@ -13,8 +13,10 @@ export const ACTIONS = {
     MESSAGE_LOCATION: BASE_PATH + '/message-location',
     MESSAGE_MEETING: BASE_PATH + '/message-meeting',
     MESSAGE_REMINDER: BASE_PATH + '/add-reminder',
+    MESSAGE_CONTACT: BASE_PATH + '/message-contact',
     MESSAGE_READE_UNREADE: BASE_PATH + '/read-unread-message',
     MESSAGE_DELETE: BASE_PATH + '/delete-message',
+    FORWORD_MESSAGES: BASE_PATH + '/forward-message',
     CLEAR_CHAT: BASE_PATH + '/clear-message',
     TASK_DETAILS: BASE_PATH + '/task-chat',
     EXPORT_CHAT: BASE_PATH + '/export-chat',
@@ -34,6 +36,7 @@ export const ACTIONS = {
     EDIT_NOTE: BASE_PATH + '/edit-note',
     EDIT_NOTE: BASE_PATH + '/edit-note',
     DELETE_NOTE: BASE_PATH + '/delete-note',
+    DELETE_ACCOUNT: BASE_PATH + '/deleted-user-account',
 
 
 
