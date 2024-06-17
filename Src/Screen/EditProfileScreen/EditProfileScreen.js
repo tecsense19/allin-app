@@ -161,10 +161,13 @@ const EditProfileScreen = props => {
         }
     };
     const deleteAccount = async () => {
-        await Delete_Account(token).then((res) => {
+        setLoding(true)
+        await Delete_Account(token).then(async (res) => {
             if (res.status_code === 200) {
                 props.navigation.navigate('splase')
-            }
+                await AsyncStorage.clear()
+                setLoding(false)
+            } else (deleteAccount())
         })
     }
     return (

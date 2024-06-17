@@ -20,14 +20,11 @@ import CreateTask from './ChatCustomFile/CreateTask';
 import { styles } from './ChatInnerScreenStyle';
 import MyAlert from '../../Custom/Alert/PermissionAlert';
 import MsgContact from './ChatCustomFile/MsgContact';
-
 import DeleteChatHeader from './ChatCustomFile/DeleteChatHeader';
 import Loader from '../../Custom/Loader/loader';
-import { handaleDeleteMsg, handleFileUplode, handleMsgText, handleUnreadeMsg } from './Function/ApiCaliing';
 import Timezone from 'react-native-timezone'
-import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd';
 import MsgAttachment from './ChatCustomFile/MsgAttachment';
-import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, File_Uplode, Get_All_Messages, Location_Messages, Meeting_Messages, Read_Unread_Messages, Reminder_Messages, Task_Messages } from '../../Service/actions';
+import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, Contact_Message, File_Uplode, Get_All_Messages, Location_Messages, Meeting_Messages, Read_Unread_Messages, Reminder_Messages, Task_Messages } from '../../Service/actions';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Button from '../../Custom/Button/Button';
@@ -52,13 +49,13 @@ const ChatInnerScreen = props => {
     const [isSelected, setIsSelected] = useState(false)
     const [userDetails, setUserDetails] = useState('')
     const [messageIds, setMessageIds] = useState('');
-    const [showButton, setShowButton] = useState(false);
+    // const [showButton, setShowButton] = useState(false);
     const [location, setLocation] = useState(null);
-    const [error, setError] = useState(null);
-    const [Filter, setFilter] = useState(null);
     const [forwordId, setForwordID] = useState();
+    const [filteredContacts, setFilteredContacts] = useState([]); // State to hold filtered contacts
+    const [searchQuery, setSearchQuery] = useState('');
 
-    console.log(selectedContact,);
+    // console.log(selectedContact,);
 
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
@@ -67,7 +64,7 @@ const ChatInnerScreen = props => {
     const token = chatProfileData?.token
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
-    const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
+    // const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
     useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     useEffect(() => {
@@ -92,7 +89,7 @@ const ChatInnerScreen = props => {
             }
         }
         fetchData();
-    }, [messageIds, token, change, Filter]);
+    }, [messageIds, token, change,]);
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
@@ -136,7 +133,7 @@ const ChatInnerScreen = props => {
                 setLocation({ latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
             },
             error => {
-                setError(error.message);
+                console.log(error.message);
             },
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );
@@ -199,7 +196,6 @@ const ChatInnerScreen = props => {
                 Task_Messages(token, msgType, currentMsgData)
                 break;
             case 'Meeting':
-                Alert.alert('Meeting')
                 Meeting_Messages(token, currentMsgData)
                 break;
             case 'Reminder':
@@ -207,6 +203,9 @@ const ChatInnerScreen = props => {
                 break;
             case 'Location':
                 Location_Messages(token, location, userId)
+                break;
+            case 'Contact':
+                Contact_Message(token, currentMsgData, userId)
                 break;
             default:
                 console.warn(`Unhandled message type: ${msgType}`);
@@ -304,6 +303,8 @@ const ChatInnerScreen = props => {
                     return <MsgReminder data={message} />
                 case 'Location':
                     return <MsgMapImage data={message} />
+                case 'Contact':
+                    return <MsgContact data={message} />
                 default:
                     return;
             }
@@ -313,18 +314,26 @@ const ChatInnerScreen = props => {
                 <TouchableOpacity style={{ marginHorizontal: 30, marginVertical: 2, }}
                     delayLongPress={500}
                     onLongPress={() => { setIsSelected(true), onhandaleSelected(message) }}
-                    onPress={() => { isSelected ? onhandaleSelected(message) : '' }}>
+                    onPress={() => { isSelected ? onhandaleSelected(message) : '', message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : '' }}>
                     {renderMessage()}
                 </TouchableOpacity>
             </View>
         );
     };
-
     const SendFormetedContactArray = selectedContact.map(obj => ({
         givenName: obj.givenName,
         phoneNumbers: obj.phoneNumbers.map(phone => phone.number)
     }));
-    console.log(SendFormetedContactArray);
+    // Function to filter contacts based on search query
+    const handleSearch = (text) => {
+        const formattedText = text.toLowerCase(); // Convert search query to lowercase
+        setSearchQuery(formattedText);
+        const filteredData = contacts.filter((contact) =>
+            // console.log(contact.givenName)
+            contact.givenName.toLowerCase().includes(formattedText)
+        );
+        setFilteredContacts(filteredData);
+    };
 
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
@@ -342,22 +351,29 @@ const ChatInnerScreen = props => {
                         {/* <Marker coordinate={{ latitude: location.latitude, longitude: location.longitude }} /> */}
                     </MapView>
                     <View style={{ position: 'absolute', bottom: 55, left: 30, right: 30 }}>
-                        <Button title={'Send'} bgColor={COLOR.black} color={COLOR.white} onPress={handleSend} />
+                        <Button title={'Send'} bgColor={COLOR.black} color={COLOR.white} onPress={handleSend} value />
                     </View>
                 </View>
                 : <View style={{ flex: 1 }}>
                     {msgType == 'Contact' ?
                         <View style={styles.contactContainer}>
                             <View style={{ paddingHorizontal: 20 }}>
-                                <NavigateHeader title={'Contacts'} onPress={() => setMsgType('Text')} color={COLOR.white} smallTitleSize={15} />
+                                <NavigateHeader title={'Contacts'} onPress={() => { setMsgType('Text'), setSearchQuery('') }} color={COLOR.white} smallTitleSize={15} />
                             </View>
                             <View style={styles.contactListContainer}>
                                 {selectedContact?.length > 0 ? <Text style={styles.selectedContactTxt}>{' Selected(' + selectedContact.length + ')'} </Text> : null}
-                                {/* <TextInput placeholder='Search here...' style={styles.contactSearchInput} /> */}
-                                <FlatList data={contacts} renderItem={list} style={styles.ContactFlatList} />
+                                {/* <TextInput placeholder='Search here...' style={styles.contactSearchInput} value={searchQuery} onChangeText={handleSearch} /> */}
+                                <View style={{ backgroundColor: COLOR.verylightgray, marginTop: 15, height: 45, borderRadius: 10, flexDirection: 'row', alignItems: 'center' }}>
+                                    <TextInput autoFocus value={searchQuery} onChangeText={handleSearch} placeholder='Search User...' style={{ backgroundColor: COLOR.verylightgray, height: 45, flex: 1, borderRadius: 10, paddingLeft: 10, fontSize: 16, fontWeight: 'bold' }} />
+                                    <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { setSearchQuery('') }} >
+                                        {/* <Image source={require('../../Assets/Image/search.png')} style={{ tintColor: COLOR.green, height: 30, width: 30, marginHorizontal: 5 }} /> */}
+                                        <Text style={{ color: 'skyblue', fontWeight: 'bold', marginRight: 5 }}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <FlatList data={searchQuery ? filteredContacts : contacts} renderItem={list} style={styles.ContactFlatList} />
                             </View>
                             {selectedContact.length > 0 ?
-                                <TouchableOpacity style={styles.OncontactScreenSend} onPress={() => { handleSend(selectedContact); setMsgType('Text') }}>
+                                <TouchableOpacity style={styles.OncontactScreenSend} onPress={() => { handleSend(SendFormetedContactArray); setMsgType('Text'); setSelectedContact([]) }}>
                                     <Text style={styles.sendTxt}>Send</Text>
                                 </TouchableOpacity> : null}
                         </View> :
@@ -436,7 +452,7 @@ const ChatInnerScreen = props => {
                             />
                         </View>
                         : null}
-                    {showButton && (<ChatScrollEnd onPress={scrollToEnd} />)}
+                    {/* {showButton && (<ChatScrollEnd onPress={scrollToEnd} />)} */}
                 </View>
             }
 

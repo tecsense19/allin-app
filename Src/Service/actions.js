@@ -418,15 +418,17 @@ export const Location_Messages = async (token, data, id) => {
     return response
 }
 
-export const Contact_Message = async (token, data) => {
-
+export const Contact_Message = async (token, data, id) => {
+    const formData = new FormData()
+    formData.append('contact_details', JSON.stringify(data))
+    formData.append('receiver_id', JSON.stringify(id))
     const res = await fetch(ACTIONS.MESSAGE_CONTACT, {
         method: "POST",
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': "application/json",
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ contact_details: data })
+        body: formData
     })
     const response = await res.json()
     console.log(response);
@@ -535,10 +537,8 @@ export const Delete_Account = async (token,) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-
     })
     const response = await res.json()
-    console.log(response);
     return response
 }
 

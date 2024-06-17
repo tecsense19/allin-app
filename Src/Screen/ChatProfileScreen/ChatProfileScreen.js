@@ -33,9 +33,15 @@ const ChatProfileScreen = props => {
     const onhandalePhoneCall = () => {
         Linking.openURL(`tel:${chatProfileData?.country_code + chatProfileData.mobile}`);
     };
+
     const list = ({ item }) => {
+        const handlePress = () => {
+            if (item?.url) {
+                Linking.openURL(item?.url);
+            }
+        };
         return (
-            <TouchableOpacity onPress={() => { Linking.openURL(item.url) }}>
+            <TouchableOpacity onPress={() => { handlePress() }}>
                 <Image source={item.img} style={{ height: 50, width: 50, margin: 5 }} />
             </TouchableOpacity>
         )

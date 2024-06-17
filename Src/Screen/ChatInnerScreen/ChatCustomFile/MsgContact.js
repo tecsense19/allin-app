@@ -1,32 +1,33 @@
 import { View, Text, Image, TouchableOpacity, Modal, FlatList } from 'react-native'
 import React, { useState } from 'react'
-import CONTACT from 'react-native-contacts'
+import Contacts from 'react-native-contacts'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 import NavigateHeader from '../../../Custom/Header/NavigateHeader'
-const MsgContact = ({ myId, Time, contact }) => {
+const MsgContact = ({ data }) => {
     const [visible, setvisible] = useState(false)
-    const id = contact?.sendBy == myId
-    const length = contact?.contact?.length
-    const data = contact?.contact
-    const name = contact?.contact[0]?.givenName
-    // console.log(data);
+    const id = data.sentBy == 'loginUser'
+    const parshData = JSON.parse(data.messageDetails)
+    const length = parshData.length
+    const name = parshData[0].givenName
 
-    const list = ({ item }) => {
-        const onSaveContact = (Mycontact) => {
-
-
-            var newPerson = {
-                phoneNumbers: [{
-                    label: 'mobile',
-                    number: item.phoneNumbers[0].number
-                }],
-                givenName: item.givenName
-            }
-
-            CONTACT.openContactForm(newPerson).then(contact => {
-                // contact has been saved
-            })
+    const list = ({ item, index }) => {
+        console.log(item.phoneNumbers[0]);
+        const saveContact = () => {
+            const newContact = {
+                givenName: item.givenName,
+                phoneNumbers: [{ label: 'mobile', number: item.phoneNumbers[0], }],
+            };
+            Contacts.openContactForm(newContact)
+                .then(() => {
+                    Alert.alert('Contact saved successfully');
+                })
+                .catch((error) => {
+                    Alert.alert('Error saving contact', error.message);
+                })
+                .finally(() => {
+                });
         };
+
         return (
             <View style={{ marginTop: 15, padding: 10, borderRadius: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: COLOR.white }}
             >
@@ -38,7 +39,7 @@ const MsgContact = ({ myId, Time, contact }) => {
                         <Text style={{ fontSize: 16, color: COLOR.gray, fontWeight: '600', marginTop: 5 }}>{item.phoneNumbers[0].number}</Text>
                     </View>
                 </View>
-                <TouchableOpacity style={{ backgroundColor: COLOR.green, padding: 10, paddingHorizontal: 20, borderRadius: 20 }} onPress={onSaveContact}>
+                <TouchableOpacity style={{ backgroundColor: COLOR.green, padding: 10, paddingHorizontal: 20, borderRadius: 20 }} onPress={saveContact}>
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Add</Text>
                 </TouchableOpacity>
             </View>
@@ -46,6 +47,7 @@ const MsgContact = ({ myId, Time, contact }) => {
         )
     }
     return (
+
         <TouchableOpacity style={{ backgroundColor: id ? COLOR.lightgreen : COLOR.verylightgray, height: 70, borderRadius: 10, width: '90%', alignSelf: id ? 'flex-end' : 'flex-start', justifyContent: 'center', marginLeft: id ? 5 : 0 }}
             onPress={() => setvisible(true)}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 15, padding: 5 }}>
@@ -66,12 +68,14 @@ const MsgContact = ({ myId, Time, contact }) => {
             <Text style={{
                 position: 'absolute', right: 15, bottom: 5, fontSize: 12, fontWeight: '700',
                 color: COLOR.placeholder,
-            }}>{Time}</Text>
+            }}>{data.time}</Text>
             <Modal visible={visible}>
                 <View style={{ backgroundColor: COLOR.black, flex: 1, }}>
-                    <Header title={'Contacts'} top={5} onPress={() => setvisible(false)} color={COLOR.white} smallTitleSize={15} />
+                    <View style={{ paddingHorizontal: 25 }}>
+                        <NavigateHeader title={'Contacts'} top={5} onPress={() => setvisible(false)} color={COLOR.white} smallTitleSize={15} />
+                    </View>
                     <View style={{ backgroundColor: COLOR.white, flex: 1, }}>
-                        <FlatList data={data} renderItem={list} style={{ paddingHorizontal: 15 }} />
+                        <FlatList data={parshData} renderItem={list} style={{ paddingHorizontal: 15 }} />
 
                     </View>
                 </View>

@@ -28,19 +28,20 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const [date, setDate] = useState(new Date());
     const [opentime, setOpenTime] = useState(false);
     const [Time, setTime] = useState(new Date());
-    const year = date.getUTCFullYear();
-    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Add 1 to the month and pad with zero
-    const day = date.getUTCDate().toString().padStart(2, '0'); // Pad with zero
-    const meetingdate = year + '-' + month + '-' + day
     const [visible, setVisible] = useState(false);
     const [UserData, setUserData] = useState();
     const [selectedItems, setSelectedItems] = useState([userId]);
     const [myID, setMyId] = useState('');
-    const id = uuid.v4()
+
+    const year = date.getUTCFullYear();
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Add 1 to the month and pad with zero
+    const day = date.getUTCDate().toString().padStart(2, '0'); // Pad with zero
+    const meetingdate = year + '-' + month + '-' + day
+
 
     const time = new Date(Time);
-    time.setHours(time.getHours() + 2);
-    time.setMinutes(time.getMinutes() + 23);
+    time.setHours(time.getHours());
+    time.setMinutes(time.getMinutes());
     const hours = String(time.getHours()).padStart(2, '0');
     const minutes = String(time.getMinutes()).padStart(2, '0');
     const seconds = String(time.getSeconds()).padStart(2, '0');
@@ -49,7 +50,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const period = hours < 12 ? 'AM' : 'PM';
     const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
 
-    // console.log(sel);
+    console.log(meetingtime);
     const handleSubmit = () => {
         const data = { type: 'Meeting', meetingtitle: title, meetingdescription: descriptions, meetingdate: meetingdate, meetingtime: meetingtime, remind: selectedItems }
         if (title == '' || descriptions == '') {
@@ -113,6 +114,8 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 borderRadius: 20,
                 marginBottom: isFocused ? '80%' : 0
             }}>
+            <Text style={{ textAlign: 'center', marginTop: 30, fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Meeting</Text>
+
             <Title title={'Meeting Title'} />
             <TextInput
                 onFocus={() => setIsFocused(true)}
@@ -205,7 +208,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             }}>
                 <FlatList data={filteredUserData} renderItem={list} horizontal bounces={false}
                     style={{}} />
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{'+' + filteredUserData?.length}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{filteredUserData.length <= 4 ? '' : '+' + (filteredUserData.length - 4)}</Text>
             </View> : null}
             <Button
                 onPress={handleSubmit}
@@ -238,6 +241,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 onConfirm={(time) => {
                     setOpenTime(false)
                     setTime(time)
+                    console.log(time);
                 }}
                 onCancel={() => {
                     setOpen(false)

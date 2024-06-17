@@ -148,7 +148,7 @@ const ChatUserListScreen = props => {
                     <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 20, marginTop: 5 }}>
                         <TouchableOpacity
                             style={styles.listcontainer}
-                            onPress={() => props.navigation.navigate('chatinner', { token, item })}
+                            onPress={() => { props.navigation.navigate('chatinner', { token, item }), setShowSearch(false) }}
                         >
                             <View style={styles.imgAndNameView}>
                                 <Image source={{ uri: item?.profile }} style={styles.chetImg} />
@@ -244,26 +244,7 @@ const ChatUserListScreen = props => {
 
 
     }
-    const requestLocationPermission = async () => {
-        try {
-            const granted = await request(
-                Platform.OS === 'ios'
-                    ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-                    : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-            );
-            if (granted === RESULTS.GRANTED) {
-                console.log('Location permission granted', Geolocation.watchPosition((r) => {
-                    console.log('====================================');
-                    console.log(r);
-                    console.log('====================================');
-                }));
-            } else {
-                Linking.openSettings()
-            }
-        } catch (error) {
-            console.error('Error requesting location permission:', error);
-        }
-    };
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
@@ -280,15 +261,17 @@ const ChatUserListScreen = props => {
                 // props.navigation.navigate('summarize'), setVisible(false);
                 />
                 {!showSearch ? <ChatHeader
-                    onCall={() => props.navigation.navigate('call', allUserData)}
+                    onCall={() => { props.navigation.navigate('call', allUserData), setShowSearch(false) }}
                     tintColor={COLOR.white}
-                    onMenu={() => setVisible(true)}
-                    onInvite={() => Alert.alert('Group')}
+                    onMenu={() => { setVisible(true), setShowSearch(false) }}
+                    onInvite={() => { Alert.alert('Group'), setShowSearch(false) }}
                     onSearch={() => setShowSearch(true)} /> :
                     <View style={{ backgroundColor: COLOR.white, marginTop: 65, height: 45, marginHorizontal: 25, borderRadius: 10, flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput onSubmitEditing={() => setShowSearch(false)} autoFocus value={search} onChangeText={(res) => { setSearch(res); getuser() }} placeholder='Search User...' style={{ backgroundColor: COLOR.white, height: 45, flex: 1, borderRadius: 10, paddingLeft: 10, fontSize: 16, fontWeight: 'bold' }} />
                         <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { setShowSearch(false), setSearch(''), getuser() }}>
-                            <Image source={require('../../Assets/Image/search.png')} style={{ tintColor: COLOR.green, height: 30, width: 30, marginHorizontal: 5 }} />
+                            {/* <Image source={require('../../Assets/Image/search.png')} style={{ tintColor: COLOR.green, height: 30, width: 30, marginHorizontal: 5 }} /> */}
+                            <Text style={{ color: 'skyblue', fontWeight: 'bold', marginRight: 5 }}>Cancel</Text>
+
                         </TouchableOpacity>
                     </View>}
             </View>

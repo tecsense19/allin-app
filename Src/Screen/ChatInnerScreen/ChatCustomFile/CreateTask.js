@@ -83,6 +83,8 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                 borderRadius: 20,
                 marginBottom: isFocused ? '80%' : 0
             }}>
+            <Text style={{ textAlign: 'center', marginTop: 30, fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Create Task</Text>
+
             <Title title={'Task Title'} />
             <TextInput
                 onFocus={() => setIsFocused(true)}
@@ -144,7 +146,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
             }}>
                 <FlatList data={filteredUserData} renderItem={list} horizontal bounces={false}
                     style={{}} />
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{'+' + filteredUserData?.length}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{filteredUserData.length <= 4 ? '' : '+' + (filteredUserData.length - 4)}</Text>
             </View> : null}
             <Button
                 onPress={handleSubmit}
