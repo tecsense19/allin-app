@@ -8,47 +8,33 @@ import { User_List } from '../../Service/actions';
 import { useFocusEffect } from '@react-navigation/native';
 
 const SplaseScreen = props => {
-    const [token, settoken] = useState('')
     const timezone = { timezone: TimeZone.getTimeZone() };
 
     useEffect(() => {
         setTimeout(() => {
             getMyData()
             notificationsPermission()
-        }, 3000);
+        }, 2000);
     }, []);
-
-
     const getMyData = async () => {
-
         const jsonValue = await AsyncStorage.getItem('myData');
-        if (jsonValue == null) {
-            props.navigation.reset({ routes: [{ name: 'first' }] });
-        }
         const userData = JSON.parse(jsonValue);
-        const token = userData.data.token;
-        settoken(token);
 
-        return token;
+        if (jsonValue == null) {
+            return props.navigation.reset({ routes: [{ name: 'first' }] });
+        } else {
+            return getuser(userData.data.token)
+        }
     };
-
-    useEffect(() => {
-        getuser();
-    }, [])
-
-    const getuser = async () => {
-        const token = await getMyData();
-        // const timezone = { timezone: Timezone.getTimeZone() }
+    const getuser = async (token) => {
         await User_List(timezone, token).then((data) => {
-            // console.log(data);
             if (data.message == 'Token Expired' && data.status_code == 401) {
-                props.navigation.reset({ routes: [{ name: 'first' }] });
+                return props.navigation.reset({ routes: [{ name: 'first' }] });
             }
-            // console.log(data);
-            if (data?.status_code === 401) {
-                props.navigation.reset({ routes: [{ name: 'first' }] });
+            if (data?.status_code === 200) {
+                return props.navigation.reset({ routes: [{ name: 'home' }] });
             } else {
-                props.navigation.reset({ routes: [{ name: 'home' }] });
+                return props.navigation.reset({ routes: [{ name: 'first' }] });
             }
         }).catch((e) => { console.log(token, '=======>>>>', e, 'userListApihome screen'); })
     }

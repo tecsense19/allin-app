@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    imgAndNameView: { flexDirection: 'row', alignItems: 'center' },
+    imgAndNameView: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
     chetImg: { height: 55, width: 55, borderRadius: 50, marginRight: 10 },
     name: {
         fontSize: 18,

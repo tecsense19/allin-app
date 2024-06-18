@@ -12,6 +12,7 @@ import ProfileModal from '../../Custom/Modal/ProfileModal';
 import IntlPhoneInput from 'react-native-intl-phone-input';
 import { BgImageCemera, BgImageGallery, profileImgCemera, profileImgGallery, requestCameraPermission, } from './Functions';
 import { Send_Otp } from '../../Service/actions';
+import messaging from '@react-native-firebase/messaging';
 
 const CreateAccount = props => {
     const [fname, setFname] = useState('');
@@ -23,7 +24,7 @@ const CreateAccount = props => {
     const [visible, setVisible] = useState(false);
     const [loding, setLoding] = useState(false);
     const [maskNumber, setMaskNumber] = useState('');
-
+    const [deviceToken, setDeviceToken] = useState('')
     const closeModal = () => { setVisible(false); };
     const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
         // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
@@ -31,6 +32,13 @@ const CreateAccount = props => {
         setCountryCode(dialCode)
         setMaskNumber(phoneNumber)
     };
+    useEffect(() => { getFcmToken() }, [])
+    const getFcmToken = async () => {
+        try {
+            const D_token = await messaging().getToken();
+            setDeviceToken(D_token)
+        } catch (error) { console.error('Error getting FCM token:', error) }
+    }
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', closeModal,);
         return () => backHandler.remove();
@@ -64,12 +72,12 @@ const CreateAccount = props => {
     };
     const sendOtp = async () => {
         setLoding(true)
-        const dataa = { country_code: countryCode, mobile: phone, type: 'Register' }
+        const dataa = { country_code: countryCode, mobile: phone, type: 'Register', first_name: fname, last_name: lname, device_token: deviceToken,profile:img,cover_image: bgimg, }
         await Send_Otp(dataa)
             .then(res => {
                 if (res?.status_code == 200) {
                     setLoding(false)
-                    props.navigation.navigate('verification', { mobile: phone, country_code: countryCode, first_name: fname, last_name: lname, profile: img, cover_image: bgimg, type: 'ragister', maskNumber: maskNumber });
+                    props.navigation.navigate('verification', { mobile: phone, country_code: countryCode, first_name: fname, last_name: lname, profile: img, cover_image: bgimg, type: 'Ragister', maskNumber: maskNumber });
                 } else { setLoding(false), Alert.alert(res?.message) }
             })
             .catch(error => setLoding(false), console.log('register sendotp:', error));

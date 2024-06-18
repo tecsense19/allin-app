@@ -29,7 +29,7 @@ const CreateNote = props => {
         }
     }
     const gettoken = async () => {
-        setLoading(true)
+        // setLoading(true)
         const Token = await getToken()
         setToken(Token)
         setLoading(false)

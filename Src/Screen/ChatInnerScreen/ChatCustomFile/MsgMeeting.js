@@ -40,7 +40,7 @@ export const MsgMeeting = ({ data, onPress, MYID, }) => {
                     }}>
                         <FlatList data={Member} renderItem={list} horizontal bounces={false}
                             style={{}} />
-                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, }}>{Member?.length == 2 ? '' : '+' + (Member?.length -3)}</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, }}>{Member?.length >= 3 ? '' : '+' + (Member?.length -3)}</Text>
                     </View>
                 </View>
                 <Text style={styles.time}>{data.time}</Text>

@@ -116,7 +116,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             }}>
             <Text style={{ textAlign: 'center', marginTop: 30, fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Meeting</Text>
 
-            <Title title={'Meeting Title'} />
+            <Title title={'Title'} />
             <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -134,7 +134,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     color: COLOR.textcolor, marginTop: 5
                 }}
             />
-            <Title title={'Meeting Description'} />
+            <Title title={'Description'} />
             <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -179,7 +179,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
 
-                placeholder="Enter location"
+                placeholder="write a location"
                 onChangeText={res => setSearch(res)}
                 value={search}
                 placeholderTextColor={COLOR.placeholder}
@@ -220,6 +220,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             />
 
             <DatePicker
+                minimumDate={new Date()}
                 modal
                 mode='date'
                 open={open}
@@ -234,6 +235,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 }}
             />
             <DatePicker
+                minimumDate={new Date()}
                 modal
                 mode='time'
                 open={opentime}

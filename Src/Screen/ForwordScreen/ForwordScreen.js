@@ -58,15 +58,15 @@ const ForwordScreen = (props) => {
                     onPress={() => toggleUserSelection(item.id)} // Toggle user selection onPress
                 >
                     <View style={styles.imgAndNameView}>
-                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => toggleUserSelection(item.id)}>
-                            <Image source={selectedUserIds.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
-                        </TouchableOpacity>
-                        <Image source={{ uri: item?.profile }} style={styles.chetImg} />
-                        <View style={{}}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image source={{ uri: item?.profile }} style={styles.chetImg} />
                             <Text style={styles.name}>
                                 {userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}
                             </Text>
                         </View>
+                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => toggleUserSelection(item.id)}>
+                            <Image source={selectedUserIds.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
+                        </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -76,7 +76,7 @@ const ForwordScreen = (props) => {
     const ForwordMessage = async () => {
         await Forword_Messages(token, messageid, AllUserIDs)
             .then((res) => {
-                if(res.status_code === 200) {
+                if (res.status_code === 200) {
                     props.navigation.goBack()
                 }
             })

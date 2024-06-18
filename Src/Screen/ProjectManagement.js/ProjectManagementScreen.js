@@ -144,11 +144,11 @@ const ProjectManagementScreen = props => {
                             <TouchableOpacity style={styles.notelistview}
                                 onPress={() => { setVisible(true); setViewNote(item); }}>
                                 <Text style={styles.notelisttitle}>
-                                    {item?.title?.length > 21 ? item?.title?.slice(0, 22) + '...' : item?.title}
+                                    {item?.title?.length > 20 ? item?.title?.slice(0, 20) + '...' : item?.title}
                                 </Text>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                                     <Text style={styles.notedatetime}>{formattedDate}</Text>
-                                    <TouchableOpacity style={{ padding: 10, }} onPress={() => { setViewNote(item); props.navigation.navigate('note', item); }} >
+                                    <TouchableOpacity style={{}} onPress={() => { setViewNote(item); props.navigation.navigate('note', item); }} >
                                         <Image source={require('../../Assets/Image/pen.png')} style={styles.listpenicon} />
                                     </TouchableOpacity>
                                 </View>

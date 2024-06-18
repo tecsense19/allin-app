@@ -66,12 +66,36 @@ export const Check_Mobile_Exists = async (data) => {
 }
 
 export const Send_Otp = async (data) => {
+    const formData = new FormData();
+
+    if (data.type === "Login") {
+        formData.append('country_code', data?.country_code);
+        formData.append('mobile', data?.mobile);
+        formData.append('type', data?.type);
+    }
+    else {
+        formData.append('country_code', data?.country_code);
+        formData.append('mobile', data?.mobile);
+        formData.append('type', data?.type);
+        formData.append('first_name', data?.first_name);
+        formData.append('last_name', data?.last_name);
+        formData.append('device_token', data?.device_token);
+        const profileImageUri = data?.profile[0]?.uri;
+        const profileimageName = profileImageUri ? profileImageUri.split('/').pop() : ''; // Extract image name from URI
+        if (profileimageName) { formData.append('profile', { uri: profileImageUri, name: profileimageName, type: data?.profile[0]?.type }); }
+
+        const coverImageUri = data?.cover_image[0]?.uri;
+        const coverimageName = coverImageUri ? coverImageUri?.split('/').pop() : '';
+        if (coverimageName) { formData.append('cover_image', { uri: coverImageUri, name: coverimageName, type: data?.cover_image[0]?.type }); }
+
+    }
+
     const res = await fetch(ACTIONS.SEND_OTP, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
+        body: formData
     })
     const response = await res.json()
     return response
@@ -97,7 +121,6 @@ export const User_Registration = async (data, otp, deviceToken) => {
     formData.append('last_name', data?.last_name);
     formData.append('otp', otp);
     formData.append('device_token', deviceToken);
-
     const profileImageUri = data?.profile[0]?.uri;
     const profileimageName = profileImageUri ? profileImageUri.split('/').pop() : ''; // Extract image name from URI
     if (profileimageName) { formData.append('profile', { uri: profileImageUri, name: profileimageName, type: data?.profile[0]?.type }); }
@@ -382,6 +405,7 @@ export const Meeting_Messages = async (token, taskData) => {
         })
     })
     const response = await res.json()
+    console.log(response);
     return response
 }
 

@@ -77,7 +77,7 @@ const ChatUserListScreen = props => {
             const notiDate = time.getDate();
             const currMon = now.getMonth() + 1;
             const notiMon = time.getMonth() + 1;
-
+            console.log(time);
             const timeDiffInMilliseconds = now - time;
             const timeDiffInMinutes = Math.floor(timeDiffInMilliseconds / (1000 * 60));
 
@@ -94,7 +94,7 @@ const ChatUserListScreen = props => {
                 } else if (currDate - 1 === notiDate) {
                     return "Yesterday";
                 } else {
-                    return `${currDate - notiDate} days`;
+                    return `${time.toDateString().split(" ")[2]} ${time.toDateString().split(" ")[1]} ${time.toDateString().split(" ")[3]}`;
                 }
             } else {
                 return `${time.toDateString().split(" ")[2]} ${time.toDateString().split(" ")[1]}`;

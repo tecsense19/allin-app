@@ -160,9 +160,9 @@ const WorkHours = props => {
             </View>
             <ImageBackground source={require('../../../Assets/Image/timerborder.png')} resizeMode='contain' style={{ height: 135, width: 135, alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ borderWidth: 2, borderRadius: 100, padding: 10, marginTop: 5, borderColor: '#F7F8F8' }}>
-                    <View style={{ height: 80, width: 80, backgroundColor: '#CEFDFF', borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ height: 80, width: 80, backgroundColor: 'red', borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}>
                         <TouchableOpacity onPress={onhandleLap}>
-                            <Image source={start ? require('../../../Assets/Image/pause.png') : require('../../../Assets/Image/Play.png')} style={{ height: 40, width: 40 }} />
+                            <Image source={start ? require('../../../Assets/Image/pause.png') : require('../../../Assets/Image/Play.png')} style={{ height: 40, width: 40, tintColor: COLOR.white }} />
                         </TouchableOpacity>
                     </View>
                 </View>

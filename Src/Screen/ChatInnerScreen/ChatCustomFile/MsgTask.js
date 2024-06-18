@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     taskTitle: { fontSize: 17, fontWeight: '500', color: COLOR.textcolor, width: '92%' },
     onThreeDott: { position: 'absolute', right: 10, paddingHorizontal: 5 },
     threedottImg: { height: 35, width: 35, tintColor: COLOR.green, resizeMode: 'contain' },
-    tasktime: { alignSelf: 'flex-end', fontWeight: '700', color: COLOR.placeholder, marginTop: 5, marginRight: 5, fontSize: 12 },
+    tasktime: {  fontWeight: '700', color: COLOR.placeholder, marginTop: 5, marginLeft: 5, fontSize: 12 },
 
 
 })

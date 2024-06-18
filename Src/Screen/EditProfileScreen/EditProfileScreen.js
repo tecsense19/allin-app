@@ -152,9 +152,10 @@ const EditProfileScreen = props => {
             const a = {
                 data: { token: token, expires_in: res?.data?.expires_in, token_type: res?.data?.token_type, userDetails: res?.data?.userData }
             };
-            console.log(res);
+            // console.log(res);
             await AsyncStorage.setItem('myData', JSON.stringify(a));
             setLoding(false)
+            Alert.alert('Edit Profile Successfully!')
         } else {
             setLoding(false)
             Alert.alert(res?.message);

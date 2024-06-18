@@ -98,7 +98,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
                 <PickerButton title={remindtime} onPress={() => setOpenTime(true)} />
 
             </View>
-            <Title title={'Reminder Title'} />
+            <Title title={'Title'} />
             <TextInput
                 placeholder="Enter Title....."
 
@@ -119,7 +119,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
                 }}
 
             />
-            <Title title={'Reminder Description'} />
+            <Title title={'Description'} />
             <TextInput
                 placeholder="Enter Descriptions....."
                 multiline
@@ -172,6 +172,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
             />
 
             <DatePicker
+                minimumDate={new Date()}
                 modal
                 mode='datetime'
                 open={opentime}

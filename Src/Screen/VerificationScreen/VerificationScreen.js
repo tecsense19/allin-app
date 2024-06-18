@@ -54,7 +54,7 @@ const VerificationScreen = props => {
             .catch(error => setVisible(false));
     }
     const handleSubmit = () => {
-        if (data?.type == 'ragister') {
+        if (data?.type == 'Ragister') {
             registrationAccount()
         } else (
             loginAccount()
