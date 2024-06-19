@@ -359,7 +359,7 @@ export const Task_Detail = async (token, Taskid, Timezone,) => {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ task_id: Taskid, timezone: Timezone, start: 0, limit: 1000, })
+        body: JSON.stringify({ task_id: Taskid, timezone: Timezone, })
 
     })
     const response = await res.json()

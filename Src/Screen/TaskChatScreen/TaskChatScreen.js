@@ -1,5 +1,5 @@
 import { View, Text, KeyboardAvoidingView, StatusBar, ScrollView, TouchableOpacity, Modal, TouchableWithoutFeedback, Alert, Image, StyleSheet, Dimensions, Linking } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ChatInputToolBar from '../ChatInnerScreen/ChatCustomFile/ChatInputToolBar'
 import ChatScrollEnd from '../../Custom/ChatScrollButton/ChatScrollEnd'
 import { COLOR } from '../../Assets/AllFactors/AllFactors'
@@ -88,7 +88,7 @@ const TaskChatScreen = (props) => {
         );
     };
     const File_Message = async () => {
-        GetTaskDetails()
+        // GetTaskDetails()
         const formData = new FormData();
         const AttachmentUri = FileUplode[0]?.uri;
         const AttachmentName = AttachmentUri ? AttachmentUri?.split('/').pop() : ''; // Extract image name from URI
@@ -113,7 +113,7 @@ const TaskChatScreen = (props) => {
 
     }
     const handleSend = () => {
-        GetTaskDetails()
+        // GetTaskDetails()
         if (inputText.trim() == '' && msgType == 'Text') {
             return null
         }
@@ -144,7 +144,17 @@ const TaskChatScreen = (props) => {
             } catch (error) { console.error(error); }
         }
     };
-
+    const memoizedMessages = useMemo(() => {
+        return Object?.keys(messages)?.map(date => (
+            <View key={date}>
+                <Text style={{ fontSize: 15, fontWeight: 'bold', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
+                {messages[date]?.map(message =>
+                (
+                    <ChatMessage key={message?.messageId} message={message} />
+                ))}
+            </View>
+        ))
+    }, [messages])
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
             <StatusBar barStyle={'light-content'} />
@@ -203,15 +213,7 @@ const TaskChatScreen = (props) => {
                                 })}
                             </TouchableOpacity>
                         </View>
-                        {Object?.keys(messages)?.map(date => (
-                            <View key={date}>
-                                <Text style={{ fontSize: 15, fontWeight: 'bold', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
-                                {messages[date]?.map(message =>
-                                (
-                                    <ChatMessage key={message?.messageId} message={message} />
-                                ))}
-                            </View>
-                        ))}
+                        {memoizedMessages}
                     </ScrollView>
                 </View>
                 <View style={{ paddingBottom: isFocused ? 5 : 25, backgroundColor: 'white' }}>
@@ -286,3 +288,51 @@ const styles = StyleSheet.create({
     countTxt: { fontSize: 10, fontWeight: 'bold', color: COLOR.white },
 
 })
+
+
+
+
+
+
+
+
+// // Inside your TaskChatScreen component
+
+// const [loadedMessagesCount, setLoadedMessagesCount] = useState(20);
+// const messageBatchSize = 20;
+
+// const loadMoreMessages = () => {
+//     const newLoadedCount = loadedMessagesCount + messageBatchSize;
+//     setLoadedMessagesCount(newLoadedCount);
+//     // Optionally, fetch more messages here using Task_Detail or another appropriate function
+// };
+
+// const handleScroll = event => {
+//     const offsetY = event.nativeEvent.contentOffset.y;
+//     if (offsetY === 0) {
+//         loadMoreMessages();
+//     }
+// };
+
+// const memoizedMessages = useMemo(() => {
+//     const slicedMessages = messages.slice(-loadedMessagesCount);
+//     return Object.keys(slicedMessages).map(date => (
+//         <View key={date}>
+//             {/* Render your messages here */}
+//         </View>
+//     ));
+// }, [messages, loadedMessagesCount]);
+
+// return (
+//     <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
+//         {/* Other components */}
+//         <ScrollView
+//             ref={scrollViewRef}
+//             onScroll={handleScroll}
+//             scrollEventThrottle={16}>
+//             {/* Existing UI */}
+//             {memoizedMessages}
+//         </ScrollView>
+//         {/* Other components */}
+//     </KeyboardAvoidingView>
+// );

@@ -1,36 +1,25 @@
 import { View, Text, LogBox, Linking, Alert } from 'react-native'
 import React, { useEffect } from 'react'
 import StackScreen from './Src/Navigation/Stack/Stcak'
-import Contacts from 'react-native-contacts';
+import messaging from '@react-native-firebase/messaging';
 
 LogBox.ignoreAllLogs();
 const App = () => {
 
   useEffect(() => {
     // saveContact()
+    getFcmToken()
   }, [])
-  const saveContact = () => {
-    const newContact = {
-      givenName: 'John',
-      familyName: 'Doe',
-      phoneNumbers: [{
-        label: 'mobile',
-        number: '1234567890',
-      }],
-    };
 
-
-
-    Contacts.openContactForm(newContact)
-      .then(() => {
-        Alert.alert('Contact saved successfully');
-      })
-      .catch((error) => {
-        Alert.alert('Error saving contact', error.message);
-      })
-      .finally(() => {
-      });
-  };
+  const getFcmToken = async () => {
+    try {
+      const D_token = await messaging().getToken();
+      console.log(D_token);
+      // setDevicetoken(D_token)
+    } catch (error) {
+      console.error('Error getting FCM token:', error)
+    }
+  }
   return (
     <View style={{ flex: 1 }}>
       <StackScreen />

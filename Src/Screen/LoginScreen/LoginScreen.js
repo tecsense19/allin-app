@@ -18,13 +18,14 @@ const LoginScreen = props => {
     const [visible, setVisible] = useState(false);
     const [maskNumber, setMaskNumber] = useState('');
     const [devicetoken, setDevicetoken] = useState('');
-
+    // console.log(devicetoken);
     useEffect(() => { getFcmToken }, [])
 
     const getFcmToken = async () => {
         try {
             const D_token = await messaging().getToken();
-            setDevicetoken(D_token)
+            console.log(D_token);
+            // setDevicetoken(D_token)
         } catch (error) {
             console.error('Error getting FCM token:', error)
         }

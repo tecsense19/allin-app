@@ -52,11 +52,18 @@ const ChatInnerScreen = props => {
     // const [showButton, setShowButton] = useState(false);
     const [location, setLocation] = useState(null);
     const [forwordId, setForwordID] = useState();
-    const [filteredContacts, setFilteredContacts] = useState([]); // State to hold filtered contacts
+    const [filteredContacts, setFilteredContacts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [loadedMessagesCount, setLoadedMessagesCount] = useState(15);
 
-    // console.log(selectedContact,);
 
+    const handleScroll = event => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        console.log(offsetY);
+        if (offsetY === 0) {
+            getAllMessages()
+        }
+    };
     const chatProfileData = props?.route?.params
     const userId = chatProfileData?.item?.id
     const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
@@ -65,7 +72,7 @@ const ChatInnerScreen = props => {
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
     // const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
-    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
+    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [chatProfileData]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     useEffect(() => {
         const extractMessageIds = () => {
@@ -84,6 +91,8 @@ const ChatInnerScreen = props => {
     useEffect(() => {
         const fetchData = async () => {
             await getAllMessages();
+            setLoadedMessagesCount(loadedMessagesCount + 5)
+
             if (messageIds) {
                 await Read_Unread_Messages(token, messageIds);
             }
@@ -102,7 +111,6 @@ const ChatInnerScreen = props => {
         }
     }, [selectedMSG]);
     setTimeout(() => {
-        getAllMessages()
     }, 60000)
     const requestLocationPermission = async () => {
         try {
@@ -151,17 +159,21 @@ const ChatInnerScreen = props => {
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
     const getAllMessages = async () => {
-        const bodyData = { id: userId, limit: 1000, start: 0, timezone: Timezone.getTimeZone(), filter: change == true ? 'filter' : null }
+        const bodyData = { id: userId, limit: loadedMessagesCount, timezone: Timezone.getTimeZone(), filter: change == true ? 'filter' : null }
         const data = await Get_All_Messages(bodyData, token)
         if (data?.status_code == 200) {
+            console.log(data?.data?.chat);
             setUserDetails(data.data.userData);
-            setMessages(data?.data?.chat)
+            setMessages(data?.data?.chat);
             setLoding(false);
+
         } else {
             setLoding(false);
             Alert.alert(data?.message);
         }
     };
+    // console.log(messages);
+
     const File_Message = async () => {
         const formData = new FormData();
         const AttachmentUri = FileUplode[0]?.uri;
@@ -288,7 +300,7 @@ const ChatInnerScreen = props => {
             </TouchableOpacity>
         )
     }
-    const ChatMessage = ({ message }) => {
+    const ChatMessage = React.memo(({ message }) => {
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -319,12 +331,11 @@ const ChatInnerScreen = props => {
                 </TouchableOpacity>
             </View>
         );
-    };
+    });
     const SendFormetedContactArray = selectedContact.map(obj => ({
         givenName: obj.givenName,
         phoneNumbers: obj.phoneNumbers.map(phone => phone.number)
     }));
-    // Function to filter contacts based on search query
     const handleSearch = (text) => {
         const formattedText = text.toLowerCase(); // Convert search query to lowercase
         setSearchQuery(formattedText);
@@ -334,7 +345,20 @@ const ChatInnerScreen = props => {
         );
         setFilteredContacts(filteredData);
     };
+    const memoizedMessages = useMemo(() => {
 
+        return Object.keys(messages).map(date => (
+            <View key={date}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
+                {messages[date]?.map(message => {
+                    if (message.messageType === 'Task Chat') {
+                        return null;
+                    }
+                    return <ChatMessage key={message?.messageId} message={message} />;
+                })}
+            </View>
+        ));
+    }, [messages, selectedMSG]);
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
             {msgType == 'Location' ?
@@ -396,9 +420,9 @@ const ChatInnerScreen = props => {
                             <View style={styles.GiftedChat}>
                                 <ScrollView ref={scrollViewRef}
                                     invertStickyHeaders={true}
-                                    // onScroll={handleScroll}
+                                    onScroll={handleScroll}
                                     scrollEventThrottle={16}>
-                                    {Object.keys(messages).map(date => (
+                                    {/* {Object.keys(messages).map(date => (
                                         <View key={date}>
                                             <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
                                             {messages[date]?.map(message => {
@@ -409,7 +433,8 @@ const ChatInnerScreen = props => {
                                                     <ChatMessage key={message?.messageId} message={message} />)
                                             })}
                                         </View>
-                                    ))}
+                                    ))} */}
+                                    {memoizedMessages}
                                 </ScrollView>
                             </View >
                             <PlusModal

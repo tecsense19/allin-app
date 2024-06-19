@@ -190,19 +190,45 @@ const ChatUserListScreen = props => {
             setVisible(false);
         } catch (e) { }
     };
+    // const getuser = async () => {
+    //     const Token = await getToken();
+    //     if (Token) {
+    //         setToken(Token)
+
+    //         const bodydata = { timezone: Timezone.getTimeZone(), search: search }
+
+    //         await User_List(bodydata, Token).then((res) => {
+    //             if (res.status_code == 200) {
+    //                 setAllUserData(res?.data?.userList)
+    //                 setLoading(false)
+    //                 // console.log(res?.data?.userList);
+    //             }
+    //         }).catch((e) => { console.log(e, 'userList screen'); })
+    //     }
+    // }
     const getuser = async () => {
         const Token = await getToken();
-        setToken(Token)
-        const bodydata = { timezone: Timezone.getTimeZone(), search: search }
-
-        await User_List(bodydata, Token).then((res) => {
-            if (res.status_code == 200) {
-                setAllUserData(res?.data?.userList)
-                setLoading(false)
-                // console.log(res?.data?.userList);
+        if (Token) {
+            setToken(Token);
+    
+            const bodydata = { timezone: Timezone.getTimeZone(), search: search };
+    
+            try {
+                const res = await User_List(bodydata, Token);
+                if (res.status_code === 200) {
+                    setAllUserData(res.data.userList);
+                    setLoading(false);
+                } else {
+                    console.log('User_List API returned error:', res);
+                    // Handle error case, e.g., show alert or retry logic
+                }
+            } catch (error) {
+                console.log('User_List API error:', error);
+                // Handle network error, e.g., show alert or retry logic
             }
-        }).catch((e) => { console.log(e, 'userList screen'); })
-    }
+        }
+    };
+    
     useFocusEffect(useCallback(() => {
         getuser();
     }, []));
