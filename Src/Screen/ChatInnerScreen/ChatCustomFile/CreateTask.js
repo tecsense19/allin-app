@@ -7,6 +7,7 @@ import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 import NavigateHeader from '../../../Custom/Header/NavigateHeader'
 import { User_List } from '../../../Service/actions'
 import Timezone from 'react-native-timezone'
+import Loader from '../../../Custom/Loader/loader'
 
 
 const CreateTask = ({ onSubmit, userId, token }) => {
@@ -17,6 +18,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
     const [UserData, setUserData] = useState();
     const [selectedItems, setSelectedItems] = useState([userId]);
     const [myID, setMyId] = useState('');
+    const [loading, setLoading] = useState(false);
     const id = uuid.v4()
 
     const filteredUserData = UserData?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
@@ -41,11 +43,12 @@ const CreateTask = ({ onSubmit, userId, token }) => {
     };
 
     const getuser = async () => {
+        setLoading(true)
         const timezone = { timezone: Timezone.getTimeZone() }
         await User_List(timezone, token).then((res) => {
             if (res.status_code == 200) {
                 setUserData(res?.data?.userList)
-
+                setLoading(false)
             }
         }).catch((e) => { console.log(e); })
 
@@ -186,7 +189,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     </View>
                 </View>
             </Modal>
-
+            <Loader visible={loading} />
         </ScrollView>
     )
 }

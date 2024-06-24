@@ -975,6 +975,8 @@ PODS:
     - React-Core
   - react-native-document-picker (9.2.0):
     - React-Core
+  - react-native-document-scanner-plugin (1.0.0):
+    - React-Core
   - react-native-geolocation (3.2.1):
     - DoubleConversion
     - glog
@@ -1261,6 +1263,8 @@ PODS:
     - React-logger (= 0.74.1)
     - React-perflogger (= 0.74.1)
     - React-utils (= 0.74.1)
+  - rn-fetch-blob (0.12.0):
+    - React-Core
   - RNCAsyncStorage (1.23.1):
     - React-Core
   - RNFBApp (20.0.0):
@@ -1271,6 +1275,8 @@ PODS:
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.16.2):
     - DoubleConversion
     - glog
@@ -1378,6 +1384,7 @@ DEPENDENCIES:
   - react-native-contacts (from `../node_modules/react-native-contacts`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-document-scanner-plugin (from `../node_modules/react-native-document-scanner-plugin`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
@@ -1408,9 +1415,11 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -1498,6 +1507,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
+  react-native-document-scanner-plugin:
+    :path: "../node_modules/react-native-document-scanner-plugin"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-image-picker:
@@ -1558,12 +1569,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  rn-fetch-blob:
+    :path: "../node_modules/rn-fetch-blob"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNPermissions:
@@ -1620,6 +1635,7 @@ SPEC CHECKSUMS:
   react-native-contacts: cb4f3b823550adbce0802901b9e63bf1526ec0af
   react-native-date-picker: 90687f1dbd374ff0265dca99d949998364c22fa9
   react-native-document-picker: 2b3efb60622b7be891b8d0e0e5424632150e0c94
+  react-native-document-scanner-plugin: 0687a1d8eaff9dac01dd2799993590831f8f8bcb
   react-native-geolocation: b3201810fd4c47b3d92cff854dc93d1c304fb07b
   react-native-image-picker: d83c33b93b45f1db2ead17c12965550ee17178f1
   react-native-image-resizer: 669454edae94399b11e49c840e4da14482302293
@@ -1650,9 +1666,11 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 6dc024bad169120e3c1f650600595669284b11c6
   React-utils: acdd945ae0c0f5b502d5839e74d062cbec02659b
   ReactCommon: f63765a8b89c48691517455579d411beec3e96cf
+  rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
   RNFBApp: 87e1cdbf128f8574283d415bc58eac36df546a6f
   RNFBMessaging: 03b326b0a078c24fba5e509a913ea7d80b46609f
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: a5d0b4dd7f5cb1fc06cf09cfa8ee0dfb5c579b65
   RNPermissions: 10d46d6c38fa0ff137d9aad0f676699de60b5bf4
   RNReanimated: 669b9c611bdccd0fb897ea8df181bcc340d45f16

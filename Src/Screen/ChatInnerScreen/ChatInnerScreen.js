@@ -29,6 +29,7 @@ import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Button from '../../Custom/Button/Button';
 import MsgMapImage from './ChatCustomFile/MsgMapView';
+import { getToken } from '../../Service/AsyncStorage';
 LogBox.ignoreAllLogs();
 
 
@@ -39,7 +40,7 @@ const ChatInnerScreen = props => {
     const [isFocused, setIsFocused] = useState(false);
     const [ReMeCkModal, setReMeCkModal] = useState(false);
     const [change, setChange] = useState(false);
-    const [loding, setLoding] = useState(false);
+    const [loding, setLoding] = useState(true);
     const [msgType, setMsgType] = useState('Text');
     const [FileUplode, setFileUpload] = useState('');
     const [contacts, setContacts] = useState([])
@@ -54,25 +55,26 @@ const ChatInnerScreen = props => {
     const [forwordId, setForwordID] = useState();
     const [filteredContacts, setFilteredContacts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [token, setToken] = useState('');
     const [loadedMessagesCount, setLoadedMessagesCount] = useState(15);
-
 
     const handleScroll = event => {
         const offsetY = event.nativeEvent.contentOffset.y;
-        console.log(offsetY);
+        // console.log(offsetY);
         if (offsetY === 0) {
             getAllMessages()
         }
     };
-    const chatProfileData = props?.route?.params
-    const userId = chatProfileData?.item?.id
-    const userName = chatProfileData?.item?.first_name + '' + chatProfileData?.item?.last_name
+    console.log('aaaaaaa');
+
+    const Userid = props?.route?.params
+    // console.log(Userid);
+    const userName = userDetails.first_name == undefined && userDetails.last_name == undefined ? '' : userDetails.first_name + ' ' + userDetails.last_name
     const scrollViewRef = useRef();
-    const token = chatProfileData?.token
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
-    // const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
-    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [chatProfileData]);
+    const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
+    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, []);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     useEffect(() => {
         const extractMessageIds = () => {
@@ -87,7 +89,7 @@ const ChatInnerScreen = props => {
             setMessageIds(ids.join(','));
         };
         extractMessageIds();
-    }, [messages, token]);
+    }, []);
     useEffect(() => {
         const fetchData = async () => {
             await getAllMessages();
@@ -98,7 +100,7 @@ const ChatInnerScreen = props => {
             }
         }
         fetchData();
-    }, [messageIds, token, change,]);
+    }, [change]);
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
@@ -110,8 +112,7 @@ const ChatInnerScreen = props => {
             setForwordID(id?.join(','))
         }
     }, [selectedMSG]);
-    setTimeout(() => {
-    }, 60000)
+
     const requestLocationPermission = async () => {
         try {
             const granted = await request(
@@ -120,8 +121,8 @@ const ChatInnerScreen = props => {
                     : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
             );
             if (granted === RESULTS.GRANTED) {
-                console.log('Location permission granted', Geolocation.watchPosition((r) => {
-                }));
+                // console.log('Location permission granted', Geolocation.watchPosition((r) => {
+                // }));
             } else {
                 const title = 'Permission Request';
                 const Descriptions = 'This app would like to view your Location';
@@ -134,7 +135,6 @@ const ChatInnerScreen = props => {
         }
     };
     useEffect(() => {
-
         Geolocation.getCurrentPosition(
             position => {
                 const { latitude, longitude } = position.coords;
@@ -159,10 +159,12 @@ const ChatInnerScreen = props => {
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
     const getAllMessages = async () => {
-        const bodyData = { id: userId, limit: loadedMessagesCount, timezone: Timezone.getTimeZone(), filter: change == true ? 'filter' : null }
-        const data = await Get_All_Messages(bodyData, token)
+        const Token = await getToken()
+        setToken(Token)
+        const bodyData = { id: Userid, start: 0, limit: 1000, timezone: Timezone.getTimeZone(), filter: change == true ? 'filter' : null }
+        const data = await Get_All_Messages(bodyData, Token)
         if (data?.status_code == 200) {
-            console.log(data?.data?.chat);
+            // console.log(data?.data?.chat);
             setUserDetails(data.data.userData);
             setMessages(data?.data?.chat);
             setLoding(false);
@@ -182,12 +184,12 @@ const ChatInnerScreen = props => {
             formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: FileUplode[0]?.type });
         }
 
-        const data = await File_Uplode(token, formData, userId, msgType)
+        const data = await File_Uplode(token, formData, Userid, msgType)
         if (data?.status_code == 200) {
             const fileName = data.data.image_name
             const fileType = data.data.file_type
             // console.log(fileType,'typr');
-            Chat_File_Message(msgType, fileName, userId, token, fileType)
+            Chat_File_Message(msgType, fileName, Userid, token, fileType)
         } else {
             Alert.alert(data?.message);
         }
@@ -199,7 +201,7 @@ const ChatInnerScreen = props => {
         setMsgType('Text')
         switch (msgType) {
             case 'Text':
-                Chat_Text_Messages(token, msgType, inputText, userId); setInputText('')
+                Chat_Text_Messages(token, msgType, inputText, Userid); setInputText('')
                 break;
             case 'Attachment':
                 File_Message(); setFileUpload('')
@@ -214,10 +216,10 @@ const ChatInnerScreen = props => {
                 Reminder_Messages(token, currentMsgData)
                 break;
             case 'Location':
-                Location_Messages(token, location, userId)
+                Location_Messages(token, location, Userid)
                 break;
             case 'Contact':
-                Contact_Message(token, currentMsgData, userId)
+                Contact_Message(token, currentMsgData, Userid)
                 break;
             default:
                 console.warn(`Unhandled message type: ${msgType}`);
@@ -408,7 +410,7 @@ const ChatInnerScreen = props => {
                                     onCall={onhandalePhoneCall}
                                     value={change}
                                     onChange={() => { setChange(!change), setLoding(true), getAllMessages() }}
-                                    source={{ uri: chatProfileData?.item?.profile }}
+                                    source={{ uri: userDetails.profile }}
                                     title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName}
                                     onSearch={() => Alert.alert('search')}
                                     onBack={() => props.navigation.goBack()}
@@ -453,14 +455,14 @@ const ChatInnerScreen = props => {
                             />
                             <Modal visible={ReMeCkModal} animationType='fade'>
                                 <View style={styles.createItemModalView}>
-                                    <CtrateHeader source={chatProfileData.item.profile} onBack={() => setReMeCkModal(false)} title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName} />
+                                    <CtrateHeader source={userDetails.profile} onBack={() => setReMeCkModal(false)} title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName} />
                                     <View style={styles.createItemModalView2}>
                                         {msgType == 'Task' ? (
-                                            <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={userId} />
+                                            <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={Userid} />
                                         ) : msgType == 'Meeting' ? (
-                                            <CreateMsgMeeting token={token} onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
+                                            <CreateMsgMeeting token={token} onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={Userid} />
                                         ) : msgType == 'Reminder' ? (
-                                            <CreateReminder token={token} onSubmit={(reminddata) => { handleSend(reminddata); setMsgType('Text'), setReMeCkModal(false); }} userId={userId} />
+                                            <CreateReminder token={token} onSubmit={(reminddata) => { handleSend(reminddata); setMsgType('Text'), setReMeCkModal(false); }} userId={Userid} />
                                         ) : null}
                                     </View>
                                 </View>

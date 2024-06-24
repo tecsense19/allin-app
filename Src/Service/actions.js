@@ -1,13 +1,13 @@
 import { Alert } from "react-native";
 import { ACTIONS } from "./API"
 
-export const User_List = async (timeZone, token, Search) => {
+export const User_List = async (timeZone, Token, Search) => {
     // console.log('request', token);
     const res = await fetch(ACTIONS.USER_LIST, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${Token}`
         },
         body: JSON.stringify(timeZone)
     })

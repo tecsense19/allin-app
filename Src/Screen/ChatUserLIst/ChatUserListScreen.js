@@ -19,7 +19,6 @@ import MyAlert from '../../Custom/Alert/PermissionAlert';
 import styles from './ChatUserListScreenStyle';
 import MainMenu from '../../Custom/Modal/MainMenu';
 import ChatHeader from './ChatHeader';
-import { userData } from '../../StaticOBJ/OBJ';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import Timezone from 'react-native-timezone'
@@ -39,7 +38,7 @@ const ChatUserListScreen = props => {
     const [search, setSearch] = useState('');
     const swipeableRef = useRef(null);
     const closeModal = () => { setVisible(false); };
-    useEffect(() => { getFcmToken() }, [])
+
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
 
     const handleSwipeableOpen = id => {
@@ -68,7 +67,6 @@ const ChatUserListScreen = props => {
                 { text: 'Delete', onPress: () => { DeleteUser(id) }, style: 'destructive' },
             ],)
     }
-
     const list = ({ item }) => {
         const getTime = () => {
             const time = new Date(item?.last_message_date);
@@ -77,7 +75,7 @@ const ChatUserListScreen = props => {
             const notiDate = time.getDate();
             const currMon = now.getMonth() + 1;
             const notiMon = time.getMonth() + 1;
-            console.log(time);
+            // console.log(time);
             const timeDiffInMilliseconds = now - time;
             const timeDiffInMinutes = Math.floor(timeDiffInMilliseconds / (1000 * 60));
 
@@ -131,6 +129,7 @@ const ChatUserListScreen = props => {
                 </View>
             );
         };
+        // console.log(item.id);
         return (
             <GestureHandlerRootView>
                 <Swipeable
@@ -148,7 +147,7 @@ const ChatUserListScreen = props => {
                     <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 20, marginTop: 5 }}>
                         <TouchableOpacity
                             style={styles.listcontainer}
-                            onPress={() => { props.navigation.navigate('chatinner', { token, item }), setShowSearch(false) }}
+                            onPress={() => { props.navigation.navigate('chatinner', item.id), setShowSearch(false) }}
                         >
                             <View style={styles.imgAndNameView}>
                                 <Image source={{ uri: item?.profile }} style={styles.chetImg} />
@@ -180,7 +179,12 @@ const ChatUserListScreen = props => {
         Alert.alert(
             'LOGOUT', 'You are about to logout,Are you sure you want to proceed ?',
             [{ text: 'NO', onPress: () => console.log('Cancel Pressed'), style: 'No', },
-            { text: 'YES', onPress: () => logout(), style: 'destructive' },
+            {
+                text: 'YES', onPress: () => {
+                    logout(),
+                    setLoading(true)
+                }, style: 'destructive'
+            },
             ],
         );
     const onLogOut = async () => {
@@ -190,29 +194,14 @@ const ChatUserListScreen = props => {
             setVisible(false);
         } catch (e) { }
     };
-    // const getuser = async () => {
-    //     const Token = await getToken();
-    //     if (Token) {
-    //         setToken(Token)
 
-    //         const bodydata = { timezone: Timezone.getTimeZone(), search: search }
-
-    //         await User_List(bodydata, Token).then((res) => {
-    //             if (res.status_code == 200) {
-    //                 setAllUserData(res?.data?.userList)
-    //                 setLoading(false)
-    //                 // console.log(res?.data?.userList);
-    //             }
-    //         }).catch((e) => { console.log(e, 'userList screen'); })
-    //     }
-    // }
     const getuser = async () => {
         const Token = await getToken();
         if (Token) {
             setToken(Token);
-    
+
             const bodydata = { timezone: Timezone.getTimeZone(), search: search };
-    
+
             try {
                 const res = await User_List(bodydata, Token);
                 if (res.status_code === 200) {
@@ -228,9 +217,11 @@ const ChatUserListScreen = props => {
             }
         }
     };
-    
+
     useFocusEffect(useCallback(() => {
         getuser();
+        getFcmToken()
+        // console.log('useFocusEffect');
     }, []));
     const ClearChat = (id) => {
         setLoading(true)
@@ -262,7 +253,6 @@ const ChatUserListScreen = props => {
         }
     }
     const logout = async () => {
-        setLoading(true)
         const d_token = { device_token: deviceToken }
         const data = await User_Logout(d_token, token)
         if (data?.status_code == 200) { onLogOut(), setLoading(false) }

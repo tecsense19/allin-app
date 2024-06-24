@@ -73,7 +73,7 @@ const ProjectManagementScreen = props => {
         {
             id: 5,
             listname: 'Scan Docs',
-            navigation: 'scandocs',
+            navigation: 'scandoc',
             img: require('../../Assets/Image/scandocs.png'),
         },
         {

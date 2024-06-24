@@ -6,17 +6,31 @@ import { notificationsPermission } from '../../Service/Functions';
 import TimeZone from 'react-native-timezone'
 import { User_List } from '../../Service/actions';
 import { useFocusEffect } from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
 
 const SplaseScreen = props => {
     const timezone = { timezone: TimeZone.getTimeZone() };
-
     useEffect(() => {
+        getNotificationData()
+
         setTimeout(() => {
             getMyData()
             notificationsPermission()
         }, 2000);
     }, []);
+    const getNotificationData = async () => {
+        messaging().onMessage(remoteMessage => {
+            props.navigation.navigate('chatinner', remoteMessage.data.sender)
+        });
+        // messaging().getInitialNotification().then(remoteMessage => {
+        //     if (remoteMessage && remoteMessage.data.sender) {
+        //         navigation.navigate('chatinner', { sender: remoteMessage.data.sender });
+        //     }
+        // });
+    }
+
     const getMyData = async () => {
+
         const jsonValue = await AsyncStorage.getItem('myData');
         const userData = JSON.parse(jsonValue);
         // console.log(jsonValue);

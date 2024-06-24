@@ -47,6 +47,7 @@ const ChatProfileScreen = props => {
         )
     }
     const userName = chatProfileData.first_name + ' ' + chatProfileData.last_name
+    console.log(chatProfileData);
     return (
         <ScrollView style={{ flex: 1, backgroundColor: COLOR.white }} bounces={false}>
             <View style={{ flex: 1, backgroundColor: COLOR.white }}>
@@ -109,6 +110,7 @@ const ChatProfileScreen = props => {
                         <Text style={{ marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center' }}>
                             {chatProfileData?.description}
                         </Text>
+                        <Text style={{  marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center'  }}>{chatProfileData.email}</Text>
                     </View>}
 
                     <FlatList data={socialMedia} renderItem={list} horizontal style={{ alignSelf: 'center', marginTop: 20 }} bounces={false} />
