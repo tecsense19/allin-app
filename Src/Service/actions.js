@@ -1,7 +1,7 @@
 import { Alert } from "react-native";
 import { ACTIONS } from "./API"
 
-export const User_List = async (timeZone, Token, Search) => {
+export const User_List = async (timeZone, Token) => {
     // console.log('request', token);
     const res = await fetch(ACTIONS.USER_LIST, {
         method: "POST",
@@ -584,3 +584,16 @@ export const Refresh_Token = async (token) => {
         throw error;
     }
 };
+
+export const Work_Hour_Send = async (token, Id, Month) => {
+    const res = await fetch(ACTIONS.SEND_WORK_HOUR_EMAIL, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, month: Month })
+    })
+    const response = await res.json()
+    return response
+}

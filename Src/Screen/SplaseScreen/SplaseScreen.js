@@ -19,9 +19,9 @@ const SplaseScreen = props => {
         }, 2000);
     }, []);
     const getNotificationData = async () => {
-        messaging().onMessage(remoteMessage => {
-            props.navigation.navigate('chatinner', remoteMessage.data.sender)
-        });
+        // messaging().onMessage(remoteMessage => {
+        //     props.navigation.navigate('chatinner', remoteMessage.data.sender)
+        // });
         // messaging().getInitialNotification().then(remoteMessage => {
         //     if (remoteMessage && remoteMessage.data.sender) {
         //         navigation.navigate('chatinner', { sender: remoteMessage.data.sender });

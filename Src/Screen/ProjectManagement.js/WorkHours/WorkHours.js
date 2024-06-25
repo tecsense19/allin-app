@@ -4,13 +4,14 @@ import { Stopwatch } from 'react-native-stopwatch-timer';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import WorkNoteModal from '../../../Custom/Modal/WorkNoteModal';
-import { Add_Work_Hour, Edit_Work_Hour_Summary, Work_Hour } from '../../../Service/actions';
+import { Add_Work_Hour, Edit_Work_Hour_Summary, User_List, Work_Hour } from '../../../Service/actions';
 import Loader from '../../../Custom/Loader/loader';
 import MonthPicker from 'react-native-month-year-picker'
 import TimeZone from 'react-native-timezone'
 import { getToken } from '../../../Service/AsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
-
+import ChatInputToolBar from '../../ChatInnerScreen/ChatCustomFile/ChatInputToolBar';
+import timezone from 'react-native-timezone'
 
 const WorkHours = props => {
     const [start, setStart] = useState(false);
@@ -30,6 +31,11 @@ const WorkHours = props => {
     const [isUpdate, setIsUpdate] = useState(false)
     const [summaryId, setSummaryID] = useState('')
     const [token, setToken] = useState('')
+    const [inputText, setInputText] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+    const [userlist, setUserList] = useState([]);
+
+
 
 
     // const token = props?.route?.params
@@ -114,11 +120,13 @@ const WorkHours = props => {
         get()
 
     }, [clear, apiMonthyear,])
-    console.log(apiMonthyear);
+    // console.log(apiMonthyear);
     const get = async () => {
         const Token = await getToken()
         if (Token) {
             setToken(Token)
+            hanaleUserList(Token)
+
         } else {
             get()
         }
@@ -149,6 +157,17 @@ const WorkHours = props => {
         },
         [date, showPicker],
     );
+    const hanaleUserList = async (Token) => {
+        const timeZone = timezone.getTimeZone()
+        await User_List(timeZone, Token)
+            .then((res) => {
+                setUserList(res.data.userList);
+            })
+            .catch((e) => { });
+    }
+    const SendEmail = () => {
+
+    }
     return (
         <View
             style={{
@@ -212,6 +231,18 @@ const WorkHours = props => {
             </ScrollView>
 
             <Loader visible={loading} />
+            <View style={{ marginBottom: isFocused ? 5 : 25 }}>
+                <FlatList horizontal data={userlist} renderItem={({ item, index }) => {
+                    return (
+                        <View>
+                            <Image source={{ uri: index > 3 ? '' : item.profile }} style={{ height: 50, width: 50, borderRadius: 50, marginHorizontal:25 }} />
+                        </View>
+                    )
+                }} />
+                <ChatInputToolBar hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
+                    onFocus={() => setIsFocused(true)} value={inputText} onsend={SendEmail} onPress={() => setVisible(true)}
+                />
+            </View>
         </View>
     );
 };

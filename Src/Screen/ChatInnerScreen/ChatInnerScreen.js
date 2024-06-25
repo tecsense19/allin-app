@@ -65,7 +65,7 @@ const ChatInnerScreen = props => {
             getAllMessages()
         }
     };
-    console.log('aaaaaaa');
+    // console.log('aaaaaaa');
 
     const Userid = props?.route?.params
     // console.log(Userid);
@@ -73,10 +73,16 @@ const ChatInnerScreen = props => {
     const scrollViewRef = useRef();
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
-    const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
-    useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, []);
+    // const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
+    const scrollToBottom = () => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollToEnd({ animated: true });
+        }
+    };
+    useEffect(() => { scrollToBottom() }, [messages,]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     useEffect(() => {
+
         const extractMessageIds = () => {
             const ids = [];
             Object.keys(messages).forEach(date => {
@@ -89,18 +95,19 @@ const ChatInnerScreen = props => {
             setMessageIds(ids.join(','));
         };
         extractMessageIds();
-    }, []);
+
+    }, [messages]);
     useEffect(() => {
         const fetchData = async () => {
             await getAllMessages();
-            setLoadedMessagesCount(loadedMessagesCount + 5)
+            // setLoadedMessagesCount(loadedMessagesCount + 5)
 
             if (messageIds) {
                 await Read_Unread_Messages(token, messageIds);
             }
         }
         fetchData();
-    }, [change]);
+    }, [messageIds, token, change]);
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
@@ -112,7 +119,6 @@ const ChatInnerScreen = props => {
             setForwordID(id?.join(','))
         }
     }, [selectedMSG]);
-
     const requestLocationPermission = async () => {
         try {
             const granted = await request(
@@ -169,13 +175,12 @@ const ChatInnerScreen = props => {
             setMessages(data?.data?.chat);
             setLoding(false);
 
+
         } else {
             setLoding(false);
             Alert.alert(data?.message);
         }
     };
-    // console.log(messages);
-
     const File_Message = async () => {
         const formData = new FormData();
         const AttachmentUri = FileUplode[0]?.uri;
