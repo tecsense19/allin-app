@@ -182,7 +182,7 @@ const ChatUserListScreen = props => {
             {
                 text: 'YES', onPress: () => {
                     logout(),
-                    setLoading(true)
+                        setLoading(true)
                 }, style: 'destructive'
             },
             ],
@@ -292,6 +292,11 @@ const ChatUserListScreen = props => {
                     </View>}
             </View>
             <View style={styles.detailsview}>
+                <TouchableOpacity onPress={() => { props.navigation.navigate('tme') }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
+                    <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 55, width: 55 }} />
+                    <Text style={{ fontSize: 18, fontWeight: '600', color: COLOR.black, marginLeft: 10 }}>T.me</Text>
+
+                </TouchableOpacity>
                 <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
             </View>
             <Loader visible={loading} />

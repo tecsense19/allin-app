@@ -585,15 +585,16 @@ export const Refresh_Token = async (token) => {
     }
 };
 
-export const Work_Hour_Send = async (token, Id, Month) => {
+export const Work_Hour_Send = async (token, Id, Month, EmailSummary) => {
     const res = await fetch(ACTIONS.SEND_WORK_HOUR_EMAIL, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ id: Id, month: Month })
+        body: JSON.stringify({ id: Id, month: Month, summary: EmailSummary })
     })
     const response = await res.json()
+    console.log(response);
     return response
 }
