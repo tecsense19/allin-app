@@ -1,15 +1,19 @@
-import { View, Text, TouchableOpacity, ImageBackground, Image, FlatList, Modal, TextInput, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, Image, FlatList, KeyboardAvoidingView, TextInput, ScrollView, Alert, Modal } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import WorkNoteModal from '../../../Custom/Modal/WorkNoteModal';
-import { Add_Work_Hour, Edit_Work_Hour_Summary, Work_Hour } from '../../../Service/actions';
+import { Add_Work_Hour, Edit_Work_Hour_Summary, User_List, Work_Hour, Work_Hour_Send } from '../../../Service/actions';
 import Loader from '../../../Custom/Loader/loader';
 import MonthPicker from 'react-native-month-year-picker'
 import TimeZone from 'react-native-timezone'
 import { getToken } from '../../../Service/AsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
+import ChatInputToolBar from '../../ChatInnerScreen/ChatCustomFile/ChatInputToolBar';
+import Button from '../../../Custom/Button/Button';
+import Timezone from 'react-native-timezone'
+
 
 
 const WorkHours = props => {
@@ -30,9 +34,13 @@ const WorkHours = props => {
     const [isUpdate, setIsUpdate] = useState(false)
     const [summaryId, setSummaryID] = useState('')
     const [token, setToken] = useState('')
+    const [EmailSummary, setEmailSummary] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+    const [visibleUser, setVisibleUser] = useState(false);
+    const [userlist, setUserList] = useState([]);
+    const [selectedItems, setSelectedItems] = useState([]);
 
 
-    // const token = props?.route?.params
     const monthIndex = date.getMonth();
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const month = months[monthIndex] + '-' + date.getFullYear();
@@ -54,6 +62,11 @@ const WorkHours = props => {
     timestamp.setHours(timestamp.getHours());
     timestamp.setMinutes(timestamp.getMinutes());
     const formattedDate = timestamp.toISOString().slice(0, 19).replace("T", " ");
+    const filteredUserData = userlist?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
+
+    var stringArray = selectedItems?.map(String);
+    var EmailIds = stringArray?.join(',');
+    // console.log(id);
     const onhandleLap = async () => {
         let newData = [...timerData];
         newData.push({ id: timerData == null ? 1 : timerData?.length + 1, time: listTime, note: 'hello', o: 'peeeee', date: Date.parse(new Date()) })
@@ -112,6 +125,7 @@ const WorkHours = props => {
     useEffect(() => {
         GetWorkHours()
         get()
+        getuser()
 
     }, [clear, apiMonthyear,])
     console.log(apiMonthyear);
@@ -149,70 +163,169 @@ const WorkHours = props => {
         },
         [date, showPicker],
     );
+    const SendEmail = () => {
+        Work_Hour_Send(token, EmailIds, apiMonthyear, EmailSummary)
+            .then((res) => {
+                if (res.statuscode === 200) {
+                    setEmailSummary('')
+                    selectedItems('')
+                    console.log(res, 'wefrgthrgefertyjhtrererterwytey');
+                }
+            })
+            .catch((e) => { })
+    }
+    const selectedUser = userlist?.filter(user => {
+        return user?.id
+    })
+
+    const toggleItem = (itemId) => {
+        if (selectedItems.includes(itemId)) {
+            setSelectedItems(selectedItems.filter((id) => id !== itemId));
+        } else {
+            setSelectedItems([...selectedItems, itemId]);
+        }
+    };
+    const getuser = async () => {
+        const Token = await getToken();
+        if (Token) {
+            setToken(Token);
+
+            const bodydata = { timezone: Timezone.getTimeZone(), };
+
+            try {
+                const res = await User_List(bodydata, Token);
+                if (res.status_code === 200) {
+                    setUserList(res.data.userList);
+                    setLoading(false);
+                } else {
+                    console.log('User_List API returned error:', res);
+                }
+            } catch (error) {
+                console.log('User_List API error:', error);
+
+            }
+        }
+    };
     return (
         <View
             style={{
                 backgroundColor: COLOR.white,
                 flex: 1,
             }}>
-            <View style={{ padding: 20, paddingHorizontal: 30 }}>
-                <NavigateHeader top={30} color={COLOR.black} title={'Timer'} onPress={() => props.navigation.goBack()} />
-            </View>
-            <ImageBackground source={require('../../../Assets/Image/timerborder.png')} resizeMode='contain' style={{ height: 135, width: 135, alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
-                <View style={{ borderWidth: 2, borderRadius: 100, padding: 10, marginTop: 5, borderColor: '#F7F8F8' }}>
-                    <View style={{ height: 80, width: 80, backgroundColor: 'red', borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}>
-                        <TouchableOpacity onPress={onhandleLap}>
-                            <Image source={start ? require('../../../Assets/Image/pause.png') : require('../../../Assets/Image/Play.png')} style={{ height: 40, width: 40, tintColor: COLOR.white }} />
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
+                <ScrollView>
+                    <View style={{ padding: 20, paddingHorizontal: 30 }}>
+                        <NavigateHeader top={30} color={COLOR.black} title={'Timer'} onPress={() => props.navigation.goBack()} />
+                    </View>
+                    <ImageBackground source={require('../../../Assets/Image/timerborder.png')} resizeMode='contain' style={{ height: 135, width: 135, alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={{ borderWidth: 2, borderRadius: 100, padding: 10, marginTop: 5, borderColor: '#F7F8F8' }}>
+                            <View style={{ height: 80, width: 80, backgroundColor: 'red', borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}>
+                                <TouchableOpacity onPress={onhandleLap}>
+                                    <Image source={start ? require('../../../Assets/Image/pause.png') : require('../../../Assets/Image/Play.png')} style={{ height: 40, width: 40, tintColor: COLOR.white }} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </ImageBackground>
+                    <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: '700', marginTop: -10 }}>{newTime}</Text>
+                    <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: '500', marginTop: 15, marginBottom: 10 }}>{start ? 'Stop Time' : 'Start Time'}</Text>
+                    <Stopwatch
+                        getTime={res => setTime(res)}
+                        laps
+                        start={start}
+                        options={options}
+                        totalDuration={totalDuration}
+                        reset={clear}
+                    />
+                    <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
+                    {show ?
+                        <MonthPicker
+                            onChange={onValueChange}
+                            value={date}
+                            maximumDate={new Date()}
+
+                        />
+                        //  <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
+                        //     <FlatList renderItem={({ item }) => (
+                        //         <TouchableOpacity style={{ padding: 8, backgroundColor: COLOR.verylightgray, marginTop: 10 }} onPress={() => { setSelectedMonth(item), setShow(false) }}>
+                        //             <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: '600' }}>{item}</Text>
+                        //         </TouchableOpacity>
+                        //     )} data={months} style={{}} />
+                        // </View>
+                        :
+                        <FlatList renderItem={list} data={WorkHourData} style={{ paddingHorizontal: 30 }} />}
+                    <ScrollView>
+                        <WorkNoteModal Close={() => { setShowWorkModal(false) }} title={isUpdate ? 'Update Summary' : 'Add Summary'} visible={showWorkModal} buttonTitle={isUpdate ? 'Update' : 'Save'}
+                            onPress={() => {
+                                if (isUpdate) {
+                                    EditWorkHours()
+                                    setShowWorkModal(false);
+
+                                } else {
+                                    setShowWorkModal(false);
+                                    setClear(true);
+                                    AddWorkHours();
+                                    setLoading(true);
+                                }
+                            }}
+                            startTime={startTimeDate} EndTime={endTimeDate} summary={summary} onChangeText={(res) => setSummary(res)} />
+                    </ScrollView>
+
+                    <Loader visible={loading} />
+
+                </ScrollView>
+                <View style={{ marginBottom: isFocused ? 5 : 25, }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, margin: 10, }}>
+                        <TouchableOpacity onPress={() => setVisibleUser(true)} style={{ height: 42, width: 42, backgroundColor: COLOR.green, alignItems: 'center', justifyContent: 'center', borderRadius: 50, marginRight: 5 }}>
+                            <Text style={{ fontSize: 25, fontWeight: '500', color: COLOR.white, }}>+</Text>
                         </TouchableOpacity>
+                        <FlatList style={{ flex: 1 }} horizontal data={filteredUserData} renderItem={({ item, index }) => {
+                            return (
+                                <View>
+                                    <Image source={{ uri: index > 3 ? '' : item.profile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0 }} />
+                                </View>
+                            )
+                        }} />
+                    </View>
+                    <ChatInputToolBar hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
+                        onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendEmail}
+                    />
+                </View>
+            </KeyboardAvoidingView>
+            <Modal visible={visibleUser} >
+                <View style={{ flex: 1, backgroundColor: COLOR.black, }}>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisibleUser(false)} />
+                    </View>
+                    <View style={{ marginTop: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
+                        <FlatList style={{ paddingHorizontal: 20, padding: 10, marginBottom: 70 }} data={selectedUser} renderItem={(({ item }) => {
+                            // console.log(item);
+                            const userName = item?.first_name + ' ' + item.last_name
+                            return (
+                                <View>
+                                    <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => toggleItem(item?.id)}>
+                                            <Image
+                                                source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
+                                                style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            )
+                        })} />
+                        <View style={{ position: 'absolute', bottom: 20, left: 20, right: 20, }}>
+                            <Button color={COLOR.white} bgColor={COLOR.green} title={'Select'} onPress={() => setVisibleUser(false)} />
+                        </View>
                     </View>
                 </View>
-            </ImageBackground>
-            <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: '700', marginTop: -10 }}>{newTime}</Text>
-            <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: '500', marginTop: 15, marginBottom: 10 }}>{start ? 'Stop Time' : 'Start Time'}</Text>
-            <Stopwatch
-                getTime={res => setTime(res)}
-                laps
-                start={start}
-                options={options}
-                totalDuration={totalDuration}
-                reset={clear}
-            />
-            <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
-            {show ?
-                <MonthPicker
-                    onChange={onValueChange}
-                    value={date}
-                    maximumDate={new Date()}
+            </Modal>
 
-                />
-                //  <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
-                //     <FlatList renderItem={({ item }) => (
-                //         <TouchableOpacity style={{ padding: 8, backgroundColor: COLOR.verylightgray, marginTop: 10 }} onPress={() => { setSelectedMonth(item), setShow(false) }}>
-                //             <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: '600' }}>{item}</Text>
-                //         </TouchableOpacity>
-                //     )} data={months} style={{}} />
-                // </View>
-                :
-                <FlatList renderItem={list} data={WorkHourData} style={{ paddingHorizontal: 30 }} />}
-            <ScrollView>
-                <WorkNoteModal Close={() => { setShowWorkModal(false) }} title={isUpdate ? 'Update Summary' : 'Add Summary'} visible={showWorkModal} buttonTitle={isUpdate ? 'Update' : 'Save'}
-                    onPress={() => {
-                        if (isUpdate) {
-                            EditWorkHours()
-                            setShowWorkModal(false);
+        </View >
 
-                        } else {
-                            setShowWorkModal(false);
-                            setClear(true);
-                            AddWorkHours();
-                            setLoading(true);
-                        }
-                    }}
-                    startTime={startTimeDate} EndTime={endTimeDate} summary={summary} onChangeText={(res) => setSummary(res)} />
-            </ScrollView>
-
-            <Loader visible={loading} />
-        </View>
     );
 };
 export default WorkHours;

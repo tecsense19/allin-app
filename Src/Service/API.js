@@ -31,6 +31,7 @@ export const ACTIONS = {
     ADD_WORK_HOURS: BASE_PATH + '/add-work-hours',
     WORK_HOURS: BASE_PATH + '/work-hours',
     EDIT_WORK_HOURS_NOTE: BASE_PATH + '/edit-work-hours-summary',
+    SEND_WORK_HOUR_EMAIL: BASE_PATH + '/send-work-hours-email',
     NOTE_LIST: BASE_PATH + '/note',
     ADD_NOTE: BASE_PATH + '/add-note',
     EDIT_NOTE: BASE_PATH + '/edit-note',

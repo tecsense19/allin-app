@@ -500,6 +500,20 @@ export const Edit_Work_Hour_Summary = async (token, Id, summary) => {
     const response = await res.json()
     return response
 }
+export const Work_Hour_Send = async (token, Id, Month, EmailSummary) => {
+    console.log(token, Id, Month, EmailSummary,'================================================');
+    const res = await fetch(ACTIONS.SEND_WORK_HOUR_EMAIL, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, month: Month, summary: EmailSummary })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
 
 export const Add_Note = async (token, Title, Description) => {
 
@@ -584,3 +598,4 @@ export const Refresh_Token = async (token) => {
         throw error;
     }
 };
+
