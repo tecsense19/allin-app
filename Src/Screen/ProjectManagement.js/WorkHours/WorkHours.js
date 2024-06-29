@@ -286,7 +286,7 @@ const WorkHours = props => {
                             )
                         }} />
                     </View>
-                    <ChatInputToolBar hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
+                    <ChatInputToolBar  placeholder={'Email Summary To...'} hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
                         onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendEmail}
                     />
                 </View>

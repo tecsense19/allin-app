@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, TextInput, Image, } from 'react-native'
 import React from 'react'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-const ChatInputToolBar = ({ onPress, onsend, value, onFocus, onBlur, onChangeText, autoFocus, source }) => {
+const ChatInputToolBar = ({ onPress, onsend, value, onFocus, onBlur, onChangeText, autoFocus, source, placeholder }) => {
     return (
         <View
             style={{
@@ -47,7 +47,7 @@ const ChatInputToolBar = ({ onPress, onsend, value, onFocus, onBlur, onChangeTex
                         paddingLeft: 10,
                         color: COLOR.black, paddingRight: 10
                     }}
-                    placeholder="Message Type Here"
+                    placeholder={placeholder}
                 />
             </View>
             <TouchableOpacity
