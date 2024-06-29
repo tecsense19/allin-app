@@ -38,6 +38,7 @@ export const ACTIONS = {
     EDIT_NOTE: BASE_PATH + '/edit-note',
     DELETE_NOTE: BASE_PATH + '/delete-note',
     DELETE_ACCOUNT: BASE_PATH + '/deleted-user-account',
+    TASK_USERS_LIST: BASE_PATH + '/task-users-list',
 
 
 

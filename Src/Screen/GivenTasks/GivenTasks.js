@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StatusBar, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
 import TimeZone from 'react-native-timezone';
 import { getToken } from '../../Service/AsyncStorage';
-import { Forword_Messages, User_List } from '../../Service/actions';
+import { Forword_Messages, Task_User_List, User_List } from '../../Service/actions';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
 import Button from '../../Custom/Button/Button';
@@ -23,7 +23,7 @@ const GivenTasks = (props) => {
     const [isFocused, setIsFocused] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
 
-console.log(props.route.param);
+    console.log(props.route.param);
     useEffect(() => {
         getuser();
         // setMessageID(props.route.params)
@@ -44,9 +44,9 @@ console.log(props.route.param);
     const getuser = async () => {
         const Token = await getToken();
         setToken(Token);
-        const bodydata = { timezone: TimeZone.getTimeZone(), search: search };
 
-        await User_List(bodydata, Token)
+
+        await Task_User_List(Token, 'Given')
             .then((res) => {
                 if (res.status_code == 200) {
                     setAllUserData(res?.data?.userList);
@@ -71,7 +71,7 @@ console.log(props.route.param);
         }
     };
     const list = ({ item }) => {
-        const userName = item?.first_name + ' ' + item.last_name;
+        const userName = item.name
 
         return (
             <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 15, marginTop: 5 }}>

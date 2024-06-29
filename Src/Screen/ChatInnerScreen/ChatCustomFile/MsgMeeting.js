@@ -32,7 +32,7 @@ export const MsgMeeting = ({ data, onPress, MYID, }) => {
                 <Text style={styles.Heading}>Description: <Text style={styles.HeadingContent}>{data?.messageDetails.description?.length > 60 ? data?.messageDetails.description.slice(0, 60) + '....' : data?.messageDetails.description}</Text></Text>
                 <Text style={styles.Heading}>Meeting Date: <Text style={styles.HeadingContent}>{data.messageDetails.date}</Text></Text>
                 <Text style={styles.Heading}>Meeting Time: < Text style={styles.HeadingContent}>{data.messageDetails.start_time}</Text></Text>
-                <Text style={styles.Heading}>Location: < Text style={styles.HeadingContent}>{'India'}</Text></Text>
+                <Text style={styles.Heading}>Location: < Text style={styles.HeadingContent}>{data.messageDetails.location ? data.messageDetails.location : 'Empty'}</Text></Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                     <View style={{
                         width: data.messageDetails.users?.length <= 2 ? 60 : 75,
@@ -40,7 +40,7 @@ export const MsgMeeting = ({ data, onPress, MYID, }) => {
                     }}>
                         <FlatList data={Member} renderItem={list} horizontal bounces={false}
                             style={{}} />
-                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, }}>{Member?.length >= 3? '+' + (Member?.length - 3):""}</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, }}>{Member?.length >= 3 ? '+' + (Member?.length - 3) : ""}</Text>
                     </View>
                 </View>
                 <Text style={styles.time}>{data.time}</Text>
