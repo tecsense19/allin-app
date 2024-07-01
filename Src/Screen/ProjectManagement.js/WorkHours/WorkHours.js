@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ImageBackground, Image, FlatList, Modal, TextInput, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, Image, FlatList, KeyboardAvoidingView, TextInput, ScrollView, Alert, Modal } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
@@ -11,8 +11,10 @@ import TimeZone from 'react-native-timezone'
 import { getToken } from '../../../Service/AsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
 import ChatInputToolBar from '../../ChatInnerScreen/ChatCustomFile/ChatInputToolBar';
-import timezone from 'react-native-timezone'
 import Button from '../../../Custom/Button/Button';
+import Timezone from 'react-native-timezone'
+
+
 
 const WorkHours = props => {
     const [start, setStart] = useState(false);
@@ -39,10 +41,6 @@ const WorkHours = props => {
     const [selectedItems, setSelectedItems] = useState([]);
 
 
-
-
-
-    // const token = props?.route?.params
     const monthIndex = date.getMonth();
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const month = months[monthIndex] + '-' + date.getFullYear();
@@ -126,6 +124,7 @@ const WorkHours = props => {
     useEffect(() => {
         GetWorkHours()
         get()
+        getuser()
 
     }, [clear, apiMonthyear,])
     // console.log(apiMonthyear);
@@ -165,20 +164,13 @@ const WorkHours = props => {
         },
         [date, showPicker],
     );
-    const hanaleUserList = async (Token) => {
-        const timeZone = timezone.getTimeZone()
-        await User_List(timeZone, Token)
-            .then((res) => {
-                setUserList(res.data.userList);
-            })
-            .catch((e) => { });
-    }
     const SendEmail = () => {
         Work_Hour_Send(token, EmailIds, apiMonthyear, EmailSummary)
             .then((res) => {
                 if (res.statuscode === 200) {
                     setEmailSummary('')
                     selectedItems('')
+                    console.log(res, 'wefrgthrgefertyjhtrererterwytey');
                 }
             })
             .catch((e) => { })
@@ -194,14 +186,33 @@ const WorkHours = props => {
             setSelectedItems([...selectedItems, itemId]);
         }
     };
+    const getuser = async () => {
+        const Token = await getToken();
+        if (Token) {
+            setToken(Token);
 
+            const bodydata = { timezone: Timezone.getTimeZone(), };
+
+            try {
+                const res = await User_List(bodydata, Token);
+                if (res.status_code === 200) {
+                    setUserList(res.data.userList);
+                    setLoading(false);
+                } else {
+                    console.log('User_List API returned error:', res);
+                }
+            } catch (error) {
+                console.log('User_List API error:', error);
+
+            }
+        }
+    };
     return (
         <View
             style={{
                 backgroundColor: COLOR.white,
                 flex: 1,
             }}>
-
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
                 <ScrollView>
                     <View style={{ padding: 20, paddingHorizontal: 30 }}>
@@ -275,11 +286,9 @@ const WorkHours = props => {
                                 </View>
                             )
                         }} />
-
                     </View>
-
-                    <ChatInputToolBar hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
-                        onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendEmail} onPress={() => setVisible(true)}
+                    <ChatInputToolBar placeholder={'Email Summary To...'} hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
+                        onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendEmail}
                     />
                 </View>
             </KeyboardAvoidingView>
@@ -299,7 +308,6 @@ const WorkHours = props => {
                                             <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
                                             <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                         </View>
-
                                         <TouchableOpacity onPress={() => toggleItem(item?.id)}>
                                             <Image
                                                 source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}

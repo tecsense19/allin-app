@@ -7,7 +7,8 @@ const ChatHeader = ({
     onInvite,
     title,
     tintColor,
-    onCall
+    onCall,
+    value
 
 }) => {
     return (
@@ -21,12 +22,12 @@ const ChatHeader = ({
                     />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={onCall}>
+                {value ? '' : <TouchableOpacity onPress={onCall}>
                     <Image
                         style={[styles.headerIcon, { tintColor: COLOR.green, height: 18, }]}
                         source={require('../../Assets/Image/telephone.png')}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity>}
                 <TouchableOpacity onPress={onInvite}>
                     <Image
                         style={[styles.headerIcon, { tintColor: tintColor }]}

@@ -41,6 +41,7 @@ export const User_List = async (timeZone, Token) => {
 // };
 
 export const User_Logout = async (device_token, token) => {
+    console.log(device_token);
     const res = await fetch(ACTIONS.LOGOUT, {
         method: "POST",
         headers: {
@@ -386,7 +387,9 @@ export const Meeting_Messages = async (token, taskData) => {
     const remindId = taskData?.remind
     var stringArray = remindId?.map(String);
     var id = stringArray?.join(',');
-
+    console.log(taskData.latitude);
+    console.log(taskData.longitude);
+    console.log(taskData.address);
     const res = await fetch(ACTIONS.MESSAGE_MEETING, {
         method: "POST",
         headers: {
@@ -401,7 +404,11 @@ export const Meeting_Messages = async (token, taskData) => {
             date: taskData.meetingdate,
             start_time: taskData.meetingtime,
             end_time: taskData.meetingtime,
-            meeting_url: ''
+            meeting_url: '',
+            latitude: taskData.latitude,
+            longitude: taskData.longitude,
+            location: taskData.address,
+            location_url: `https://www.google.com/maps?q=${taskData?.latitude},${taskData?.longitude}`
         })
     })
     const response = await res.json()
@@ -500,6 +507,20 @@ export const Edit_Work_Hour_Summary = async (token, Id, summary) => {
     const response = await res.json()
     return response
 }
+export const Work_Hour_Send = async (token, Id, Month, EmailSummary) => {
+    console.log(token, Id, Month, EmailSummary, '================================================');
+    const res = await fetch(ACTIONS.SEND_WORK_HOUR_EMAIL, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, month: Month, summary: EmailSummary })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
 
 export const Add_Note = async (token, Title, Description) => {
 
@@ -566,6 +587,19 @@ export const Delete_Account = async (token,) => {
     return response
 }
 
+export const Task_User_List = async (token, Type) => {
+    const res = await fetch(ACTIONS.TASK_USERS_LIST, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ type: Type }),
+    })
+    const response = await res.json()
+    return response
+}
+
 export const Refresh_Token = async (token) => {
     try {
         const response = await fetch(ACTIONS.REFRESH_TOKEN, {
@@ -584,6 +618,7 @@ export const Refresh_Token = async (token) => {
         throw error;
     }
 };
+
 
 export const Work_Hour_Send = async (token, Id, Month, EmailSummary) => {
     const res = await fetch(ACTIONS.SEND_WORK_HOUR_EMAIL, {

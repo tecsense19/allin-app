@@ -217,7 +217,7 @@ const TaskChatScreen = (props) => {
                     </ScrollView>
                 </View>
                 <View style={{ paddingBottom: isFocused ? 5 : 25, backgroundColor: 'white' }}>
-                    <ChatInputToolBar source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
+                    <ChatInputToolBar placeholder={'Message Here...'} source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
                         onFocus={() => setIsFocused(true)} value={inputText} onsend={handleSend} onPress={() => setVisible(true)}
                     />
                 </View>

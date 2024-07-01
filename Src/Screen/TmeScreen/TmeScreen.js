@@ -1,5 +1,3 @@
-
-
 import {
     View,
     Text,
@@ -223,6 +221,8 @@ const TmeScreen = () => {
             />
 
         </View>
+
+
     );
 };
 

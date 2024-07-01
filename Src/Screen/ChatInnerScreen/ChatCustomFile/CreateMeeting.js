@@ -17,11 +17,11 @@ import Button from '../../../Custom/Button/Button';
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import Timezone from 'react-native-timezone'
 import { User_List } from '../../../Service/actions';
+import MapView, { Marker } from 'react-native-maps';
 
 
 const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const [title, setTitle] = useState('');
-    const [search, setSearch] = useState('');
     const [descriptions, setDescription] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [open, setOpen] = useState(false);
@@ -32,6 +32,12 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const [UserData, setUserData] = useState();
     const [selectedItems, setSelectedItems] = useState([userId]);
     const [myID, setMyId] = useState('');
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const [selectedPlace, setSelectedPlace] = useState(null);
+
+    const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
+    const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo';
 
     const year = date.getUTCFullYear();
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Add 1 to the month and pad with zero
@@ -50,9 +56,14 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const period = hours < 12 ? 'AM' : 'PM';
     const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
 
-    console.log(meetingtime);
+    console.log(selectedPlace);
     const handleSubmit = () => {
-        const data = { type: 'Meeting', meetingtitle: title, meetingdescription: descriptions, meetingdate: meetingdate, meetingtime: meetingtime, remind: selectedItems }
+        const data = {
+            type: 'Meeting', meetingtitle: title,
+            meetingdescription: descriptions, meetingdate: meetingdate,
+            meetingtime: meetingtime, remind: selectedItems, latitude: selectedPlace?.lat,
+            longitude: selectedPlace?.lng, address: selectedPlace?.address
+        }
         if (title == '' || descriptions == '') {
             Alert.alert('Please Enter title and description');
         }
@@ -66,12 +77,8 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
         }
     };
     const filteredUserData = UserData?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
-    const selectedUser = UserData?.filter(user => {
+    const selectedUser = UserData?.filter(user => { return user?.id })// by defualt selected user not show
 
-        return user?.id
-
-    })// by defualt selected user not show
-    console.log(userId);
     const list = ({ item, index }) => {
         return (
             <View>
@@ -105,6 +112,60 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
         getuser()
 
     }, [myID])
+    const fetchSuggestions = async (input) => {
+        try {
+            const response = await fetch(
+                `${PLACES_API_BASE_URL}/autocomplete/json?input=${input}&key=${apiKey}&types=geocode`
+            );
+            const json = await response.json();
+            setSuggestions(json.predictions);
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            setSuggestions([]);
+        }
+    };
+    const handleSelectSuggestion = async (place) => {
+        try {
+            const response = await fetch(
+                `${PLACES_API_BASE_URL}/details/json?placeid=${place.place_id}&key=${apiKey}`
+            );
+            const json = await response.json();
+            const placeDetails = json.result;
+
+            const country = placeDetails.address_components.find(
+                (component) => component.types.includes('country')
+            )?.long_name;
+            const state = placeDetails.address_components.find(
+                (component) => component.types.includes('administrative_area_level_1')
+            )?.long_name;
+            const city = placeDetails.address_components.find(
+                (component) => component.types.includes('locality')
+            )?.long_name;
+            const pincode = placeDetails.address_components.find(
+                (component) => component.types.includes('postal_code')
+            )?.long_name;
+            const address = placeDetails.formatted_address;
+            const { lat, lng } = placeDetails.geometry.location;
+
+            setSelectedPlace({
+                id: placeDetails.place_id,
+                description: placeDetails.formatted_address,
+                country: country || '',
+                state: state || '',
+                city: city || '',
+                pincode: pincode || '',
+                address: address || '',
+                lat: lat,
+                lng: lng,
+            });
+
+            setQuery(place.description);
+            setSuggestions([]);
+        } catch (error) {
+            console.error('Error fetching place details:', error);
+            setSelectedPlace(null);
+        }
+    };
     return (
         <ScrollView
             bounces={false}
@@ -139,7 +200,6 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-
                 placeholder="Enter Description..."
                 multiline
                 value={descriptions}
@@ -164,7 +224,6 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     textAlign: 'left', fontSize: 14, width: '90%',
                 }}>{'Descriptions Minimum 50 Characters Are Require'}</Text>
             </View>}
-
             <View
                 style={{
                     flexDirection: 'row',
@@ -179,10 +238,12 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-
                 placeholder="write a location"
-                onChangeText={res => setSearch(res)}
-                value={search}
+                value={query}
+                onChangeText={(text) => {
+                    setQuery(text);
+                    fetchSuggestions(text);
+                }}
                 placeholderTextColor={COLOR.placeholder}
                 style={{
                     backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 1, width: 1 },
@@ -194,13 +255,36 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     color: COLOR.textcolor, marginTop: 25
                 }}
             />
-            <View style={{
-                alignItems: 'center', justifyContent: 'center',
-                height: 150, width: '100%', marginTop: 20,
-                backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 1, width: 1 },
-            }}>
-                <Text style={{ fontSize: 18 }}>Map</Text>
-            </View>
+            {suggestions.length > 0 && (
+                <FlatList
+                    style={{ width: '100%', maxHeight: 300 }}
+                    data={suggestions}
+                    keyExtractor={(item) => item.place_id}
+                    renderItem={({ item }) => (
+                        <Text style={{ paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: '#ccc' }} onPress={() => handleSelectSuggestion(item)}>
+                            {item.description}
+                        </Text>
+                    )}
+                />
+            )}
+            {!selectedPlace ?
+                <MapView
+                    scrollEnabled={false}
+                    zoomEnabled={false}
+                    showsUserLocation={true}
+                    // followsUserLocation={true}
+                    style={{ height: '30%', width: '100%', borderRadius: 10, marginTop: 5 }}
+                    initialRegion={{
+                        latitude: selectedPlace?.lat,
+                        longitude: selectedPlace?.lng,
+                        latitudeDelta: 0.02,
+                        longitudeDelta: 0.02
+                    }}>
+                    <Marker coordinate={{ latitude: selectedPlace?.lat, longitude: selectedPlace?.lng }} >
+                        <Image style={{ height: 25, width: 25, tintColor: 'darkred' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
+                    </Marker>
+                </MapView>
+                : ''}
             {filteredUserData ? <View style={{
                 width: filteredUserData?.length < 2 ? 80
                     : filteredUserData?.length < 3 ? 110
@@ -307,3 +391,126 @@ const Title = ({ title }) => {
 
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState } from 'react';
+// import { View, TextInput, FlatList, Text } from 'react-native';
+
+// const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
+
+// const App = () => {
+//   const [query, setQuery] = useState('');
+//   const [suggestions, setSuggestions] = useState([]);
+//   const [selectedPlace, setSelectedPlace] = useState(null);
+
+//   const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo'; // Replace with your Google Places API key
+
+//   const fetchSuggestions = async (input) => {
+//     try {
+//       const response = await fetch(
+//         `${PLACES_API_BASE_URL}/autocomplete/json?input=${input}&key=${apiKey}&types=geocode`
+//       );
+//       const json = await response.json();
+//       setSuggestions(json.predictions);
+//     } catch (error) {
+//       console.error('Error fetching suggestions:', error);
+//       setSuggestions([]);
+//     }
+//   };
+
+//   const handleSelectSuggestion = async (place) => {
+//     try {
+//       const response = await fetch(
+//         `${PLACES_API_BASE_URL}/details/json?placeid=${place.place_id}&key=${apiKey}`
+//       );
+//       const json = await response.json();
+//       const placeDetails = json.result;
+
+//       const country = placeDetails.address_components.find(
+//         (component) => component.types.includes('country')
+//       )?.long_name;
+//       const state = placeDetails.address_components.find(
+//         (component) => component.types.includes('administrative_area_level_1')
+//       )?.long_name;
+//       const city = placeDetails.address_components.find(
+//         (component) => component.types.includes('locality')
+//       )?.long_name;
+//       const pincode = placeDetails.address_components.find(
+//         (component) => component.types.includes('postal_code')
+//       )?.long_name;
+//       const address = placeDetails.formatted_address;
+//       const { lat, lng } = placeDetails.geometry.location;
+
+//       setSelectedPlace({
+//         id: placeDetails.place_id,
+//         description: placeDetails.formatted_address,
+//         country: country || '',
+//         state: state || '',
+//         city: city || '',
+//         pincode: pincode || '',
+//         address: address || '',
+//         lat: lat,
+//         lng: lng,
+//       });
+
+//       setQuery(place.description);
+//       setSuggestions([]);
+//     } catch (error) {
+//       console.error('Error fetching place details:', error);
+//       setSelectedPlace(null);
+//     }
+//   };
+
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+//       <TextInput
+//         placeholder="Search for a location..."
+//         value={query}
+//         onChangeText={(text) => {
+//           setQuery(text);
+//           fetchSuggestions(text);
+//         }}
+//         style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 10, width: '100%' }}
+//       />
+//       {suggestions.length > 0 && (
+//         <FlatList
+//           style={{ width: '100%', maxHeight: 200 }}
+//           data={suggestions}
+//           keyExtractor={(item) => item.place_id}
+//           renderItem={({ item }) => (
+//             <Text style={{ paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: '#ccc' }} onPress={() => handleSelectSuggestion(item)}>
+//               {item.description}
+//             </Text>
+//           )}
+//         />
+//       )}
+//       {selectedPlace && (
+//         <View style={{ marginTop: 20, width: '100%' }}>
+//           <Text style={{ fontWeight: 'bold' }}>{selectedPlace.description}</Text>
+//           <Text>Country: {selectedPlace.country}</Text>
+//           <Text>State: {selectedPlace.state}</Text>
+//           <Text>City: {selectedPlace.city}</Text>
+//           <Text>Pincode: {selectedPlace.pincode}</Text>
+//           <Text>Address: {selectedPlace.address}</Text>
+//           <Text>Latitude: {selectedPlace.lat}</Text>
+//           <Text>Longitude: {selectedPlace.lng}</Text>
+//         </View>
+//       )}
+//     </View>
+//   );
+// };
+
+// export default App;
+
