@@ -4,6 +4,7 @@ import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 export const MsgMeeting = ({ data, onPress, MYID, }) => {
 
     const Member = data.messageDetails.users
+    console.log(data.messageDetails);
     const list = ({ item, index }) => {
         return (
             <View>
@@ -36,7 +37,7 @@ export const MsgMeeting = ({ data, onPress, MYID, }) => {
                 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                     <View style={{
                         width: data.messageDetails.users?.length <= 2 ? 60 : 75,
-                        alignSelf: 'center', flexDirection: 'row', alignItems: 'center', position: 'absolute', right: data.messageDetails.users?.length <= 2 ? -20 : 0, bottom: 30
+                        alignSelf: 'center', flexDirection: 'row', alignItems: 'center', position: 'absolute', right: data.messageDetails.users?.length <= 2 ? -20 : 0, bottom: 35
                     }}>
                         <FlatList data={Member} renderItem={list} horizontal bounces={false}
                             style={{}} />

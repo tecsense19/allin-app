@@ -79,6 +79,7 @@ const MyTopTabs = props => {
         //     setVisible(false);
         // } catch (e) { }
     };
+  
     return (
         <View style={{ flex: 1 }}>
             <StatusBar
@@ -202,8 +203,7 @@ const MyTopTabs = props => {
                     name="alltasks"
                     component={AllTasks}
                     // initialParams={{ searchText: search }}
-
-                    key={4}
+                    key={4} 
                     options={{
                         tabBarLabel: ({ focused }) => (
                             <Text

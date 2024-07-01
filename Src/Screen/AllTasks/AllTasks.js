@@ -3,10 +3,10 @@
 
 // 
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StatusBar, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
+import { View, Text, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
 import TimeZone from 'react-native-timezone';
 import { getToken } from '../../Service/AsyncStorage';
-import { Forword_Messages, Task_User_List, User_List } from '../../Service/actions';
+import { Forword_Messages, Task_Summarize_Send, Task_User_List, User_List } from '../../Service/actions';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
 import Button from '../../Custom/Button/Button';
@@ -95,6 +95,29 @@ const AllTasks = (props) => {
         );
     };
 
+    const SendSummarizeEmail = async () => {
+        setLoading(true)
+        await Task_Summarize_Send(token, 'All Task', AllUserIDs, EmailSummary)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    // setSelectedItems()
+                    setLoading(false)
+                } else {
+                    setLoading(false)
+                    Alert.alert(res?.message.summary[0])
+                    setLoading(false)
+                }
+            }).catch(err => {
+                console.log(err=="[SyntaxError: JSON Parse error: Unrecognized token ' < ']");
+                setLoading(false)
+                // SendSummarizeEmail()
+                // if (err == "[SyntaxError: JSON Parse error: Unrecognized token ' < ']") {
+                //     SendSummarizeEmail()
+                // }
+
+            })
+
+    }
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
@@ -108,13 +131,13 @@ const AllTasks = (props) => {
                     <FlatList style={{ flex: 1 }} horizontal data={filteredUserData} renderItem={({ item, index }) => {
                         return (
                             <View>
-                                <Image source={{ uri: index > 3 ? '' : item.profile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0 }} />
+                                <Image source={{ uri: index > 3 ? '' : item.profile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0, margin: 2 }} />
                             </View>
                         )
                     }} />
                 </View>}
-                <ChatInputToolBar placeholder={'Email Summary To...'}  hidePlus={true} source={require('../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
-                    onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={'SendEmail'}
+                <ChatInputToolBar placeholder={'Email Summary To...'} hidePlus={true} source={require('../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
+                    onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendSummarizeEmail}
                 />
             </View>
             <Loader visible={loading} />

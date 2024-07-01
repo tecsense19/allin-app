@@ -17,7 +17,7 @@ import Button from '../../../Custom/Button/Button';
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import Timezone from 'react-native-timezone'
 import { User_List } from '../../../Service/actions';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Circle, Marker } from 'react-native-maps';
 
 
 const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
@@ -35,6 +35,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState(null);
+    const [MapState, setMapState] = useState('');
 
     const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
     const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo';
@@ -56,7 +57,9 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const period = hours < 12 ? 'AM' : 'PM';
     const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
 
-    console.log(selectedPlace);
+    console.log(MapState);
+    // console.log(suggestions);
+
     const handleSubmit = () => {
         const data = {
             type: 'Meeting', meetingtitle: title,
@@ -112,6 +115,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
         getuser()
 
     }, [myID])
+
     const fetchSuggestions = async (input) => {
         try {
             const response = await fetch(
@@ -166,6 +170,21 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             setSelectedPlace(null);
         }
     };
+    // const handleMapPress = async (event) => {
+    //     const { coordinate } = event.nativeEvent;
+    //     setSelectedCoordinate(coordinate);
+
+    //     try {
+    //         const response = await fetch(
+    //             `${PLACES_API_BASE_URL}/autocomplete/json?input=${coordinate.latitude},${coordinate.longitude}&key=${apiKey}&types=geocode`
+    //         );
+    //         const json = await response.json();
+    //         setPlacePredictions(json.predictions);
+    //     } catch (error) {
+    //         console.error('Error fetching place predictions:', error);
+    //         setPlacePredictions([]);
+    //     }
+    // };
     return (
         <ScrollView
             bounces={false}
@@ -267,24 +286,32 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     )}
                 />
             )}
-            {!selectedPlace ?
+            {suggestions && (
                 <MapView
-                    scrollEnabled={false}
-                    zoomEnabled={false}
-                    showsUserLocation={true}
-                    // followsUserLocation={true}
-                    style={{ height: '30%', width: '100%', borderRadius: 10, marginTop: 5 }}
-                    initialRegion={{
-                        latitude: selectedPlace?.lat,
-                        longitude: selectedPlace?.lng,
+                    style={{ height: 250, width: '100%', borderRadius: 10, marginTop: 10 }}
+                    followsUserLocation={true}
+                    mapType="satellite"
+                    // showsUserLocation={true}
+                    // onPress={handleMapPress}
+                    region={{
+                        latitude: selectedPlace.lat,
+                        longitude: selectedPlace.lng,
                         latitudeDelta: 0.02,
                         longitudeDelta: 0.02
-                    }}>
-                    <Marker coordinate={{ latitude: selectedPlace?.lat, longitude: selectedPlace?.lng }} >
-                        <Image style={{ height: 25, width: 25, tintColor: 'darkred' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
+                    }}
+
+                >
+                    <Marker coordinate={{ latitude: selectedPlace.lat, longitude: selectedPlace.lng }}>
+                        <Image style={{ height: 25, width: 25, tintColor: 'red' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
                     </Marker>
+                    <Circle
+                        center={{ latitude: selectedPlace.lat, longitude: selectedPlace.lng }}
+                        radius={1000} // 1 km in meters
+                        strokeColor={'rgba(1, 214, 201, 1)'} // Blue color with transparency
+                        fillColor={'rgba(0, 239, 255, 0.1)'} // Blue color with transparency
+                    />
                 </MapView>
-                : ''}
+            )}
             {filteredUserData ? <View style={{
                 width: filteredUserData?.length < 2 ? 80
                     : filteredUserData?.length < 3 ? 110
@@ -386,7 +413,6 @@ const PickerButton = ({ title, onPress }) => {
 }
 const Title = ({ title }) => {
     return (
-
         <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.titlecolor, marginTop: 20 }}>{title}</Text>
 
     )
