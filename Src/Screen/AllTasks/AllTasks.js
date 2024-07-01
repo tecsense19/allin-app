@@ -30,7 +30,7 @@ const AllTasks = (props) => {
         setMessageID(props.route.params)
     }, [token]);
     const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.id));
-    console.log(filteredUserData); //show selected user by defualt one user for chat
+    // console.log(filteredUserData); //show selected user by defualt one user for chat
     const AllUserIDs = selectedUserIds.join(',');
     // console.log(AllUserIDs);
     // console.log(selectedItems);

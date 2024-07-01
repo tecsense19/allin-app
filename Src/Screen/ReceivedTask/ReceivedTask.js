@@ -14,20 +14,20 @@ const ReceivedTask = (props) => {
     const [allUserData, setAllUserData] = useState([]);
     const [search, setSearch] = useState('');
     const [token, setToken] = useState('');
-    // const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [selectedUserIds, setSelectedUserIds] = useState([]); // State to keep track of selected user IDs
     // const [messageid, setMessageID] = useState(''); // State to keep track of selected user IDs
     const [EmailSummary, setEmailSummary] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
 
-    console.log(props);
+    // console.log(props);
     useEffect(() => {
         getuser();
         // setMessageID(props.route.params)
     }, [token]);
     const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.id));
-    console.log(filteredUserData); //show selected user by defualt one user for chat
+    // console.log(filteredUserData); //show selected user by defualt one user for chat
     const AllUserIDs = selectedUserIds.join(',');
     // console.log(AllUserIDs);
     // console.log(selectedItems);

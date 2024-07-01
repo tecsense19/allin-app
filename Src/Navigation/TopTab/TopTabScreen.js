@@ -19,6 +19,11 @@ import ChatHeader from '../../Screen/ChatUserLIst/ChatHeader';
 import ReceivedTask from '../../Screen/ReceivedTask/ReceivedTask';
 import GivenTasks from '../../Screen/GivenTasks/GivenTasks';
 import AllTasks from '../../Screen/AllTasks/AllTasks';
+import { User_Logout } from '../../Service/actions';
+import { getToken } from '../../Service/AsyncStorage';
+import messaging from '@react-native-firebase/messaging';
+import Loader from '../../Custom/Loader/loader';
+import { load } from 'react-native-track-player/lib/src/trackPlayer';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -26,6 +31,7 @@ const MyTopTabs = props => {
     const [visible, setVisible] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(false);
 
 
     const closeModal = () => {
@@ -52,12 +58,26 @@ const MyTopTabs = props => {
                 { text: 'YES', onPress: () => onLogOut(), style: 'destructive' },
             ],
         );
+
     const onLogOut = async () => {
-        try {
+        setLoading(true)
+        setVisible(false);
+        const D_token = await messaging().getToken();
+        const Token = await getToken()
+        const d_token = { device_token: D_token }
+        const data = await User_Logout(d_token, Token)
+        if (data?.status_code == 200) {
+            onLogOut(), 
             await AsyncStorage.clear();
-            props.navigation.navigate('splase1');
-            setVisible(false);
-        } catch (e) { }
+            setLoading(false)
+            props.navigation.navigate('splase');
+        }
+        else { Alert.alert(data?.message, 'weds'), setLoading(false) }
+        // try {
+        //     await AsyncStorage.clear();
+        //     props.navigation.navigate('splase1');
+        //     setVisible(false);
+        // } catch (e) { }
     };
     return (
         <View style={{ flex: 1 }}>
@@ -71,7 +91,7 @@ const MyTopTabs = props => {
                     onRequestClose={closeModal}
                     visible={visible}
                     setting={() => {
-                        props.navigation.navigate('myprofile'), setVisible(false);
+                        props.navigation.navigate('setting'), setVisible(false);
                     }}
                     QR={() => {
                         Alert.alert('Website QR'), setVisible(false);
@@ -203,7 +223,7 @@ const MyTopTabs = props => {
                     onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={'SendEmail'}
                 />
             </View> */}
-
+            <Loader visible={loading} />
         </View>
     );
 };

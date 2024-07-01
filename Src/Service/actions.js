@@ -41,6 +41,7 @@ export const User_List = async (timeZone, Token, Search) => {
 // };
 
 export const User_Logout = async (device_token, token) => {
+    console.log(device_token);
     const res = await fetch(ACTIONS.LOGOUT, {
         method: "POST",
         headers: {
