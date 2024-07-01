@@ -94,7 +94,9 @@ const AllTasks = (props) => {
             </View>
         );
     };
-
+    const SendSummarizeEmail = async () => {
+        await Task_Summarize_Send(token, 'All Task', AllUserIDs, EmailSummary)
+    }
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
@@ -113,8 +115,8 @@ const AllTasks = (props) => {
                         )
                     }} />
                 </View>}
-                <ChatInputToolBar placeholder={'Email Summary To...'}  hidePlus={true} source={require('../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
-                    onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={'SendEmail'}
+                <ChatInputToolBar placeholder={'Email Summary To...'} hidePlus={true} source={require('../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
+                    onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendSummarizeEmail}
                 />
             </View>
             <Loader visible={loading} />

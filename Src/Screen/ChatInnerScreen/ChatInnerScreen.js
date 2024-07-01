@@ -65,7 +65,7 @@ const ChatInnerScreen = props => {
             getAllMessages()
         }
     };
-    console.log('aaaaaaa');
+    // console.log('aaaaaaa');
 
     const Userid = props?.route?.params
     // console.log(Userid);

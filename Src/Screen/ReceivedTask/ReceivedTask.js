@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StatusBar, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
 import TimeZone from 'react-native-timezone';
 import { getToken } from '../../Service/AsyncStorage';
-import { Forword_Messages, Task_User_List, User_List } from '../../Service/actions';
+import { Forword_Messages, Task_Summarize_Send, Task_User_List, User_List } from '../../Service/actions';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
 import Button from '../../Custom/Button/Button';
@@ -27,18 +27,8 @@ const ReceivedTask = (props) => {
         // setMessageID(props.route.params)
     }, [token]);
     const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.id));
-    // console.log(filteredUserData); //show selected user by defualt one user for chat
     const AllUserIDs = selectedUserIds.join(',');
-    // console.log(AllUserIDs);
-    // console.log(selectedItems);
-
-    // const toggleItem = (itemId) => {
-    //     if (selectedItems.includes(itemId)) {
-    //         setSelectedItems(selectedItems.filter((id) => id !== itemId));
-    //     } else {
-    //         setSelectedItems([...selectedItems, itemId]);
-    //     }
-    // };
+    console.log(AllUserIDs);
     const getuser = async () => {
         const Token = await getToken();
         setToken(Token);
@@ -90,7 +80,15 @@ const ReceivedTask = (props) => {
             </View>
         );
     };
-
+    const SendSummarizeEmail = async () => {
+        await Task_Summarize_Send(token, 'Receive', AllUserIDs, EmailSummary)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    setSelectedItems(null)
+                }
+            })
+    }
+    
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
@@ -110,7 +108,7 @@ const ReceivedTask = (props) => {
                     }} />
                 </View>}
                 <ChatInputToolBar placeholder={'Email Summary To...'} hidePlus={true} source={require('../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
-                    onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={'SendEmail'}
+                    onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendSummarizeEmail}
                 />
             </View>
             {/* <Loader visible={loading} /> */}

@@ -599,7 +599,20 @@ export const Task_User_List = async (token, Type) => {
     const response = await res.json()
     return response
 }
-
+export const Task_Summarize_Send = async (token, Type, User_id, Summary) => {
+   
+    const res = await fetch(ACTIONS.TASK_SUMMARIZE_SEND, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ type: Type, user_id: User_id, summary: Summary })
+    })
+    const response = await res.json()
+    console.log(response);
+    return response
+}
 export const Refresh_Token = async (token) => {
     try {
         const response = await fetch(ACTIONS.REFRESH_TOKEN, {

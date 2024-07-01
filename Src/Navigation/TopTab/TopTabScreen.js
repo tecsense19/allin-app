@@ -79,6 +79,7 @@ const MyTopTabs = props => {
         //     setVisible(false);
         // } catch (e) { }
     };
+  
     return (
         <View style={{ flex: 1 }}>
             <StatusBar
