@@ -15,3 +15,4 @@ const App = () => {
 }
 export default App
 
+// [SyntaxError: JSON Parse error: Unrecognized token '<'] 
