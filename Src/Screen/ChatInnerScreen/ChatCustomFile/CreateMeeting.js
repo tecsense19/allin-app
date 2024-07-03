@@ -286,7 +286,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     )}
                 />
             )}
-            {suggestions && (
+            {selectedPlace && (
                 <MapView
                     style={{ height: 250, width: '100%', borderRadius: 10, marginTop: 10 }}
                     followsUserLocation={true}
@@ -294,19 +294,19 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     // showsUserLocation={true}
                     // onPress={handleMapPress}
                     region={{
-                        latitude: selectedPlace.lat,
-                        longitude: selectedPlace.lng,
-                        latitudeDelta: 0.02,
-                        longitudeDelta: 0.02
+                        latitude: selectedPlace?.lat,
+                        longitude: selectedPlace?.lng,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01
                     }}
 
                 >
-                    <Marker coordinate={{ latitude: selectedPlace.lat, longitude: selectedPlace.lng }}>
+                    <Marker coordinate={{ latitude: selectedPlace?.lat, longitude: selectedPlace?.lng }}>
                         <Image style={{ height: 25, width: 25, tintColor: 'red' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
                     </Marker>
                     <Circle
-                        center={{ latitude: selectedPlace.lat, longitude: selectedPlace.lng }}
-                        radius={1000} // 1 km in meters
+                        center={{ latitude: selectedPlace?.lat, longitude: selectedPlace?.lng }}
+                        radius={200} // 1 km in meters
                         strokeColor={'rgba(1, 214, 201, 1)'} // Blue color with transparency
                         fillColor={'rgba(0, 239, 255, 0.1)'} // Blue color with transparency
                     />
