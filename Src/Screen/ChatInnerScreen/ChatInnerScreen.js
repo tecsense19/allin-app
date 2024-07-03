@@ -1010,7 +1010,7 @@ const ChatInnerScreen = props => {
                         <View style={{ marginBottom: isFocused ? 5 : 25 }}>
                             {FileUplode ? <Image style={{ height: 150, width: 200, marginBottom: 5, borderRadius: 5, marginLeft: 30, position: 'absolute', bottom: 50, }} source={{ uri: FileUplode[0]?.uri }} /> : ''
                             }
-                            <ChatInputToolBar source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
+                            <ChatInputToolBar placeholder={'Message Here...'} source={require('../../Assets/Image/send.png')} onChangeText={text => { setInputText(text) }} onBlur={() => setIsFocused(false)}
                                 onFocus={() => setIsFocused(true)} value={inputText} onsend={handleSend} onPress={() => setVisible(true)}
                             />
                         </View>
