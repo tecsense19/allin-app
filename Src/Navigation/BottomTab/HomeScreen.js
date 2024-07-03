@@ -13,9 +13,8 @@ const Tab = createBottomTabNavigator();
 const HomeScreen = () => {
     return (
         <View style={{ flex: 1 }}>
-
             <Tab.Navigator
-                initialRouteName="projectmanagement"
+                initialRouteName={"projectmanagement"}
                 tabBar={props => <MyTabBar {...props} />}
                 screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
                 <Tab.Screen name="feed" component={FeedScreen} />

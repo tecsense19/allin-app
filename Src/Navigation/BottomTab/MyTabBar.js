@@ -5,26 +5,37 @@ import {
     Image,
     StyleSheet,
     BackHandler,
+    Alert,
   } from 'react-native';
   import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFalse } from '../../Service/Redux/Actions';
   
 const offTabColor=COLOR.verylightgray
-  const MyTabBar = props => {
+  const MyTabBar = ({navigation}) => {
     const [active, setActive] = useState(3);
+    const isTrue = useSelector((state) => state.boolean.isTrue)
+    const dispatch = useDispatch();
+    
     const closeModal = () => {
       setActive(1);
     };
-  
     useEffect(() => {
       const backHandler = BackHandler.addEventListener(
         'hardwareBackPress',
         closeModal,
       );
-  
       return () => backHandler.remove();
     }, [active]);
-  
+    useEffect(()=>{
+      if(isTrue){
+        setActive(2)
+      }
+    })
+    const handleSetTrue = () => {
+      dispatch(setFalse());
+  };
     return (
       <View style={styles.conatiner}>
         <TouchableOpacity
@@ -32,8 +43,10 @@ const offTabColor=COLOR.verylightgray
           style={[styles.onTextPress, { backgroundColor: offTabColor },]}
   
           onPress={() => {
-            props.navigation.navigate('feed');
+           navigation.navigate('feed');
             setActive(1);
+            handleSetTrue()
+
           }}>
           <Image source={require('../../Assets/Image/bottomfeed.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 1 ? COLOR.green : COLOR.black }} />
           <Text style={[styles.txt, { color: active == 1 ? COLOR.green : COLOR.black }]}>Feed</Text>
@@ -43,8 +56,9 @@ const offTabColor=COLOR.verylightgray
           style={[styles.onTextPress, { backgroundColor:offTabColor, },]}
   
           onPress={() => {
-            props.navigation.navigate('tme');
+           navigation.navigate('tme');
             setActive(2);
+
           }}>
           <Image source={require('../../Assets/Image/bottomtme.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 2 ? COLOR.green : COLOR.black }} />
   
@@ -55,8 +69,10 @@ const offTabColor=COLOR.verylightgray
           style={[styles.onTextPress, { backgroundColor: COLOR.green,height:40,width:40 },]}
   
           onPress={() => {
-            props.navigation.navigate('projectmanagement');
+         navigation.navigate('projectmanagement');
             setActive(3);
+            handleSetTrue()
+
           }}>
           <Image
             source={require('../../Assets/Image/bottomicon.png')}
@@ -68,9 +84,11 @@ const offTabColor=COLOR.verylightgray
           style={[styles.onTextPress, { backgroundColor:offTabColor},]}
   
           onPress={() => {
-            props.navigation.navigate('chats');
+           navigation.navigate('chats');
   
             setActive(4);
+            handleSetTrue()
+
           }}>
           <Image source={require('../../Assets/Image/bottomchat.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 4 ? COLOR.green : COLOR.black }} />
   
@@ -80,8 +98,10 @@ const offTabColor=COLOR.verylightgray
           disabled={active !== 5 ? false : true}
           style={[styles.onTextPress, { backgroundColor: offTabColor},]}
           onPress={() => {
-            props.navigation.navigate('board');
+        navigation.navigate('board');
             setActive(5);
+            handleSetTrue()
+
           }}>
           <Image source={require('../../Assets/Image/bottomboard.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 5 ? COLOR.green : COLOR.black }} />
   

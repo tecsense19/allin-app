@@ -26,6 +26,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Clear_Chat, Delete_Chat_User, User_List, User_Logout } from '../../Service/actions';
 import Loader from '../../Custom/Loader/loader';
 import { getToken } from '../../Service/AsyncStorage';
+import { useDispatch } from 'react-redux';
+import { setTrue } from '../../Service/Redux/Actions';
 
 const ChatUserListScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -40,7 +42,10 @@ const ChatUserListScreen = props => {
     const closeModal = () => { setVisible(false); };
 
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
-
+    const dispatch = useDispatch();
+    const handleSetTrue = () => {
+        dispatch(setTrue());
+    };
     const handleSwipeableOpen = id => {
         if (
             openItemId !== null &&
@@ -293,7 +298,7 @@ const ChatUserListScreen = props => {
                     </View>}
             </View>
             <View style={styles.detailsview}>
-                <TouchableOpacity onPress={() => { props.navigation.navigate('tme') }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => { props.navigation.navigate('tme'), handleSetTrue() }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
                     <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 55, width: 55 }} />
                     <Text style={{ fontSize: 18, fontWeight: '600', color: COLOR.black, marginLeft: 10 }}>T.me</Text>
 
