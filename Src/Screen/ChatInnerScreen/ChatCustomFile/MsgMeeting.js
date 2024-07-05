@@ -4,7 +4,7 @@ import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 export const MsgMeeting = ({ data, onPress, MYID, }) => {
 
     const Member = data.messageDetails.users
-    console.log(data.messageDetails);
+    // console.log(data.messageDetails);
     const list = ({ item, index }) => {
         return (
             <View>

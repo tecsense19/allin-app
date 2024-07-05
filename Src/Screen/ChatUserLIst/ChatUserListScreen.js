@@ -42,7 +42,7 @@ const ChatUserListScreen = props => {
     const closeModal = () => { setVisible(false); };
 
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
     const handleSetTrue = () => {
         dispatch(setTrue());
     };
@@ -72,7 +72,7 @@ const ChatUserListScreen = props => {
                 { text: 'Delete', onPress: () => { DeleteUser(id) }, style: 'destructive' },
             ],)
     }
-    const list = ({ item }) => {
+    const list = ({ item, index }) => {
         const getTime = () => {
             const time = new Date(item?.last_message_date);
             const now = new Date();
@@ -100,7 +100,7 @@ const ChatUserListScreen = props => {
                     return `${time.toDateString().split(" ")[2]} ${time.toDateString().split(" ")[1]} ${time.toDateString().split(" ")[3]}`;
                 }
             } else {
-                return `${time.toDateString().split(" ")[2]} ${time.toDateString().split(" ")[1]}`;
+                return `${time.toDateString().split(" ")[2]} ${time.toDateString().split(" ")[1]} ${time.toDateString().split(" ")[3]}`;
             }
         };
         const userName = item?.first_name + ' ' + item.last_name
@@ -137,6 +137,11 @@ const ChatUserListScreen = props => {
         // console.log(item.id);
         return (
             <GestureHandlerRootView>
+                {index == 0 ? <TouchableOpacity onPress={() => { props.navigation.navigate('tme'), handleSetTrue() }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
+                    <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 55, width: 55 }} />
+                    <Text style={{ fontSize: 18, fontWeight: '600', color: COLOR.black, marginLeft: 10 }}>T.me</Text>
+
+                </TouchableOpacity> : ''}
                 <Swipeable
                     renderLeftActions={() => null}
                     renderRightActions={swipeRightSide}
@@ -280,7 +285,6 @@ const ChatUserListScreen = props => {
                     onClose={() => setVisible(false)}
                     setting={() => { props.navigation.navigate('setting'); setVisible(false); }}
                     onPress={() => { props.navigation.navigate('summarize'), setVisible(false) }}
-                // props.navigation.navigate('summarize'), setVisible(false);
                 />
                 {!showSearch ? <ChatHeader
                     onCall={() => { props.navigation.navigate('call', allUserData), setShowSearch(false) }}
@@ -298,11 +302,7 @@ const ChatUserListScreen = props => {
                     </View>}
             </View>
             <View style={styles.detailsview}>
-                <TouchableOpacity onPress={() => { props.navigation.navigate('tme'), handleSetTrue() }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 55, width: 55 }} />
-                    <Text style={{ fontSize: 18, fontWeight: '600', color: COLOR.black, marginLeft: 10 }}>T.me</Text>
 
-                </TouchableOpacity>
                 <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
             </View>
             <Loader visible={loading} />

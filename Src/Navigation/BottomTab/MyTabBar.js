@@ -41,12 +41,10 @@ const offTabColor=COLOR.verylightgray
         <TouchableOpacity
           disabled={active !== 1 ? false : true}
           style={[styles.onTextPress, { backgroundColor: offTabColor },]}
-  
           onPress={() => {
            navigation.navigate('feed');
             setActive(1);
             handleSetTrue()
-
           }}>
           <Image source={require('../../Assets/Image/bottomfeed.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 1 ? COLOR.green : COLOR.black }} />
           <Text style={[styles.txt, { color: active == 1 ? COLOR.green : COLOR.black }]}>Feed</Text>
@@ -54,25 +52,20 @@ const offTabColor=COLOR.verylightgray
         <TouchableOpacity
           disabled={active !== 2 ? false : true}
           style={[styles.onTextPress, { backgroundColor:offTabColor, },]}
-  
           onPress={() => {
            navigation.navigate('tme');
             setActive(2);
-
           }}>
           <Image source={require('../../Assets/Image/bottomtme.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 2 ? COLOR.green : COLOR.black }} />
-  
           <Text style={[styles.txt, { color: active == 2 ? COLOR.green : COLOR.black }]}>T.me</Text>
         </TouchableOpacity>
         <TouchableOpacity
           disabled={active !== 3 ? false : true}
           style={[styles.onTextPress, { backgroundColor: COLOR.green,height:40,width:40 },]}
-  
           onPress={() => {
          navigation.navigate('projectmanagement');
             setActive(3);
             handleSetTrue()
-
           }}>
           <Image
             source={require('../../Assets/Image/bottomicon.png')}
@@ -82,16 +75,12 @@ const offTabColor=COLOR.verylightgray
         <TouchableOpacity
           disabled={active !== 4 ? false : true}
           style={[styles.onTextPress, { backgroundColor:offTabColor},]}
-  
           onPress={() => {
            navigation.navigate('chats');
-  
             setActive(4);
             handleSetTrue()
-
           }}>
           <Image source={require('../../Assets/Image/bottomchat.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 4 ? COLOR.green : COLOR.black }} />
-  
           <Text style={[styles.txt, { color: active == 4 ? COLOR.green : COLOR.black }]}>Chat</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -101,10 +90,8 @@ const offTabColor=COLOR.verylightgray
         navigation.navigate('board');
             setActive(5);
             handleSetTrue()
-
           }}>
           <Image source={require('../../Assets/Image/bottomboard.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 5 ? COLOR.green : COLOR.black }} />
-  
           <Text style={[styles.txt, { color: active == 5 ? COLOR.green : COLOR.black }]}>Board</Text>
         </TouchableOpacity>
       </View>

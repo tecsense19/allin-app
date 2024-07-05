@@ -1025,6 +1025,8 @@ PODS:
     - React-Core
   - react-native-month-year-picker (1.9.0):
     - React
+  - react-native-netinfo (11.3.2):
+    - React-Core
   - react-native-pager-view (6.3.3):
     - DoubleConversion
     - glog
@@ -1411,6 +1413,7 @@ DEPENDENCIES:
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-month-year-picker (from `../node_modules/react-native-month-year-picker`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-timezone (from `../node_modules/react-native-timezone`)
@@ -1541,6 +1544,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-month-year-picker:
     :path: "../node_modules/react-native-month-year-picker"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
@@ -1665,6 +1670,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: 669454edae94399b11e49c840e4da14482302293
   react-native-maps: 7b2c2cee95271592a92ba485eea1dec66a363a6e
   react-native-month-year-picker: 948797e981ca502427024a34b17f545eb321bbff
+  react-native-netinfo: 076df4f9b07f6670acf4ce9a75aac8d34c2e2ccc
   react-native-pager-view: 37dba0d65cedf1710809c482ce7c03d6658afe0b
   react-native-safe-area-context: dcab599c527c2d7de2d76507a523d20a0b83823d
   react-native-timezone: f5c56af58c43b6979a7e802a71565acdd1f36069

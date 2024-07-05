@@ -67,8 +67,8 @@ const MyTopTabs = props => {
         const d_token = { device_token: D_token }
         const data = await User_Logout(d_token, Token)
         if (data?.status_code == 200) {
-            onLogOut(), 
-            await AsyncStorage.clear();
+            onLogOut(),
+                await AsyncStorage.clear();
             setLoading(false)
             props.navigation.navigate('splase');
         }
@@ -79,7 +79,7 @@ const MyTopTabs = props => {
         //     setVisible(false);
         // } catch (e) { }
     };
-  
+
     return (
         <View style={{ flex: 1 }}>
             <StatusBar
@@ -88,6 +88,7 @@ const MyTopTabs = props => {
                 hidden={false}
             />
             <View style={{ backgroundColor: COLOR.black }}>
+
                 <MenuModal
                     onRequestClose={closeModal}
                     visible={visible}
@@ -129,6 +130,9 @@ const MyTopTabs = props => {
                         title={'Summerize'}
                         onSearch={() => setShowSearch(true)}
                         value={true}
+                        onBack={() => { props.navigation.goBack() }}
+                        hide={true}
+
                     />
                 )}
             </View>
@@ -203,7 +207,7 @@ const MyTopTabs = props => {
                     name="alltasks"
                     component={AllTasks}
                     // initialParams={{ searchText: search }}
-                    key={4} 
+                    key={4}
                     options={{
                         tabBarLabel: ({ focused }) => (
                             <Text
