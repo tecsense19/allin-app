@@ -1,6 +1,0 @@
-framework module RNMLKitTextRecognition {
-  umbrella header "RNMLKitTextRecognition-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -16,7 +16,6 @@
     "@react-native-community/netinfo": "^11.3.2",
     "@react-native-firebase/app": "^20.0.0",
     "@react-native-firebase/messaging": "^20.0.0",
-    "@react-native-ml-kit/text-recognition": "^1.5.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/material-top-tabs": "^6.6.13",
     "@react-navigation/native": "^6.1.17",

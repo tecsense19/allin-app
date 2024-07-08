@@ -178,9 +178,9 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Button from '../../Custom/Button/Button';
 import MyAlert from '../../Custom/Alert/PermissionAlert';
-import TextRecognition, {
-    TextRecognitionScript,
-} from '@react-native-ml-kit/text-recognition';
+// import TextRecognition, {
+//     TextRecognitionScript,
+// } from '@react-native-ml-kit/text-recognition';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import RNFS from 'react-native-fs';
