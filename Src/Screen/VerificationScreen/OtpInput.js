@@ -5,7 +5,7 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 
 const OtpInput = forwardRef(({ onChengeText }, ref) => {
     const otpInput = useRef(null);
-
+    
     useImperativeHandle(ref, () => ({
         clearOtp() {
             if (otpInput.current) {
@@ -13,7 +13,6 @@ const OtpInput = forwardRef(({ onChengeText }, ref) => {
             }
         }
     }));
-
     return (
         <View>
             <OTPTextInput

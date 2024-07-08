@@ -387,9 +387,9 @@ export const Meeting_Messages = async (token, taskData) => {
     const remindId = taskData?.remind
     var stringArray = remindId?.map(String);
     var id = stringArray?.join(',');
-    console.log(taskData.latitude);
-    console.log(taskData.longitude);
-    console.log(taskData.address);
+    // console.log(taskData.latitude);
+    // console.log(taskData.longitude);
+    // console.log(taskData.address);
     const res = await fetch(ACTIONS.MESSAGE_MEETING, {
         method: "POST",
         headers: {
@@ -412,7 +412,7 @@ export const Meeting_Messages = async (token, taskData) => {
         })
     })
     const response = await res.json()
-    console.log(response);
+    // console.log(response);
     return response
 }
 
@@ -421,7 +421,7 @@ export const Reminder_Messages = async (token, taskData) => {
     var stringArray = remindId?.map(String);
     var id = stringArray?.join(',');
     const a = { title: taskData.remindtitle, description: taskData.reminddescriptions, date: taskData.remindtime, time: taskData.apiTime, date: taskData.apiDate, users: id }
-    console.log(a);
+    // console.log(a);
     const res = await fetch(ACTIONS.MESSAGE_REMINDER, {
         method: "POST",
         headers: {
@@ -445,7 +445,7 @@ export const Location_Messages = async (token, data, id) => {
         body: JSON.stringify({ message_type: 'Location', receiver_id: id, latitude: data.latitude, longitude: data.longitude, location_url: `https://www.google.com/maps?q=${data?.latitude},${data.longitude}` })
     })
     const response = await res.json()
-    console.log(response);
+    // console.log(response);
     return response
 }
 
@@ -462,7 +462,7 @@ export const Contact_Message = async (token, data, id) => {
         body: formData
     })
     const response = await res.json()
-    console.log(response);
+    // console.log(response);
     return response
 }
 
@@ -476,7 +476,7 @@ export const Add_Work_Hour = async (token, Start, End, Summary, timeZone) => {
         body: JSON.stringify({ start_date_time: Start, end_date_time: End, summary: Summary, timezone: timeZone })
     })
     const response = await res.json()
-    console.log(response);
+    // console.log(response);
     return response
 }
 
@@ -600,7 +600,7 @@ export const Task_User_List = async (token, Type) => {
     return response
 }
 export const Task_Summarize_Send = async (token, Type, User_id, Summary) => {
-   
+
     const res = await fetch(ACTIONS.TASK_SUMMARIZE_SEND, {
         method: "POST",
         headers: {
@@ -610,7 +610,7 @@ export const Task_Summarize_Send = async (token, Type, User_id, Summary) => {
         body: JSON.stringify({ type: Type, user_id: User_id, summary: Summary })
     })
     const response = await res.json()
-    console.log(response);
+    // console.log(response);
     return response
 }
 export const Refresh_Token = async (token) => {
