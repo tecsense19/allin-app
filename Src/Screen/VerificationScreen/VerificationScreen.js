@@ -32,7 +32,7 @@ const VerificationScreen = props => {
         const responseData = await User_Registration(data, otp, deviceToken)
         if (responseData?.data?.token) {
             await AsyncStorage.setItem('myData', JSON.stringify(responseData));
-            // await AsyncStorage.setItem('token', JSON.stringify(responseData?.data?.token));
+            await AsyncStorage.setItem('token', JSON.stringify(responseData?.data?.token));
             setVisible(false);
             await props.navigation.reset({
                 routes: [{ name: 'home' }],
@@ -48,7 +48,7 @@ const VerificationScreen = props => {
             .then(async res => {
                 if (res.status_code == 200) {
                     await AsyncStorage.setItem('myData', JSON.stringify(res));
-                    // await AsyncStorage.setItem('token', JSON.stringify(res?.data?.token));
+                    await AsyncStorage.setItem('token', JSON.stringify(res?.data?.token));
 
                     await props.navigation.reset({ routes: [{ name: 'home' }], });
                     setVisible(false)
