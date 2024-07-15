@@ -2,9 +2,12 @@
 
 const initialState = {
     isTrue: false,
+    isExpire: false,
+
 };
 
-const booleanReducer = (state = initialState, action) => {
+
+export const booleanReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'SET_TRUE':
             return {
@@ -21,4 +24,20 @@ const booleanReducer = (state = initialState, action) => {
     }
 };
 
-export default booleanReducer;
+export const TokenRefreshState = (state = initialState, action) => {
+
+    switch (action.type) {
+        case 'EXPIRE_TOKEN':
+            return {
+                ...state,
+                isExpire: true,
+            };
+
+        default:
+            return state;
+
+    }
+
+}
+
+// export default { booleanReducer, TokenRefreshState };
