@@ -615,6 +615,20 @@ export const Task_Summarize_Send = async (token, Type, User_id, Summary) => {
     // console.log(response);
     return response
 }
+export const Events_Create_Update = async (token,) => {
+
+    const res = await fetch(ACTIONS.EVENTS_CREATE_UPDATE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({})
+    })
+    const response = await res.json()
+    // console.log(response);
+    return response
+}
 export const Refresh_Token = async (token) => {
     console.log(token, '=>>>>>');
     try {
