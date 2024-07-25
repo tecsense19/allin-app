@@ -72,7 +72,7 @@ const CreateAccount = props => {
     };
     const sendOtp = async () => {
         setLoding(true)
-        const dataa = { country_code: countryCode, mobile: phone, type: 'Register', first_name: fname, last_name: lname, device_token: deviceToken,profile:img,cover_image: bgimg, }
+        const dataa = { country_code: countryCode, mobile: phone, type: 'Register', first_name: fname, last_name: lname, device_token: deviceToken, profile: img, cover_image: bgimg, }
         await Send_Otp(dataa)
             .then(res => {
                 if (res?.status_code == 200) {

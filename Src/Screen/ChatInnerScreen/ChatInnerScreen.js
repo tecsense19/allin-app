@@ -219,7 +219,6 @@ const ChatInnerScreen = props => {
         if (data?.status_code == 200) {
             const fileName = data.data.image_name
             const fileType = data.data.file_type
-            // console.log(fileType,'typr');
             Chat_File_Message(msgType, fileName, Userid, token, fileType)
         } else {
             Alert.alert(data?.message);
