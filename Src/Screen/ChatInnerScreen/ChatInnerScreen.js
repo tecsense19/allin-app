@@ -215,7 +215,7 @@ const ChatInnerScreen = props => {
             formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: FileUplode[0]?.type });
         }
 
-        const data = await File_Uplode(token, formData, Userid, msgType)
+        const data = await File_Uplode(token, formData)
         if (data?.status_code == 200) {
             const fileName = data.data.image_name
             const fileType = data.data.file_type

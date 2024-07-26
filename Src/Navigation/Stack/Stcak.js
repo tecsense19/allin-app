@@ -20,6 +20,7 @@ import ForwordScreen from '../../Screen/ForwordScreen/ForwordScreen';
 import ScanDocScreen from '../../Screen/ScanDocScreen/ScanDocScreen';
 import MyTopTabs from '../TopTab/TopTabScreen';
 import CreateEvent from '../../Screen/CreateEvent/CreateEvent';
+import Files from '../../Screen/Files/Files';
 
 
 const Stack = createNativeStackNavigator();
@@ -48,6 +49,7 @@ const StackScreen = () => {
                 <Stack.Screen name="scandoc" component={ScanDocScreen} />
                 <Stack.Screen name="summarize" component={MyTopTabs} />
                 <Stack.Screen name="event" component={CreateEvent} />
+                <Stack.Screen name="files" component={Files} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
 
 
