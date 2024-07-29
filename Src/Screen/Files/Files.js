@@ -17,6 +17,7 @@ import DocumentPicker from 'react-native-document-picker';
 import { Chat_File_Message, File_Uplode, User_List } from '../../Service/actions';
 import { getToken } from '../../Service/AsyncStorage';
 import Timezone from 'react-native-timezone'
+import Loader from '../../Custom/Loader/loader';
 
 const Files = (props) => {
     const [FileUpload, setFileUpload] = useState('')
@@ -24,6 +25,7 @@ const Files = (props) => {
     const [UserData, setUserData] = useState();
     const [selectedItems, setSelectedItems] = useState([]);
     const [myID, setMyId] = useState('');
+    const [loding, setLoading] = useState(false);
 
 
 
@@ -73,6 +75,14 @@ const Files = (props) => {
         }
     };
     const File_Message = async () => {
+        if (!FileUpload) {
+            return Alert.alert('please select file')
+
+        }
+        if (!selectedItems.length > 0) {
+            return Alert.alert('please select user')
+        }
+
         const token = await getToken()
         const formData = new FormData();
         const AttachmentUri = FileUpload[0]?.uri;
@@ -81,14 +91,22 @@ const Files = (props) => {
             formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: FileUpload[0]?.type });
         }
 
+        setLoading(true)
         const data = await File_Uplode(token, formData)
+
         if (data?.status_code == 200) {
             const fileName = data.data.image_name
             const fileType = data.data.file_type
             Chat_File_Message('Attachment', fileName, id, token, fileType)
+            setLoading(false)
             Alert.alert(data?.message);
+            setFileUpload('')
+
+
         } else {
             Alert.alert(data?.message);
+            setLoading(false)
+
         }
     }
     const pickDocument = async () => {
@@ -108,7 +126,9 @@ const Files = (props) => {
             });
             setFileUpload(result)
         }
-        catch (err) { console.log(err, 'file'); }
+        catch (err) {
+            // console.log(err, 'file');
+        }
     };
 
     return (
@@ -129,14 +149,15 @@ const Files = (props) => {
                         : <Image source={{ uri: "https://cdn1.iconfinder.com/data/icons/general-ui-outlined-thick/24/upload-1024.png" }} style={{ height: '20%', width: '20%' }} />}
                 </TouchableOpacity>
 
-                <View style={{ alignSelf: 'center', marginTop: 50 }}>
+                <View style={{ alignSelf: 'center', marginVertical: 30, }}>
                     <PickerButton title={'Remind'} onPress={() => setVisible(true)} />
                 </View>
-                {filteredUserData ? <View style={{
+                {filteredUserData?.length >= 1 ? <View style={{
+                    // backgroundColor: 'red',
                     width: filteredUserData?.length < 2 ? 80
                         : filteredUserData?.length < 3 ? 110
                             : filteredUserData?.length < 4 ? 140 : 170,
-                    alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginVertical: 30,
+                    alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginBottom: 20,
                 }}>
                     <FlatList data={filteredUserData} renderItem={list} horizontal bounces={false}
                         style={{}} />
@@ -151,8 +172,8 @@ const Files = (props) => {
                     <View style={{ paddingHorizontal: 20 }}>
                         <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
                     </View>
-                    <View style={{ marginTop: 10, paddingHorizontal: 20, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
-                        <FlatList data={selectedUser} renderItem={(({ item }) => {
+                    <View style={{ marginTop: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
+                        <FlatList data={selectedUser} style={{ paddingHorizontal: 20, padding: 10, }} renderItem={(({ item }) => {
 
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
@@ -177,6 +198,7 @@ const Files = (props) => {
                     </View>
                 </View>
             </Modal>
+            <Loader visible={loding} />
         </View>
     );
 };
