@@ -271,7 +271,6 @@ const ChatUserListScreen = props => {
 
 
     }
-
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />

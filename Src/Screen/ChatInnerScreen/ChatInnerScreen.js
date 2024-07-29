@@ -68,7 +68,6 @@ const ChatInnerScreen = props => {
         }
     };
     // console.log('aaaaaaa');
-
     const Userid = props?.route?.params
     // console.log(Userid);
     const userName = userDetails.first_name == undefined && userDetails.last_name == undefined ? '' : userDetails.first_name + ' ' + userDetails.last_name
@@ -78,7 +77,7 @@ const ChatInnerScreen = props => {
     // const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
     const scrollToBottom = () => {
         if (scrollViewRef.current) {
-            scrollViewRef.current.scrollToEnd({ animated: true });
+            scrollViewRef.current.scrollToEnd({ animated: false });
         }
     };
     useEffect(() => { scrollToBottom() }, [messages,]);
@@ -215,7 +214,7 @@ const ChatInnerScreen = props => {
             formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: FileUplode[0]?.type });
         }
 
-        const data = await File_Uplode(token, formData, Userid, msgType)
+        const data = await File_Uplode(token, formData)
         if (data?.status_code == 200) {
             const fileName = data.data.image_name
             const fileType = data.data.file_type
