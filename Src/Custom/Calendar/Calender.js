@@ -175,7 +175,7 @@ const CalendarView = () => {
             />
 
             <View style={styles.eventContainer}>
-                <View style={{ height: 70, width: 50, backgroundColor: COLOR.verylightgray, marginRight: 10, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ height: 70, width: 50, backgroundColor: COLOR.verylightgray, marginRight: 10, alignItems: 'center', justifyContent: 'center',borderRadius:5 }}>
                     <Text style={{ fontWeight: 'bold', fontSize: 20, }}>{selectedDate.split("-")[2]}</Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 14, marginTop: 5, color: COLOR.gray }}>{dayOfWeek.slice(0, 3)}</Text>
                 </View>
