@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
+import CalendarView from '../../Custom/Calendar/Calender';
 const BoardScreen = () => {
     const [today, setToday] = useState('Screen');
 
@@ -70,7 +71,7 @@ const BoardScreen = () => {
                     paddingTop: 5,
                     padding: 15,
                 }}>
-                <DropDown Month={'Today'} onPress={() => Alert.alert('today')} />
+                {/* <DropDown Month={'Today'} onPress={() => Alert.alert('today')} />
                 <FlatList
                     style={{
                         marginTop: 30,
@@ -81,7 +82,8 @@ const BoardScreen = () => {
                     data={data}
                     horizontal
                     bounces={false}
-                />
+                /> */}
+                <CalendarView />
 
             </View>
         </View>
