@@ -17,7 +17,7 @@ const HomeScreen = () => {
                 initialRouteName={"projectmanagement"}
                 tabBar={props => <MyTabBar {...props} />}
                 screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
-                <Tab.Screen name="feed" component={FeedScreen} />
+                {/* <Tab.Screen name="feed" component={FeedScreen} /> */}
                 <Tab.Screen name="tme" component={TmeScreen} />
                 <Tab.Screen name="projectmanagement" component={ProjectManagementScreen} />
                 <Tab.Screen name="chats" component={ChatUserListScreen} />

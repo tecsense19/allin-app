@@ -1,5 +1,7 @@
 import { Alert } from "react-native";
 import { ACTIONS } from "./API"
+import { useDispatch } from "react-redux";
+import { ExpireToken } from "./Redux/Actions";
 
 export const User_List = async (timeZone, Token) => {
     // console.log('request', token);
@@ -30,7 +32,7 @@ export const User_List = async (timeZone, Token) => {
 //         const response = await res.json();
 //         if (response.message == 'Token Expired' && response.status_code == 401) {
 //             Alert.alert('expire')
-//             const newToken = await refreshToken(token);
+//             dispetch(ExpireToken())
 //             return User_List(timeZone, newToken);
 //         }
 //         return response;
@@ -613,7 +615,22 @@ export const Task_Summarize_Send = async (token, Type, User_id, Summary) => {
     // console.log(response);
     return response
 }
+export const Events_Create_Update = async (token,) => {
+
+    const res = await fetch(ACTIONS.EVENTS_CREATE_UPDATE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({})
+    })
+    const response = await res.json()
+    // console.log(response);
+    return response
+}
 export const Refresh_Token = async (token) => {
+    console.log(token, '=>>>>>');
     try {
         const response = await fetch(ACTIONS.REFRESH_TOKEN, {
             method: 'POST',
@@ -623,12 +640,10 @@ export const Refresh_Token = async (token) => {
             },
         });
         const data = await response.json();
-        console.log(data, 'tokendata=========>>>>>>>');
         // await AsyncStorage.setItem('myData', JSON.stringify({ data: { token: newToken } }));
-        return newToken;
+        return data;
     } catch (error) {
         console.error('Error refreshing token:', error);
-        throw error;
     }
 };
 

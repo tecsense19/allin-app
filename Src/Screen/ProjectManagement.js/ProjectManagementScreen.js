@@ -67,7 +67,7 @@ const ProjectManagementScreen = props => {
         {
             id: 4,
             listname: 'Create Event',
-            navigation: 'createevent',
+            navigation: 'event',
             img: require('../../Assets/Image/event.png'),
         },
         {
