@@ -5,6 +5,7 @@ import { Calendar } from 'react-native-calendars';
 import RNCalendarEvents from 'react-native-calendar-events';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Button from '../Button/Button';
+import { openSettings } from 'react-native-permissions';
 
 const CalendarView = () => {
     const [selectedDate, setSelectedDate] = useState('');
@@ -110,8 +111,15 @@ const CalendarView = () => {
                 // Request calendar permissions
                 const permission = await RNCalendarEvents.requestPermissions();
                 if (permission !== 'authorized') {
-                    Alert.alert('Permission denied', 'You need to grant calendar access to see events.');
-                    setLoading(false);
+                    Alert.alert(
+                        'Calendar Permission',
+                        'You need to grant calendar access to see events.',
+                        [
+                            { text: 'Cancel', style: 'cancel', },
+                            { text: 'Grant Permission', onPress: () => { openSettings() }, },
+                        ],
+                    );
+
                     return;
                 }
 
@@ -168,7 +176,7 @@ const CalendarView = () => {
 
             <View style={styles.eventContainer}>
                 <View style={{ height: 70, width: 50, backgroundColor: COLOR.verylightgray, marginRight: 10, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20,}}>{selectedDate.split("-")[2]}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 20, }}>{selectedDate.split("-")[2]}</Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 14, marginTop: 5, color: COLOR.gray }}>{dayOfWeek.slice(0, 3)}</Text>
                 </View>
                 <FlatList
