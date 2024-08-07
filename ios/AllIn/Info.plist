@@ -31,6 +31,9 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+<string>Need access to your calendar to show events</string>
+
 	<key>NSCameraUsageDescription</key>
 	<string>needs access to your camera to enable features such as taking photos, scanning QR codes, and capturing moments</string>
 	<key>NSContactsUsageDescription</key>

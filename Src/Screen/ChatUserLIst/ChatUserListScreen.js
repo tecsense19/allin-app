@@ -137,7 +137,10 @@ const ChatUserListScreen = props => {
         // console.log(item.id);
         return (
             <GestureHandlerRootView>
-                {index == 0 ? <TouchableOpacity onPress={() => { props.navigation.navigate('tme'), handleSetTrue() }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
+                {index == 0 ? <TouchableOpacity onPress={() => {
+                    props.navigation.navigate('tme')
+                    // handleSetTrue()
+                }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
                     <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 55, width: 55 }} />
                     <Text style={{ fontSize: 18, fontWeight: '600', color: COLOR.black, marginLeft: 10 }}>T.me</Text>
 

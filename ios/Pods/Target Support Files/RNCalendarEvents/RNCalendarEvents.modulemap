@@ -1,0 +1,6 @@
+framework module RNCalendarEvents {
+  umbrella header "RNCalendarEvents-umbrella.h"
+
+  export *
+  module * { export * }
+}
