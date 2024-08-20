@@ -40,8 +40,7 @@ export const ACTIONS = {
     DELETE_ACCOUNT: BASE_PATH + '/deleted-user-account',
     TASK_USERS_LIST: BASE_PATH + '/task-users-list',
     TASK_SUMMARIZE_SEND: BASE_PATH + '/sent-task-summary-email',
-    EVENTS_CREATE_UPDATE: BASE_PATH + 'events-create-update'
-
+    EVENTS_CREATE_UPDATE: BASE_PATH + '/events-create-update'
 
 
 

@@ -8,13 +8,14 @@ import {
     Image,
     FlatList,
     Dimensions, Alert,
-    ImageBackground,
+    ImageBackground, ScrollView
 } from 'react-native';
 import React, { useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import CalendarView from '../../Custom/Calendar/Calender';
 const BoardScreen = () => {
     const [today, setToday] = useState('Screen');
+    const [isFocus, setIsFocus] = useState('Received');
 
     const HEIGHT = Dimensions.get('screen').height;
     const WIDTH = Dimensions.get('screen').width;
@@ -29,27 +30,8 @@ const BoardScreen = () => {
     const list = ({ item }) => {
         return (
             <TouchableOpacity
-                onPress={() => setToday(item.name)}
-                style={{
-                    marginHorizontal: 2,
-                    backgroundColor: today == item.name ? COLOR.green : COLOR.white,
-                    height: 70,
-                    marginTop: today == item.name ? 2 : 0,
-                    width: WIDTH / 4.6,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 10,
-                    shadowOffset: { height: today == item.name ? 5 : 0, width: 0 },
-                    shadowColor: 'gray', shadowOpacity: 0.3,
-                }}>
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: '600',
-                        color: COLOR.titlecolor,
-                    }}>
-                    {item.name}
-                </Text>
+            >
+
             </TouchableOpacity>
         );
     };
@@ -62,7 +44,7 @@ const BoardScreen = () => {
             <Text style={{ marginTop: 60, fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: COLOR.white }}>Board</Text>
             <StatusBar hidden={false} barStyle={'light-content'} />
 
-            <View
+            <ScrollView
                 style={{
                     flex: 1,
                     marginTop: 20,
@@ -71,21 +53,26 @@ const BoardScreen = () => {
                     paddingTop: 5,
                     padding: 15,
                 }}>
-                {/* <DropDown Month={'Today'} onPress={() => Alert.alert('today')} />
-                <FlatList
-                    style={{
-                        marginTop: 30,
-                        padding: 5
 
-                    }}
+                <CalendarView />
+                <DropDown Month={'Today'} onPress={() => Alert.alert('today')} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginTop: 20 }}>
+                    <TouchableOpacity style={{ margin: 10 }} onPress={() => setIsFocus('Received')}>
+                        <Text style={{ fontSize: 18, color: isFocus == 'Received' ? COLOR.black : COLOR.gray, fontWeight: 'bold', }}>Received</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ margin: 10 }} onPress={() => setIsFocus('Given')}>
+                        <Text style={{ fontSize: 18, color: isFocus == 'Given' ? COLOR.black : COLOR.gray, fontWeight: 'bold' }}>Given</Text>
+                    </TouchableOpacity>
+                </View>
+                <FlatList
+
                     renderItem={list}
                     data={data}
-                    horizontal
-                    bounces={false}
-                /> */}
-                <CalendarView />
 
-            </View>
+                    bounces={false}
+                />
+
+            </ScrollView>
         </View>
     );
 };
