@@ -615,18 +615,32 @@ export const Task_Summarize_Send = async (token, Type, User_id, Summary) => {
     // console.log(response);
     return response
 }
-export const Events_Create_Update = async (token,) => {
+export const Events_Create_Update = async (token, formData) => {
+    console.log(formData);
+
 
     const res = await fetch(ACTIONS.EVENTS_CREATE_UPDATE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData
+    })
+    const response = await res.json()
+    // console.log(response);
+    return response
+}
+export const Task_Done = async (token, id) => {
+    const res = await fetch(ACTIONS.TASK_DONE, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({ type: 'Receive', user_id: id, summary: 'done' })
     })
     const response = await res.json()
-    // console.log(response);
     return response
 }
 export const Refresh_Token = async (token) => {

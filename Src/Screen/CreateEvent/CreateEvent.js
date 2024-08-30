@@ -9,13 +9,17 @@ import {
     StyleSheet,
     KeyboardAvoidingView,
     Platform,
-    FlatList
+    FlatList,
+    Alert
 } from 'react-native';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import Button from '../../Custom/Button/Button';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import DatePicker from 'react-native-date-picker';
+import { Events_Create_Update } from '../../Service/actions';
+import { getToken } from '../../Service/AsyncStorage';
+import Loader from '../../Custom/Loader/loader';
 
 const CreateEvent = props => {
     const [visible, setVisible] = useState(false);
@@ -24,14 +28,12 @@ const CreateEvent = props => {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState(null);
-    const [MapState, setMapState] = useState('');
+    const [loading, setLoading] = useState(false);
     const [date, setDate] = useState(new Date());
     const [Time, setTime] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [opentime, setOpenTime] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
-
-
 
     const year = date.getUTCFullYear();
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Add 1 to the month and pad with zero
@@ -43,10 +45,11 @@ const CreateEvent = props => {
     const minutes = String(time.getMinutes()).padStart(2, '0');
     const seconds = String(time.getSeconds()).padStart(2, '0');
     const meetingtime = `${hours}:${minutes}:${seconds}`;
+
     const formattedHours = hours % 12 || 12;
     const period = hours < 12 ? 'AM' : 'PM';
-    const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
-    const meetingdate = year + '-' + month + '-' + day
+    const EventDesplayTime = formattedHours + ':' + minutes + ' ' + period
+    const Eventdate = year + '-' + month + '-' + day
     const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
     const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo';
 
@@ -104,6 +107,42 @@ const CreateEvent = props => {
             setSelectedPlace(null);
         }
     };
+    const handleCreateEvent = async () => {
+        setLoading(true)
+        const token = await getToken()
+        if (!title || !description || !Eventdate || !meetingtime || !selectedPlace) {
+            Alert.alert('required all fields')
+            setLoading(false)
+            return
+        }
+        const formData = new FormData();
+        formData.append('event_title', title);
+        formData.append('event_description', description);
+        formData.append('event_date', Eventdate);
+        formData.append('event_time', meetingtime);
+        formData.append('latitude', selectedPlace.lat);
+        formData.append('longitude', selectedPlace.lng);
+        formData.append('event_image', '');
+        formData.append('location_url', `https://www.google.com/maps?q=${selectedPlace?.lat},${selectedPlace.lng}`);
+        formData.append('location', selectedPlace?.address);
+        formData.append('users',);
+
+        Events_Create_Update(token, formData)
+            .then((res) => {
+                Alert.alert(res.message);
+                setLoading(false)
+                setTitle('')
+                setDescription('')
+                setSelectedPlace(null)
+
+            })
+            .catch((err) => {
+                setLoading(false)
+                console.log(err);
+            })
+
+
+    }
     return (
         <KeyboardAvoidingView
             style={{ flex: 1, backgroundColor: COLOR.black }}
@@ -291,8 +330,8 @@ const CreateEvent = props => {
                             justifyContent: 'center',
                             marginTop: 20,
                         }}>
-                        <PickerButton title={meetingdate} onPress={() => { setOpen(true) }} />
-                        <PickerButton title={meetingDesplayTime} onPress={() => { setOpenTime(true) }} />
+                        <PickerButton title={Eventdate} onPress={() => { setOpen(true) }} />
+                        <PickerButton title={EventDesplayTime} onPress={() => { setOpenTime(true) }} />
                     </View>
                     <Button
                         title={'submit'}
@@ -300,7 +339,9 @@ const CreateEvent = props => {
                         marginBottom={50}
                         bgColor={COLOR.green}
                         color={COLOR.white}
+                        onPress={() => handleCreateEvent()}
                     />
+                    <Loader visible={loading} />
                 </ScrollView>
             </View>
         </KeyboardAvoidingView>

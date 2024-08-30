@@ -21,6 +21,7 @@ import ScanDocScreen from '../../Screen/ScanDocScreen/ScanDocScreen';
 import MyTopTabs from '../TopTab/TopTabScreen';
 import CreateEvent from '../../Screen/CreateEvent/CreateEvent';
 import Files from '../../Screen/Files/Files';
+import Calculator from '../../Screen/calculater';
 
 
 const Stack = createNativeStackNavigator();
@@ -31,6 +32,7 @@ const StackScreen = () => {
             <Stack.Navigator
                 // initialRouteName="summarize"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
+                {/* <Stack.Screen name="cals" component={Calculator} /> */}
                 <Stack.Screen name="splase" component={SplaseScreen} />
                 <Stack.Screen name="first" component={FirstScreen} />
                 <Stack.Screen name="login" component={LoginScreen} />

@@ -284,7 +284,7 @@ const ChatUserListScreen = props => {
                     visible={visible}
                     onLogout={() => LogoutTwoButtonAlert()}
                     onClose={() => setVisible(false)}
-                    setting={() => { props.navigation.navigate('setting'); setVisible(false); }}
+                    setting={() => { props.navigation.navigate('edit'); setVisible(false); }}
                     onPress={() => { props.navigation.navigate('summarize'), setVisible(false) }}
                 />
                 {!showSearch ? <ChatHeader
