@@ -179,7 +179,7 @@ const EditProfileScreen = props => {
                     <View onPress={() => setCoverImg(true)}>
                         <ImageBackground source={{ uri: bgimg?.uri ? bgimg?.uri : bgimg }} style={styles.headerView}>
                             <View style={{ paddingHorizontal: 30 }}>
-                                <NavigateHeader tintColor={COLOR.white} color={COLOR.white} title={myData?.cover_image || img?.uri ? '' : 'Edit Profile'} onPress={() => props.navigation.goBack()} />
+                                <NavigateHeader tintColor={COLOR.white} color={COLOR.white} title={myData?.cover_image || img?.uri ? '' : 'Edit Profile'} onPress={() => props.navigation.navigate('setting')} />
                             </View>
                             <View style={styles.caneraIconView}>
                                 <TouchableOpacity

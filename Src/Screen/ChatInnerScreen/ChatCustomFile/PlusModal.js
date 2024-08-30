@@ -9,7 +9,7 @@ import {
 import React, { useState } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 
-const PlusModal = ({ visible, onClose, onCamera, onCheckList, onMeeting, onFiles, onReminder, onPhotoGallery, onContacts, onRequestClose, onLocation, }) => {
+const PlusModal = ({ visible, onClose, onCamera, onCheckList, onMeeting, onFiles, onReminder, onPhotoGallery, onContacts, onRequestClose, onLocation, onScan }) => {
     const [onSelect, setOnSelect] = useState(1)
     return (
         <View>
@@ -48,6 +48,10 @@ const PlusModal = ({ visible, onClose, onCamera, onCheckList, onMeeting, onFiles
                             <TouchableOpacity onPress={() => { setOnSelect(8), onFiles() }}
                                 style={[style.onSelectlist, { backgroundColor: onSelect == 8 ? COLOR.lightgreen : COLOR.white, marginBottom: 10 }]}>
                                 <Text style={style.txt}>Files</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { setOnSelect(9), onScan() }}
+                                style={[style.onSelectlist, { backgroundColor: onSelect == 9 ? COLOR.lightgreen : COLOR.white, marginBottom: 10 }]}>
+                                <Text style={style.txt}>Scan</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
