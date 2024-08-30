@@ -156,7 +156,7 @@ const SettingScreen = props => {
                                     tintColor={COLOR.white}
                                     color={COLOR.white}
                                     // title={mydata?.cover_image ? '' : 'Setting'}
-                                    onPress={() => props.navigation.goBack()}
+                                    onPress={() => props.navigation.navigate('home')}
                                 />
                             </View>
                         </ImageBackground>

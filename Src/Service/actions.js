@@ -631,6 +631,18 @@ export const Events_Create_Update = async (token, formData) => {
     // console.log(response);
     return response
 }
+export const Task_Done = async (token, id) => {
+    const res = await fetch(ACTIONS.TASK_DONE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ type: 'Receive', user_id: id, summary: 'done' })
+    })
+    const response = await res.json()
+    return response
+}
 export const Refresh_Token = async (token) => {
     console.log(token, '=>>>>>');
     try {

@@ -479,7 +479,8 @@ const ChatInnerScreen = props => {
                                 onRequestClose={closeModal} visible={visible}
                                 onClose={() => setVisible(false)}
                                 onLocation={() => { requestLocationPermission(), setVisible(false), setMsgType('Location') }}
-                            // onContacts={() => { setVisible(false); }}
+                                // onContacts={() => { setVisible(false); }}
+                                onScan={() => { setVisible(false); props.navigation.navigate('scandoc') }}
 
                             />
                             <Modal visible={ReMeCkModal} animationType='fade'>
