@@ -34,7 +34,6 @@ const BoardScreen = () => {
     const handaleTaskDone = async (id) => {
         setLoading(true)
         const Token = await getToken();
-        console.log(id);
         await Task_Done(Token, id)
             .then((res) => {
                 if (res.status_code == 200) {
@@ -69,7 +68,6 @@ const BoardScreen = () => {
     };
     const list = ({ item }) => {
         const userName = item.name
-        console.log(item);
 
 
         return (
@@ -158,7 +156,7 @@ const BoardScreen = () => {
                 />
 
             </ScrollView>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={() => { getuser() }} />
         </View>
     );
 };
