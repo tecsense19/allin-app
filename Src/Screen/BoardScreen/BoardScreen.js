@@ -1,15 +1,4 @@
-
-
-import {
-    View,
-    Text,
-    StatusBar,
-    TouchableOpacity,
-    Image,
-    FlatList,
-    Dimensions, Alert, ScrollView,
-    StyleSheet
-} from 'react-native';
+import { View, Text, StatusBar, TouchableOpacity, Image, FlatList, Dimensions, Alert, ScrollView, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import CalendarView from '../../Custom/Calendar/Calender';
@@ -33,9 +22,7 @@ const BoardScreen = () => {
                     getuser()
                 }
             })
-            .catch(() => {
-                setLoading(false)
-            })
+            .catch(() => { setLoading(false) })
     }
     const getuser = async () => {
         const Token = await getToken();
@@ -47,42 +34,23 @@ const BoardScreen = () => {
                     setLoading(false);
                 }
             })
-            .catch((e) => {
-                console.log(e, 'userList screen');
-                setLoading(false);
-            });
+            .catch((e) => { console.log(e, 'userList screen'); setLoading(false); });
     };
     const list = ({ item }) => {
         const userName = item.name
         return (
-            <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 5, marginTop: 5, paddingVertical: 5 }}>
-
-                <View
-                    style={{
-                        padding: 8,
-                        marginTop: 5,
-                        justifyContent: 'space-between',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                    }}
-                >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <View style={styles.ListmainContainer}>
+                <View style={styles.secondContainer}>
+                    <View style={styles.twoContainerDevide}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Image source={{ uri: item?.profile }} style={{ height: 55, width: 55, borderRadius: 50, marginRight: 10 }} />
-                            <Text style={{
-                                fontSize: 16,
-                                fontWeight: '600',
-                                color: COLOR.black,
-                            }}>
-                                {userName?.length >= 20 ? userName?.slice(0, 20) + ' . . . ' || '' : userName}
-                            </Text>
+                            <Image source={{ uri: item?.profile }} style={styles.profileImg} />
+                            <Text style={styles.taskUserListName}>{userName?.length >= 20 ? userName?.slice(0, 20) + ' . . . ' || '' : userName}</Text>
                         </View>
                         <TouchableOpacity style={{ marginRight: 5 }} disabled={isFocus == 'Given' || item.taskStatus ? true : false} onPress={() => { handaleTaskDone(item.id) }}>
-                            <Image source={item.taskStatus ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
+                            <Image source={item.taskStatus ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={styles.checkBoxStyle} />
                         </TouchableOpacity>
                     </View>
                 </View>
-
             </View>
         );
     };
@@ -90,14 +58,8 @@ const BoardScreen = () => {
         setLoading(true)
         const token = await getToken()
         Meetings(token)
-            .then((res) => {
-                setMeetingsData(res.data)
-                setLoading(false)
-            })
-            .catch(() => {
-                setLoading(false)
-
-            })
+            .then((res) => { setMeetingsData(res.data), setLoading(false) })
+            .catch(() => { setLoading(false) })
     }
     const meetingList = ({ item }) => {
         function convertTime24To12(timeString) {
@@ -120,22 +82,10 @@ const BoardScreen = () => {
         const member = item?.assigned_users
         const time12HourString = convertTime24To12(item.start_time);
         const dateTime12HourString = convertDateTimeTo12HourFormat(item.created_at);
-
         return (
-            <View style={{
-                //  alignSelf: data?.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', 
-                padding: 5,
-                backgroundColor: COLOR.lightgreen, margin: 5
-            }}>
-
-                <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 }}>Meeting</Text>
-
-                <View
-                    onPress={''}
-                    style={{
-                        height: 'auto',
-                        borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 15
-                    }}>
+            <View style={styles.meetinglistContainer}>
+                <Text style={styles.meetingTxt}>Meeting</Text>
+                <View style={styles.meetingDetailsView}>
                     <Text style={styles.Heading}>Title: <Text style={styles.HeadingContent}>{item.title}</Text></Text>
                     <Text style={styles.Heading}>Description:
                         <Text style={styles.HeadingContent}>{item.description?.length > 60 ? item.description.slice(0, 60) + '....' : item.description}</Text>
@@ -150,12 +100,7 @@ const BoardScreen = () => {
                         < Text style={styles.HeadingContent}>{item.location ? item.location : 'Empty'}</Text>
                     </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                        <View style={{
-                            width: item.assigned_users.length <= 2 ? 60 : 75,
-                            alignSelf: 'center', flexDirection: 'row', alignItems: 'center', position: 'absolute',
-                            right: item.assigned_users.length <= 2 ? -20 : 0,
-                            bottom: 35
-                        }}>
+                        <View style={{ width: item.assigned_users.length <= 2 ? 60 : 75, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', position: 'absolute', right: item.assigned_users.length <= 2 ? -20 : 0, bottom: 35 }}>
                             {member?.map((i, ind) => {
                                 return (
                                     <View>
@@ -165,40 +110,24 @@ const BoardScreen = () => {
                                         }} /> : ''}
                                     </View>
                                 )
-
                             })}
-
-                            <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, }}>{item.assigned_users?.length >= 3 ? (item.assigned_users?.length - 3 == 0 ? '' : '+' + (item.assigned_users?.length - 3)) : ""}</Text>
+                            <Text style={styles.assignedUser}>{item.assigned_users?.length >= 3 ? (item.assigned_users?.length - 3 == 0 ? '' : '+' + (item.assigned_users?.length - 3)) : ""}</Text>
                         </View>
                     </View>
                     <Text style={styles.time}>{dateTime12HourString}</Text>
-
                 </View>
             </View>
         )
     }
-    useEffect(() => {
-        getuser()
-    }, [isFocus])
-
+    useEffect(() => { getuser() }, [isFocus])
     return (
         <View
-            style={{
-                flex: 1,
-                backgroundColor: COLOR.black,
-            }}>
-            <Text style={{ marginTop: 60, fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: COLOR.white }}>Board</Text>
+            style={styles.screenMainContainer}>
+            <Text style={styles.boardTxt}>Board</Text>
             <StatusBar hidden={false} barStyle={'light-content'} />
-
             <ScrollView
-                style={{
-                    flex: 1,
-                    marginTop: 20,
-                    backgroundColor: COLOR.white,
-                    borderRadius: 20,
-                    paddingTop: 15
-                }}>
-                <View style={{ height: 100, flex: 1, paddingVertical: 10, paddingHorizontal: 10, justifyContent: 'center', flexDirection: 'row' }}>
+                style={styles.scrollContainer}>
+                <View style={styles.deatilsContainer}>
                     <TouchableOpacity style={[styles.topButton, { backgroundColor: isAcctive == 'Screen' ? COLOR.green : COLOR.white }]} onPress={() => { setIsAcctive("Screen") }}>
                         <Title name={'Screen'} color={isAcctive == 'Screen' ? COLOR.white : COLOR.black} />
                     </TouchableOpacity>
@@ -214,11 +143,11 @@ const BoardScreen = () => {
 
                 </View>
                 {isAcctive == 'Meetings' ?
-                    <FlatList data={meetingsData} renderItem={meetingList} style={{ marginHorizontal: 20, paddingBottom: 120}} /> :
+                    <FlatList data={meetingsData} renderItem={meetingList} style={styles.meetingFlatList} /> :
                     <View>
                         <CalendarView />
                         {/* <DropDown Month={'Today'} onPress={() => Alert.alert('today')} /> */}
-                        <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginTop: 30 }}>
+                        <View style={styles.reciveAndgivenContainer}>
                             <TouchableOpacity style={{ margin: 10 }} onPress={() => setIsFocus('Receive')}>
                                 <Text style={{ fontSize: 18, color: isFocus == 'Receive' ? COLOR.black : COLOR.gray, fontWeight: 'bold', }}>Received</Text>
                             </TouchableOpacity>
@@ -260,16 +189,40 @@ const DropDown = ({ Month, onPress, isshow }) => {
 }
 const Title = ({ name, color }) => {
     return (
-        <Text style={{ fontSize: 16, fontWeight: 'bold', color: color }}>{name}</Text>
+        <Text style={[styles.headerTopButtonTitle, { color: color }]}>{name}</Text>
     )
 }
-
 export default BoardScreen;
+
 const styles = StyleSheet.create({
-    topButton:
-        { flex: 1, backgroundColor: 'white', margin: 3, justifyContent: 'center', alignItems: 'center', shadowOpacity: 0.2, shadowOffset: { height: 1, width: 2 }, shadowRadius: 5, borderRadius: 10 },
+    topButton: { flex: 1, backgroundColor: 'white', margin: 3, justifyContent: 'center', alignItems: 'center', shadowOpacity: 0.2, shadowOffset: { height: 1, width: 2 }, shadowRadius: 5, borderRadius: 10 },
     Heading: { alignSelf: 'flex-start', marginTop: 10, fontWeight: 'bold', color: COLOR.black, fontSize: 13 },
     HeadingContent: { color: COLOR.black, fontSize: 12, fontWeight: '500' },
-    time: { alignSelf: 'flex-end', margin: 5, fontWeight: '700', color: COLOR.placeholder, fontSize: 12 }
+    time: { alignSelf: 'flex-end', margin: 5, fontWeight: '700', color: COLOR.placeholder, fontSize: 12 },
+    ListmainContainer: { backgroundColor: COLOR.white, paddingHorizontal: 5, marginTop: 5, paddingVertical: 5 },
+    secondContainer: { padding: 8, marginTop: 5, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', },
+    twoContainerDevide: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
+    profileImg: { height: 55, width: 55, borderRadius: 50, marginRight: 10 },
+    headerTopButtonTitle: { fontSize: 16, fontWeight: 'bold', },
+    taskUserListName: { fontSize: 16, fontWeight: '600', color: COLOR.black, },
+    checkBoxStyle: { tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 },
+    screenMainContainer: { flex: 1, backgroundColor: COLOR.black, },
+    boardTxt: { marginTop: 60, fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: COLOR.white },
+    scrollContainer: { flex: 1, marginTop: 20, backgroundColor: COLOR.white, borderRadius: 20, paddingTop: 15 },
+    deatilsContainer: { height: 100, flex: 1, paddingVertical: 10, paddingHorizontal: 10, justifyContent: 'center', flexDirection: 'row' },
+    meetingFlatList: { marginHorizontal: 20, paddingBottom: 120 },
+    reciveAndgivenContainer: { flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginTop: 30 },
+    meetingTxt: { fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 },
+    meetinglistContainer: { padding: 5, backgroundColor: COLOR.lightgreen, margin: 5 },
+    meetingDetailsView: { height: 'auto', borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 15 },
+    assignedUser: { fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, },
+
+
+
+
+
+
+
+
 
 })
