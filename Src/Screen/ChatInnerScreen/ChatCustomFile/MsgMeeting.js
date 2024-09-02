@@ -1,34 +1,22 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-export const MsgMeeting = ({ data, onPress, MYID, }) => {
+export const MsgMeeting = ({ data, onPress }) => {
 
     const Member = data.messageDetails.users
-    // console.log(data.messageDetails);
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 3 ? <Image source={{ uri: item?.profile }} style={{
-                    height: 25, width: 25,
-                    borderRadius: 100, marginLeft: index == 0 ? 0 : -10
-                }} /> : ''}
+                {index < 3 ? <Image source={{ uri: item?.profile }} style={{ height: 25, width: 25, borderRadius: 100, marginLeft: index == 0 ? 0 : -10 }} /> : ''}
             </View>
         )
     }
     return (
         <View style={{ alignSelf: data?.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', width: '90%', }}>
             <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 }}>Meeting</Text>
-
             <View
                 onPress={onPress}
-                style={{
-                    backgroundColor: data?.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray,
-                    height: 'auto',
-
-                    borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 15
-
-
-                }}>
+                style={{ backgroundColor: data?.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray, height: 'auto', borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 15 }}>
                 <Text style={styles.Heading}>Title: <Text style={styles.HeadingContent}>{data.messageDetails.title}</Text></Text>
                 <Text style={styles.Heading}>Description: <Text style={styles.HeadingContent}>{data?.messageDetails.description?.length > 60 ? data?.messageDetails.description.slice(0, 60) + '....' : data?.messageDetails.description}</Text></Text>
                 <Text style={styles.Heading}>Meeting Date: <Text style={styles.HeadingContent}>{data.messageDetails.date}</Text></Text>
