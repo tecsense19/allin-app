@@ -643,6 +643,21 @@ export const Task_Done = async (token, id) => {
     const response = await res.json()
     return response
 }
+export const Meetings = async (token, Type) => {
+
+    const res = await fetch(ACTIONS.MEETINGS, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        // body: JSON.stringify({ type: 'Receive', })
+    })
+
+
+    const response = await res.json()
+    return response
+}
 export const Refresh_Token = async (token) => {
     console.log(token, '=>>>>>');
     try {
