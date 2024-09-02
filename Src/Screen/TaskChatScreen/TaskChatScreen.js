@@ -163,7 +163,7 @@ const TaskChatScreen = (props) => {
                     <Chatheader
                         // onProfile={() => Alert.alert('Profile')}
                         onCall={onhandalePhoneCall}
-                        onChange={() => setChange(!change)}
+                        onChange={() => props.navigation.goBack()}
                         source={{ uri: chatProfileData?.profile }}
                         title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName}
                         onSearch={() => Alert.alert('search')}
@@ -267,7 +267,7 @@ const TaskChatScreen = (props) => {
 
                 </View>
             </Modal>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={GetTaskDetails} />
         </KeyboardAvoidingView>
     )
 }
