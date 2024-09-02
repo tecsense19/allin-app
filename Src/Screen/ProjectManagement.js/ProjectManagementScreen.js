@@ -171,7 +171,7 @@ const ProjectManagementScreen = props => {
                     </View>
                 </Modal>
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={getNoteData} />
         </ScrollView>
 
     );

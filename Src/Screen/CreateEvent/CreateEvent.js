@@ -341,7 +341,7 @@ const CreateEvent = props => {
                         color={COLOR.white}
                         onPress={() => handleCreateEvent()}
                     />
-                    <Loader visible={loading} />
+                    <Loader visible={loading} Retry={handleCreateEvent} />
                 </ScrollView>
             </View>
         </KeyboardAvoidingView>

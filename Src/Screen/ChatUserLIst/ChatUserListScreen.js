@@ -307,7 +307,7 @@ const ChatUserListScreen = props => {
 
                 <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20, }} />
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={getuser} />
         </View>
     );
 };

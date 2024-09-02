@@ -108,7 +108,7 @@ const AllTasks = (props) => {
                     setLoading(false)
                 }
             }).catch(err => {
-                console.log(err=="[SyntaxError: JSON Parse error: Unrecognized token ' < ']");
+                console.log(err == "[SyntaxError: JSON Parse error: Unrecognized token ' < ']");
                 setLoading(false)
                 // SendSummarizeEmail()
                 // if (err == "[SyntaxError: JSON Parse error: Unrecognized token ' < ']") {
@@ -140,7 +140,7 @@ const AllTasks = (props) => {
                     onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendSummarizeEmail}
                 />
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={SendSummarizeEmail} />
         </View>
     );
 };

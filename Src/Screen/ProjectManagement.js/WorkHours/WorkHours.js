@@ -270,7 +270,7 @@ const WorkHours = props => {
                             startTime={startTimeDate} EndTime={endTimeDate} summary={summary} onChangeText={(res) => setSummary(res)} />
                     </ScrollView>
 
-                    <Loader visible={loading} />
+                    <Loader visible={loading} Retry={() => { getuser(), GetWorkHours() }} />
 
                 </ScrollView>
                 <View style={{ marginBottom: isFocused ? 5 : 25, }}>
@@ -286,7 +286,7 @@ const WorkHours = props => {
                             )
                         }} />
                     </View>
-                    <ChatInputToolBar  placeholder={'Email Summary To...'} hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
+                    <ChatInputToolBar placeholder={'Email Summary To...'} hidePlus={true} source={require('../../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
                         onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendEmail}
                     />
                 </View>

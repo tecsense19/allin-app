@@ -138,7 +138,7 @@ const CreateNote = props => {
                 behavior={
                     Platform.OS === 'ios' ? 'padding' : 'height'
                 }></KeyboardAvoidingView>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={AddNote} />
         </View>
     );
 };

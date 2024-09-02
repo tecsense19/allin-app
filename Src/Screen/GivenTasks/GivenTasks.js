@@ -103,7 +103,7 @@ const GivenTasks = (props) => {
                 if (res.status_code == 200) {
                     // setSelectedItems(null)
                     setLoading(false)
-                    
+
                 } else {
                     setLoading(false)
                     Alert.alert(res?.message.summary[0])
@@ -132,7 +132,7 @@ const GivenTasks = (props) => {
                     onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendSummarizeEmail}
                 />
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={getuser} />
         </View>
     );
 };

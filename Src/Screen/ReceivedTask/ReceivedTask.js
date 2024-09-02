@@ -116,7 +116,7 @@ const ReceivedTask = (props) => {
                     onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendSummarizeEmail}
                 />
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={getuser} />
         </View>
     );
 };
