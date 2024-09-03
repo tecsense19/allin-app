@@ -198,7 +198,7 @@ const Files = (props) => {
                     </View>
                 </View>
             </Modal>
-            <Loader visible={loding} />
+            <Loader visible={loding} Retry={File_Message} />
         </View>
     );
 };

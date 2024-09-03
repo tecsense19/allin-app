@@ -78,7 +78,7 @@ const LoginScreen = props => {
                     </View>
                 </ScrollView>
             </View>
-            <Loader visible={visible} />
+            <Loader visible={visible} Retry={sendOtp} />
 
         </KeyboardAvoidingView>
     );
