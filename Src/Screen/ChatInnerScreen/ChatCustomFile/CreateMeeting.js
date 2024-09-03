@@ -329,7 +329,6 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 bgColor={COLOR.green}
                 color={COLOR.white}
             />
-
             <DatePicker
                 minimumDate={new Date()}
                 modal
@@ -339,14 +338,12 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 onConfirm={(date) => {
                     setOpen(false)
                     setDate(date)
-                    // console.log(date);
                 }}
                 onCancel={() => {
                     setOpen(false)
                 }}
             />
             <DatePicker
-                minimumDate={new Date()}
                 modal
                 mode='time'
                 open={opentime}
@@ -354,10 +351,9 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 onConfirm={(time) => {
                     setOpenTime(false)
                     setTime(time)
-                    console.log(time);
                 }}
                 onCancel={() => {
-                    setOpen(false)
+                    setOpenTime(false)
                 }}
             />
             <Modal visible={visible} >
@@ -414,126 +410,3 @@ const Title = ({ title }) => {
 
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState } from 'react';
-// import { View, TextInput, FlatList, Text } from 'react-native';
-
-// const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
-
-// const App = () => {
-//   const [query, setQuery] = useState('');
-//   const [suggestions, setSuggestions] = useState([]);
-//   const [selectedPlace, setSelectedPlace] = useState(null);
-
-//   const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo'; // Replace with your Google Places API key
-
-//   const fetchSuggestions = async (input) => {
-//     try {
-//       const response = await fetch(
-//         `${PLACES_API_BASE_URL}/autocomplete/json?input=${input}&key=${apiKey}&types=geocode`
-//       );
-//       const json = await response.json();
-//       setSuggestions(json.predictions);
-//     } catch (error) {
-//       console.error('Error fetching suggestions:', error);
-//       setSuggestions([]);
-//     }
-//   };
-
-//   const handleSelectSuggestion = async (place) => {
-//     try {
-//       const response = await fetch(
-//         `${PLACES_API_BASE_URL}/details/json?placeid=${place.place_id}&key=${apiKey}`
-//       );
-//       const json = await response.json();
-//       const placeDetails = json.result;
-
-//       const country = placeDetails.address_components.find(
-//         (component) => component.types.includes('country')
-//       )?.long_name;
-//       const state = placeDetails.address_components.find(
-//         (component) => component.types.includes('administrative_area_level_1')
-//       )?.long_name;
-//       const city = placeDetails.address_components.find(
-//         (component) => component.types.includes('locality')
-//       )?.long_name;
-//       const pincode = placeDetails.address_components.find(
-//         (component) => component.types.includes('postal_code')
-//       )?.long_name;
-//       const address = placeDetails.formatted_address;
-//       const { lat, lng } = placeDetails.geometry.location;
-
-//       setSelectedPlace({
-//         id: placeDetails.place_id,
-//         description: placeDetails.formatted_address,
-//         country: country || '',
-//         state: state || '',
-//         city: city || '',
-//         pincode: pincode || '',
-//         address: address || '',
-//         lat: lat,
-//         lng: lng,
-//       });
-
-//       setQuery(place.description);
-//       setSuggestions([]);
-//     } catch (error) {
-//       console.error('Error fetching place details:', error);
-//       setSelectedPlace(null);
-//     }
-//   };
-
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-//       <TextInput
-//         placeholder="Search for a location..."
-//         value={query}
-//         onChangeText={(text) => {
-//           setQuery(text);
-//           fetchSuggestions(text);
-//         }}
-//         style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 10, width: '100%' }}
-//       />
-//       {suggestions.length > 0 && (
-//         <FlatList
-//           style={{ width: '100%', maxHeight: 200 }}
-//           data={suggestions}
-//           keyExtractor={(item) => item.place_id}
-//           renderItem={({ item }) => (
-//             <Text style={{ paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: '#ccc' }} onPress={() => handleSelectSuggestion(item)}>
-//               {item.description}
-//             </Text>
-//           )}
-//         />
-//       )}
-//       {selectedPlace && (
-//         <View style={{ marginTop: 20, width: '100%' }}>
-//           <Text style={{ fontWeight: 'bold' }}>{selectedPlace.description}</Text>
-//           <Text>Country: {selectedPlace.country}</Text>
-//           <Text>State: {selectedPlace.state}</Text>
-//           <Text>City: {selectedPlace.city}</Text>
-//           <Text>Pincode: {selectedPlace.pincode}</Text>
-//           <Text>Address: {selectedPlace.address}</Text>
-//           <Text>Latitude: {selectedPlace.lat}</Text>
-//           <Text>Longitude: {selectedPlace.lng}</Text>
-//         </View>
-//       )}
-//     </View>
-//   );
-// };
-
-// export default App;
-
