@@ -227,7 +227,7 @@ const MyTopTabs = props => {
                     onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={'SendEmail'}
                 />
             </View> */}
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={onLogOut} />
         </View>
     );
 };

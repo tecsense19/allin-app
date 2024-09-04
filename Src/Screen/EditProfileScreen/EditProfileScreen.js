@@ -225,7 +225,7 @@ const EditProfileScreen = props => {
                         <ProfileModal onRequestClose={closeModal} visible={visible} onClose={() => setVisible(false)} onCemera={() => { requestCameraPermission(); profileImgCemera(); }} onGallery={() => { profileImgGallery(); }} />
                     </View>
 
-                    <Loader visible={loding} />
+                    <Loader visible={loding} Retry={UpdateDataApiCalling} />
                 </ScrollView>
             </View>
         </KeyboardAvoidingView>

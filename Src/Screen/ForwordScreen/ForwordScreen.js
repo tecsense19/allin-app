@@ -101,7 +101,7 @@ const ForwordScreen = (props) => {
             <View style={{ backgroundColor: COLOR.white }}>
                 <Button title={'Send'} color={COLOR.white} bgColor={COLOR.green} marginHorizontal={20} marginBottom={40} onPress={ForwordMessage} />
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={getuser} />
         </View>
     );
 };

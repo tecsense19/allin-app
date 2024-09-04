@@ -32,17 +32,15 @@
 		<true/>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-<string>Need access to your calendar to show events</string>
-
+	<string>Need access to your calendar to show events</string>
 	<key>NSCameraUsageDescription</key>
 	<string>needs access to your camera to enable features such as taking photos, scanning QR codes, and capturing moments</string>
 	<key>NSContactsUsageDescription</key>
 	<string>needs access to your camera </string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your app needs access to your location to provide you with location-based services.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-<string>Your app needs access to your location while you're using it.</string>
-<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>Your app needs access to your location to provide you with location-based services.</string>
-
+	<string>Your app needs access to your location while you're using it.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>MicrophoneUsageDescription</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

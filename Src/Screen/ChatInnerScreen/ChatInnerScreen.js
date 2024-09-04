@@ -31,7 +31,6 @@ import Geolocation from '@react-native-community/geolocation';
 import Button from '../../Custom/Button/Button';
 import MsgMapImage from './ChatCustomFile/MsgMapView';
 import { getToken } from '../../Service/AsyncStorage';
-import Pusher from 'pusher-js/react-native';
 LogBox.ignoreAllLogs();
 
 
@@ -62,19 +61,15 @@ const ChatInnerScreen = props => {
 
     const handleScroll = event => {
         const offsetY = event.nativeEvent.contentOffset.y;
-        // console.log(offsetY);
         if (offsetY === 0) {
             getAllMessages()
         }
     };
-    // console.log('aaaaaaa');
     const Userid = props?.route?.params
-    // console.log(Userid);
     const userName = userDetails.first_name == undefined && userDetails.last_name == undefined ? '' : userDetails.first_name + ' ' + userDetails.last_name
     const scrollViewRef = useRef();
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
-    // const scrollToEnd = () => { scrollViewRef.current?.scrollToEnd({ animated: true }); };
     const scrollToBottom = () => {
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollToEnd({ animated: false });
@@ -82,32 +77,7 @@ const ChatInnerScreen = props => {
     };
     useEffect(() => { scrollToBottom() }, [messages,]);
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
-    // useEffect(() => {
-    //     // Initialize Pusher with your app key and options
-    //     const pusher = new Pusher('9763500e9ace3a62c99b', {
-    //         cluster: 'ap2',
-    //         encrypted: true,
-    //     });
-
-    //     // // Subscribe to the channel
-    //     const channel = pusher.subscribe('allin_app');
-    //     // console.log(channel);
-
-    //     // // Bind to 'new-message' event
-    //     channel.bind('new-message', (data) => {
-    //         console.log('Received new message:', data);
-    //         // Handle incoming message data here
-    //     });
-
-    //     // console.log(channel.bind);
-    //     // // Clean up Pusher subscriptions and connection on component unmount
-    //     // return () => {
-    //     //     channel.unbind(); // Unbind event listeners
-    //     //     pusher.disconnect(); // Disconnect Pusher connection
-    //     // };
-    // }, []);
     useEffect(() => {
-
         const extractMessageIds = () => {
             const ids = [];
             Object.keys(messages).forEach(date => {
@@ -368,16 +338,14 @@ const ChatInnerScreen = props => {
         phoneNumbers: obj.phoneNumbers.map(phone => phone.number)
     }));
     const handleSearch = (text) => {
-        const formattedText = text.toLowerCase(); // Convert search query to lowercase
+        const formattedText = text.toLowerCase();
         setSearchQuery(formattedText);
         const filteredData = contacts.filter((contact) =>
-            // console.log(contact.givenName)
             contact.givenName.toLowerCase().includes(formattedText)
         );
         setFilteredContacts(filteredData);
     };
     const memoizedMessages = useMemo(() => {
-
         return Object.keys(messages).map(date => (
             <View key={date}>
                 <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
@@ -453,18 +421,7 @@ const ChatInnerScreen = props => {
                                     invertStickyHeaders={true}
                                     onScroll={handleScroll}
                                     scrollEventThrottle={16}>
-                                    {/* {Object.keys(messages).map(date => (
-                                        <View key={date}>
-                                            <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
-                                            {messages[date]?.map(message => {
-                                                if (message.messageType == 'Task Chat') {
-                                                    return null
-                                                }
-                                                return (
-                                                    <ChatMessage key={message?.messageId} message={message} />)
-                                            })}
-                                        </View>
-                                    ))} */}
+
                                     {memoizedMessages}
                                 </ScrollView>
                             </View >
@@ -480,7 +437,7 @@ const ChatInnerScreen = props => {
                                 onClose={() => setVisible(false)}
                                 onLocation={() => { requestLocationPermission(), setVisible(false), setMsgType('Location') }}
                                 // onContacts={() => { setVisible(false); }}
-                                onScan={() => { setVisible(false); props.navigation.navigate('scandoc') }}
+                                onScan={() => { setVisible(false); props.navigation.navigate('scandoc', { id: Userid, isChat: true }) }}
 
                             />
                             <Modal visible={ReMeCkModal} animationType='fade'>
@@ -499,7 +456,7 @@ const ChatInnerScreen = props => {
                             </Modal>
                         </View>
                     }
-                    <Loader visible={loding} />
+                    <Loader visible={loding} Retry={getAllMessages} />
                     {msgType !== 'Contact' ?
                         <View style={{ marginBottom: isFocused ? 5 : 25 }}>
                             {FileUplode ? <Image style={{ height: 150, width: 200, marginBottom: 5, borderRadius: 5, marginLeft: 30, position: 'absolute', bottom: 50, }} source={{ uri: FileUplode[0]?.uri }} /> : ''

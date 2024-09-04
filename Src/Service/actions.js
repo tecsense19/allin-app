@@ -286,6 +286,30 @@ export const File_Uplode = async (token, formData,) => {
 
     return response
 }
+export const Docs_File_Uplode = async (token, formData,) => {
+    const res = await fetch(ACTIONS.FILE_SCAN_UPLOAD, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData
+    })
+    const response = await res.json()
+
+    return response
+}
+export const Scan_Document_List = async (token) => {
+    const res = await fetch(ACTIONS.USER_DOCUMENTS, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    const response = await res.json()
+    return response
+}
 
 export const Edit_Profile = async (token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg) => {
 
@@ -640,6 +664,21 @@ export const Task_Done = async (token, id) => {
         },
         body: JSON.stringify({ type: 'Receive', user_id: id, summary: 'done' })
     })
+    const response = await res.json()
+    return response
+}
+export const Meetings = async (token, Type) => {
+
+    const res = await fetch(ACTIONS.MEETINGS, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        // body: JSON.stringify({ type: 'Receive', })
+    })
+
+
     const response = await res.json()
     return response
 }

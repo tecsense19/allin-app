@@ -102,7 +102,7 @@ const ProjectManagementScreen = props => {
         await Get_Note(token)
             .then((res) => {
                 if (res.status_code === 200) {
-                    setData(res.data.notes);
+                    setData(res.data.notes.reverse());
 
                 }
             })
@@ -171,7 +171,7 @@ const ProjectManagementScreen = props => {
                     </View>
                 </Modal>
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={getNoteData} />
         </ScrollView>
 
     );

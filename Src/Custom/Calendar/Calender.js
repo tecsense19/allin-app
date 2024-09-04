@@ -24,11 +24,8 @@ const CalendarView = () => {
         const today = new Date();
         const todayString = today.toISOString().split('T')[0];
         setSelectedDate(todayString);
-
         const todayDayOfWeek = getDayOfWeek({ dateString: todayString });
         setDayOfWeek(todayDayOfWeek);
-
-
     }, []);
     const handleDayPress = (day) => {
         setSelectedDate(day.dateString);
@@ -38,13 +35,11 @@ const CalendarView = () => {
     const handaleDayLongpress = (day) => {
         handleDayPress(day)
         setAddEventShow(true)
-
     }
     useEffect(() => {
         const today = new Date();
         const todayString = today.toISOString().split('T')[0];
         setSelectedDate(todayString);
-
     }, []);
     const addEvent = async () => {
         if (!eventText || !selectedDate) return;
@@ -55,19 +50,14 @@ const CalendarView = () => {
             // eventStartDate.setHours(0, 0, 0, 0);
             // eventEndDate.setHours(23, 59, 59, 999);
             // Add the event to the device's calendar
-
-
             await RNCalendarEvents.saveEvent(eventText, {
                 startDate: eventStartDate.toISOString(),
                 endDate: eventEndDate.toISOString(),
                 allDay: true,
             });
-
-            // Update local state to reflect the new event
             const nextDate = new Date(selectedDate);
             nextDate.setDate(nextDate.getDate());
             const nextDateString = nextDate.toISOString().split('T')[0];
-
             setEvents((prevEvents) => {
                 const newEvents = { ...prevEvents };
                 if (!newEvents[nextDateString]) {
@@ -78,7 +68,6 @@ const CalendarView = () => {
             });
             setAddEventShow(false)
             setEventText('');
-
         } catch (error) {
             console.error('Failed to add event to calendar', error);
         }
@@ -88,12 +77,9 @@ const CalendarView = () => {
             <Text style={styles.eventText}>{item.name}</Text>
         </View>
     );
-    // Generate markedDates with dots
     const markedDates = Object.keys(events).reduce((acc, date) => {
         acc[date] = {
-            marked: true,
-            dotColor: COLOR.green,
-            activeOpacity: 10,
+            marked: true, dotColor: COLOR.green, activeOpacity: 10,
         };
         return acc;
     }, {});
@@ -115,27 +101,22 @@ const CalendarView = () => {
                     return;
                 }
 
-                // Function to fetch events for a given year
                 // const fetchEventsForYear = async (year) => {
                 //     const startOfYear = new Date(Date.UTC(year, 0, 0)).toISOString();
                 //     const endOfYear = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).toISOString();
                 //     return await RNCalendarEvents.fetchAllEvents(startOfYear, endOfYear);
                 // };
 
-            const fetchEventsForYear = async (year) => {
-                const startOfYear = new Date(year, 0, 1).toISOString();
-                const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999).toISOString();
-                return await RNCalendarEvents.fetchAllEvents(startOfYear, endOfYear);
-            };
-
-                // Fetch events incrementally from 2000 to 2100
+                const fetchEventsForYear = async (year) => {
+                    const startOfYear = new Date(year, 0, 1).toISOString();
+                    const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999).toISOString();
+                    return await RNCalendarEvents.fetchAllEvents(startOfYear, endOfYear);
+                };
                 let allEvents = [];
                 for (let year = 2000; year <= 2100; year++) {
                     const yearEvents = await fetchEventsForYear(year);
                     allEvents = allEvents.concat(yearEvents);
                 }
-
-                // Organize events by date with offset
                 const eventsByDate = allEvents.reduce((acc, event) => {
                     const eventDate = new Date(event.startDate);
                     const nextDate = new Date(eventDate);
@@ -148,7 +129,6 @@ const CalendarView = () => {
                     acc[nextDateString].push({ name: event.title });
                     return acc;
                 }, {});
-
                 setEvents(eventsByDate);
             } catch (error) {
                 console.error('Failed to fetch events', error);
@@ -156,7 +136,6 @@ const CalendarView = () => {
                 setLoading(false);
             }
         };
-
         fetchEvents();
     }, [addEventShow]);
 
@@ -171,11 +150,10 @@ const CalendarView = () => {
                 }}
                 theme={theme}
             />
-
             <View style={styles.eventContainer}>
-                <View style={{ height: 70, width: 50, backgroundColor: COLOR.verylightgray, marginRight: 10, alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 20, }}>{selectedDate.split("-")[2]}</Text>
-                    <Text style={{ fontWeight: 'bold', fontSize: 14, marginTop: 5, color: COLOR.gray }}>{dayOfWeek.slice(0, 3)}</Text>
+                <View style={styles.EventDateAndDayContainer}>
+                    <Text style={styles.dateTxt}>{selectedDate.split("-")[2]}</Text>
+                    <Text style={styles.dayTxt}>{dayOfWeek.slice(0, 3)}</Text>
                 </View>
                 <FlatList
                     data={events[selectedDate] || []}
@@ -186,14 +164,12 @@ const CalendarView = () => {
             </View>
 
             <Modal visible={addEventShow} transparent >
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={{ height: 'auto', width: '90%', borderRadius: 10, backgroundColor: COLOR.white, padding: 20 }}>
-                        <Text style={{ color: COLOR.titlecolor, fontWeight: 'bold', fontSize: 18, textAlign: 'center', }}>Create New Event</Text>
-                        <Text style={{ color: COLOR.titlecolor, fontWeight: 'bold', fontSize: 16, marginTop: 20 }}>Event Title </Text>
-
+                <View style={styles.createEventModalContainer}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.titleText}>Create New Event</Text>
+                        <Text style={styles.eventTitleText}>Event Title </Text>
                         <TextInput style={styles.input} placeholder="Enter Event Title" value={eventText} onChangeText={setEventText} />
-
-                        <View style={{ flexDirection: 'row', opacity: 0.8, alignItems: 'center', alignSelf: 'center', marginTop: 20 }}>
+                        <View style={styles.buttonContainer}>
                             <Button bgColor={COLOR.orange} color={COLOR.white} title="Cancel" onPress={() => setAddEventShow(false)} marginHorizontal={5} />
                             <Button bgColor={COLOR.green} color={COLOR.white} title="Submit" onPress={() => { addEvent() }} marginHorizontal={5} />
                         </View>
@@ -227,39 +203,18 @@ const theme = {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    eventContainer: {
-        flex: 1,
-        padding: 10,
-        flexDirection: 'row', marginTop: 20
-    },
-    input: {
-        height: 45,
-        marginTop: 5,
-        borderColor: COLOR.black,
-        borderWidth: 1,
-        marginBottom: 10,
-        width: '100%',
-        paddingHorizontal: 8,
-        borderRadius: 5,
-        fontSize: 16
-
-    },
-    eventItem: {
-        backgroundColor: COLOR.verylightgray,
-        borderRadius: 5,
-        padding: 10,
-        marginBottom: 10,
-    },
-    eventText: {
-        fontSize: 16,
-        color: '#2d4150',
-    },
-    emptyDateText: {
-        fontSize: 16,
-        color: '#d9e1e8',
-    },
+    container: { flex: 1, backgroundColor: '#fff', },
+    eventContainer: { flex: 1, padding: 10, flexDirection: 'row', marginTop: 20 },
+    input: { height: 45, marginTop: 5, borderColor: COLOR.black, borderWidth: 1, marginBottom: 10, width: '100%', paddingHorizontal: 8, borderRadius: 5, fontSize: 16 },
+    eventItem: { backgroundColor: COLOR.verylightgray, borderRadius: 5, padding: 10, marginBottom: 10, },
+    eventText: { fontSize: 16, color: '#2d4150', },
+    emptyDateText: { fontSize: 16, color: '#d9e1e8', },
+    EventDateAndDayContainer: { height: 70, width: 50, backgroundColor: COLOR.verylightgray, marginRight: 10, alignItems: 'center', justifyContent: 'center', borderRadius: 5 },
+    dateTxt: { fontWeight: 'bold', fontSize: 20, },
+    dayTxt: { fontWeight: 'bold', fontSize: 14, marginTop: 5, color: COLOR.gray },
+    createEventModalContainer: { backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, alignItems: 'center', justifyContent: 'center' },
+    modalContainer: { height: 'auto', width: '90%', borderRadius: 10, backgroundColor: COLOR.white, padding: 20 },
+    titleText: { color: COLOR.titlecolor, fontWeight: 'bold', fontSize: 18, textAlign: 'center', },
+    eventTitleText: { color: COLOR.titlecolor, fontWeight: 'bold', fontSize: 16, marginTop: 20 },
+    buttonContainer: { flexDirection: 'row', opacity: 0.8, alignItems: 'center', alignSelf: 'center', marginTop: 20 }
 });

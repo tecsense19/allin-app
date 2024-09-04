@@ -205,7 +205,7 @@ const SettingScreen = props => {
                     />
                 </View>
             </View>
-            <Loader visible={loading} />
+            <Loader visible={loading} Retry={logout} />
         </ScrollView>
     );
 };

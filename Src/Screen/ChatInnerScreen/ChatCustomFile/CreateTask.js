@@ -189,7 +189,6 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     </View>
                 </View>
             </Modal>
-            {/* <Loader visible={loading} /> */}
         </ScrollView>
     )
 }

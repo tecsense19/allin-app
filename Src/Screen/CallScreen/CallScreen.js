@@ -22,7 +22,7 @@ const CallScreen = (props) => {
     const [token, setToken] = useState('')
     useEffect(() => {
         getuser();
-    }, [search.length>2]);
+    }, [search.length > 2]);
 
     const getuser = async () => {
         const Token = await getToken();
@@ -41,7 +41,7 @@ const CallScreen = (props) => {
             });
     };
     const list = ({ item }) => {
-        console.log(item);
+        // console.log(item);
         const onhandalePhoneCall = () => {
             Linking.openURL(`tel:${item.country_code + ' ' + item.mobile}`);
         };
@@ -93,7 +93,7 @@ const CallScreen = (props) => {
                     marginTop: 10,
                     borderTopRightRadius: 20,
                     borderTopLeftRadius: 20,
-                    paddingHorizontal: 20
+
                 }}>
                 <View
                     style={{
@@ -101,9 +101,8 @@ const CallScreen = (props) => {
                         alignItems: 'center',
                         backgroundColor: COLOR.verylightgray,
                         borderRadius: 10,
-
                         marginTop: 20,
-                        height: 45,
+                        height: 45, marginHorizontal: 10
                     }}>
                     <Image
                         source={require('../../Assets/Image/search.png')}
@@ -130,7 +129,7 @@ const CallScreen = (props) => {
                     />
                 </View>
 
-                <FlatList renderItem={list} data={data} />
+                <FlatList showsVerticalScrollIndicator={false} renderItem={list} data={data} style={{ paddingHorizontal: 20 }} />
             </View>
         </View>
     );

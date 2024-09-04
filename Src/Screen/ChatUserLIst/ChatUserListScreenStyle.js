@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLOR.white,
         borderTopRightRadius: 20,
-        borderTopLeftRadius: 20,
+        borderTopLeftRadius: 20, marginTop: 10
     },
     listcontainer: {
         padding: 8,

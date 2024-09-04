@@ -21,6 +21,8 @@ export const ACTIONS = {
     TASK_DETAILS: BASE_PATH + '/task-chat',
     EXPORT_CHAT: BASE_PATH + '/export-chat',
     FILE_UPLOAD: BASE_PATH + '/file-upload',
+    FILE_SCAN_UPLOAD: BASE_PATH + '/file-scan-upload',
+    USER_DOCUMENTS: BASE_PATH + '/user-documents',
     CHECK_MOBILE_EXISTS: BASE_PATH + '/check-mobile-exists',
     USER_REGISTRATION: BASE_PATH + '/user-registration',
     USERS_MOBILE_NUMBERS: BASE_PATH + '/users-mobile-numbers',
@@ -41,7 +43,8 @@ export const ACTIONS = {
     TASK_USERS_LIST: BASE_PATH + '/task-users-list',
     TASK_DONE: BASE_PATH + '/sent-task-done',
     TASK_SUMMARIZE_SEND: BASE_PATH + '/sent-task-summary-email',
-    EVENTS_CREATE_UPDATE: BASE_PATH + '/events-create-update'
+    EVENTS_CREATE_UPDATE: BASE_PATH + '/events-create-update',
+    MEETINGS: BASE_PATH + '/meetings'
 
 
 

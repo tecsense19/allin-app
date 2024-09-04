@@ -97,7 +97,7 @@ const VerificationScreen = props => {
                 <Button onPress={sendAgainOtp} borderWidth={1} title={'Send Again'} color={COLOR.black} borderColor={COLOR.bordercolor} marginTop={40} />
                 <Button onPress={handleSubmit} title={'Submit'} color={COLOR.white} bgColor={COLOR.green} marginTop={15} />
             </ScrollView>
-            <Loader visible={visible} />
+            <Loader visible={visible} Retry={handleSubmit} />
         </View>
     );
 };
