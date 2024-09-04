@@ -236,7 +236,7 @@ const ChatUserListScreen = props => {
         getuser();
         getFcmToken()
         // console.log('useFocusEffect');
-    }, []));
+    }, [showSearch]));
     const ClearChat = (id) => {
         setLoading(true)
         Clear_Chat(id, token)
@@ -296,7 +296,7 @@ const ChatUserListScreen = props => {
                     onSearch={() => setShowSearch(true)} /> :
                     <View style={{ backgroundColor: COLOR.white, marginTop: 65, height: 45, marginHorizontal: 25, borderRadius: 10, flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput onSubmitEditing={() => setShowSearch(false)} autoFocus value={search} onChangeText={(res) => { setSearch(res); getuser() }} placeholder='Search User...' style={{ backgroundColor: COLOR.white, height: 45, flex: 1, borderRadius: 10, paddingLeft: 10, fontSize: 16, fontWeight: 'bold' }} />
-                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { setShowSearch(false), setSearch(''), getuser() }}>
+                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { getuser(), setShowSearch(false), setSearch('') }}>
                             {/* <Image source={require('../../Assets/Image/search.png')} style={{ tintColor: COLOR.green, height: 30, width: 30, marginHorizontal: 5 }} /> */}
                             <Text style={{ color: 'skyblue', fontWeight: 'bold', marginRight: 5 }}>Cancel</Text>
 
