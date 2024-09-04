@@ -59,7 +59,7 @@ const BoardScreen = () => {
         const token = await getToken()
         Meetings(token)
             .then((res) => { setMeetingsData(res.data), setLoading(false) })
-            .catch(() => { setLoading(false) })
+            .catch(() => { })
     }
     const meetingList = ({ item }) => {
         function convertTime24To12(timeString) {
