@@ -125,7 +125,7 @@ const BoardScreen = () => {
             style={styles.screenMainContainer}>
             <Text style={styles.boardTxt}>Board</Text>
             <StatusBar hidden={false} barStyle={'light-content'} />
-            <ScrollView
+            <ScrollView showsVerticalScrollIndicator={false}
                 style={styles.scrollContainer}>
                 <View style={styles.deatilsContainer}>
                     <TouchableOpacity style={[styles.topButton, { backgroundColor: isAcctive == 'Screen' ? COLOR.green : COLOR.white }]} onPress={() => { setIsAcctive("Screen") }}>
