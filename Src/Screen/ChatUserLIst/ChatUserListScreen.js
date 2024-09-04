@@ -37,6 +37,7 @@ const ChatUserListScreen = props => {
     const [allUserData, setAllUserData] = useState([]);
     const [token, setToken] = useState('');
     const [deviceToken, setDeviceToken] = useState('');
+    const [profileData, setProfileData] = useState('');
     const [search, setSearch] = useState('');
     const swipeableRef = useRef(null);
     const closeModal = () => { setVisible(false); };
@@ -45,6 +46,15 @@ const ChatUserListScreen = props => {
     const dispatch = useDispatch()
     const handleSetTrue = () => {
         dispatch(setTrue());
+    };
+    // console.log(profileData.data.userDetails.profile);
+
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('myData');
+            const userData = JSON.parse(jsonValue);
+            setProfileData(userData);
+        } catch (e) { }
     };
     const handleSwipeableOpen = id => {
         if (
@@ -235,6 +245,7 @@ const ChatUserListScreen = props => {
     useFocusEffect(useCallback(() => {
         getuser();
         getFcmToken()
+        getData()
         // console.log('useFocusEffect');
     }, [showSearch]));
     const ClearChat = (id) => {
@@ -289,10 +300,12 @@ const ChatUserListScreen = props => {
                     onPress={() => { props.navigation.navigate('summarize'), setVisible(false) }}
                 />
                 {!showSearch ? <ChatHeader
+                    ProfileImage={profileData?.data?.userDetails?.profile}
+                    onProfile={() => { props.navigation.navigate('edit') }}
                     onCall={() => { props.navigation.navigate('call', allUserData), setShowSearch(false) }}
                     tintColor={COLOR.white}
                     onMenu={() => { setVisible(true), setShowSearch(false) }}
-                    onInvite={() => { Alert.alert('Group'), setShowSearch(false) }}
+                    // onInvite={() => { Alert.alert('Group'), setShowSearch(false) }}
                     onSearch={() => setShowSearch(true)} /> :
                     <View style={{ backgroundColor: COLOR.white, marginTop: 65, height: 45, marginHorizontal: 25, borderRadius: 10, flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput onSubmitEditing={() => setShowSearch(false)} autoFocus value={search} onChangeText={(res) => { setSearch(res); getuser() }} placeholder='Search User...' style={{ backgroundColor: COLOR.white, height: 45, flex: 1, borderRadius: 10, paddingLeft: 10, fontSize: 16, fontWeight: 'bold' }} />

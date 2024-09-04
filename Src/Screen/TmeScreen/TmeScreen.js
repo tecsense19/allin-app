@@ -11,9 +11,11 @@ import { GiftedChat, Bubble, Time, Day } from 'react-native-gifted-chat';
 import uuid from 'react-native-uuid';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import TmeModal from '../../Custom/Modal/TmeModal';
+import Button from '../../Custom/Button/Button';
+import NavigateHeader from '../../Custom/Header/NavigateHeader';
 
 
-const TmeScreen = () => {
+const TmeScreen = (props) => {
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
     const [isfocus, setFocus] = useState(false);
@@ -61,7 +63,11 @@ const TmeScreen = () => {
     return (
         <View style={{ flex: 1, backgroundColor: COLOR.black }}>
             <StatusBar barStyle={'light-content'} />
-            <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 115, width: 115, alignSelf: 'center', marginTop: 60, }} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20 }}>
+                <NavigateHeader onPress={() => { props.navigation.goBack() }} />
+                <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 115, width: 115, marginTop: 60, marginLeft: '35%' }} />
+
+            </View>
             <View style={{ backgroundColor: COLOR.white, position: 'absolute', height: 45, bottom: 0, left: 0, right: 0 }}></View>
             <View
                 style={{
@@ -72,7 +78,8 @@ const TmeScreen = () => {
                     borderTopLeftRadius: 20,
                     paddingTop: 10,
 
-                    paddingBottom: isfocus == false || visible == true ? 100 : 5, paddingHorizontal: 10
+                    paddingBottom: isfocus == false || visible == true ? 30 : 5,
+                    paddingHorizontal: 10
                 }}>
                 <GiftedChat
                     messages={messages}
