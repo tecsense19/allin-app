@@ -232,7 +232,6 @@ const CreateEvent = props => {
                         }}
                     />
                     <DatePicker
-                        minimumDate={new Date()}
                         modal
                         mode='time'
                         open={opentime}
@@ -243,7 +242,8 @@ const CreateEvent = props => {
                             console.log(time);
                         }}
                         onCancel={() => {
-                            setOpen(false)
+                            setOpenTime(false)
+
                         }}
                     />
 
