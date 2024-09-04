@@ -4,18 +4,20 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 const ChatHeader = ({
     onSearch,
     onMenu,
-    onInvite,
+    // onInvite,
     title,
     tintColor,
     onCall,
     value,
     onBack,
-    hide
+    hide,
+    ProfileImage,
+    onProfile
 
 }) => {
     return (
         <View style={styles.container}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                 {hide ? <TouchableOpacity onPress={onBack} style={{
                     backgroundColor: COLOR.green,
                     borderRadius: 50,
@@ -35,6 +37,10 @@ const ChatHeader = ({
                     />
                 </TouchableOpacity> : ''}
                 <Text style={styles.title}>{title}</Text>
+                <TouchableOpacity onPress={onProfile}>
+                    <Image style={{ height: 45, width: 45, borderRadius: 50 }} source={{ uri: ProfileImage }} />
+                </TouchableOpacity>
+
             </View>
             <View style={styles.iconview}>
                 <TouchableOpacity onPress={onSearch}>
@@ -50,12 +56,12 @@ const ChatHeader = ({
                         source={require('../../Assets/Image/telephone.png')}
                     />
                 </TouchableOpacity>}
-                {value ? '' : <TouchableOpacity onPress={onInvite}>
+                {/* {value ? '' : <TouchableOpacity onPress={onInvite}>
                     <Image
                         style={[styles.headerIcon, { tintColor: tintColor }]}
                         source={require('../../Assets/Image/invite2.png')}
                     />
-                </TouchableOpacity>}
+                </TouchableOpacity>} */}
                 <TouchableOpacity onPress={onMenu}>
                     <Image
                         style={[styles.headerIcon, { tintColor: tintColor, height: 35, width: 35 }]}
@@ -77,7 +83,7 @@ const styles = StyleSheet.create({
     },
     container: {
         padding: 20,
-        marginTop: 50,
+        marginTop: 40,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
