@@ -8,14 +8,14 @@ import Button from '../../Custom/Button/Button';
 import MyAlert from '../../Custom/Alert/PermissionAlert';
 // import TextRecognition, {
 //     TextRecognitionScript,
-// } from '@react-native-ml-kit/text-recognition';
+// } from '@react-native-ml-kit/text-recognition'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import RNFS from 'react-native-fs';
 // import { File_Uplode } from './Src/Service/actions';
 // import { getToken } from './Src/Service/AsyncStorage';
 import RNFetchBlob from 'rn-fetch-blob';
-import { Chat_File_Message, File_Uplode } from '../../Service/actions';
+import { Chat_File_Message, Docs_File_Uplode, File_Uplode, Scan_Document_List } from '../../Service/actions';
 import { getToken } from '../../Service/AsyncStorage';
 import Loader from '../../Custom/Loader/loader';
 const ScanDocScreen = props => {
@@ -70,9 +70,32 @@ const ScanDocScreen = props => {
             const lastDotIndex = scannedImages[0].lastIndexOf('.');
             const fileType = scannedImages[0].substring(lastDotIndex + 1)
             setScannedImage({ fileName, filePath, fileType });
-            SendScanDoc(fileName, filePath, fileType)
+            if (chatData.isChat == true) {
+                SendScanDoc(fileName, filePath, fileType)
+                ScanDocStore(fileName, filePath, fileType)
+            }
+            else {
+                ScanDocStore(fileName, filePath, fileType)
+            }
+
         }
     };
+    const ScanDocStore = async (name, path, type) => {
+        setLoading(true)
+        const formData = new FormData();
+        const AttachmentUri = path
+        const AttachmentName = name
+        if (AttachmentName) {
+            formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: type });
+            formData.append('attachment_type', 'scan');
+        }
+        const token = await getToken()
+        const data = await Docs_File_Uplode(token, formData,)
+        setLoading(false)
+        console.log(data);
+
+
+    }
     const SendScanDoc = async (name, path, type) => {
         setLoading(true)
         const formData = new FormData();
@@ -82,9 +105,9 @@ const ScanDocScreen = props => {
             formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: type });
         }
         const token = await getToken()
-        const data = await File_Uplode(token, formData)
+        const data = await File_Uplode(token, formData,)
 
-        if (data?.status_code == 200 && chatData.isChat == true) {
+        if (data?.status_code == 200) {
             const fileName = data.data.image_name
             const fileType = data.data.file_type
             Chat_File_Message('Attachment', fileName, chatData?.id, token, fileType)
@@ -165,8 +188,15 @@ const ScanDocScreen = props => {
                 <Button
                     title={'Scan Docs'}
                     bgColor={COLOR.green}
-
                     onPress={scanDocument}
+                    color={COLOR.white}
+                    marginHorizontal={20}
+                />
+                <Button
+                    title={'View Docs'}
+                    bgColor={COLOR.green}
+                    marginTop={10}
+                    onPress={() => props.navigation.navigate('docstore')}
                     color={COLOR.white}
                     marginHorizontal={20}
                 />
@@ -188,6 +218,7 @@ const ScanDocScreen = props => {
                     marginBottom={30}
                     borderWidth={1}
                 />
+
             </View>
             <Loader visible={loading} Retry={scanDocument} />
         </View>
