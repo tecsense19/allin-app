@@ -21,6 +21,8 @@ export const ACTIONS = {
     TASK_DETAILS: BASE_PATH + '/task-chat',
     EXPORT_CHAT: BASE_PATH + '/export-chat',
     FILE_UPLOAD: BASE_PATH + '/file-upload',
+    FILE_SCAN_UPLOAD: BASE_PATH + '/file-scan-upload',
+    USER_DOCUMENTS: BASE_PATH + '/user-documents',
     CHECK_MOBILE_EXISTS: BASE_PATH + '/check-mobile-exists',
     USER_REGISTRATION: BASE_PATH + '/user-registration',
     USERS_MOBILE_NUMBERS: BASE_PATH + '/users-mobile-numbers',
