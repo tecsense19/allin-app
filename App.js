@@ -1,4 +1,3 @@
-// AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo //map api key
 
 import { View, LogBox } from 'react-native'
 import React, { useEffect } from 'react'
