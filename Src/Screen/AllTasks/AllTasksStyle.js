@@ -97,5 +97,11 @@ const styles = StyleSheet.create({
         width: 25,
         resizeMode: 'contain',
     },
+    listmainConatiner: { backgroundColor: COLOR.white, paddingHorizontal: 15, marginTop: 5 },
+    profileAndnameview: { flexDirection: 'row', alignItems: 'center' },
+    checkBoxIcon: { tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 },
+    flatList: { borderTopRightRadius: 20, borderTopLeftRadius: 20 },
+    selecteduserContainer: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20 },
+    selectedProfileImg: { height: 42, width: 42, borderRadius: 50, margin: 2 }
 });
 export default styles;
