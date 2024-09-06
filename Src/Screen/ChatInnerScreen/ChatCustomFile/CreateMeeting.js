@@ -104,6 +104,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
         const timezone = { timezone: Timezone.getTimeZone() }
         await User_List(timezone, token).then((res) => {
             if (res.status_code == 200) {
+
                 setUserData(res?.data?.userList)
 
             }
@@ -366,18 +367,20 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                             // console.log(item);
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
-                                <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
-                                    </View>
+                                <View>
+                                    {item.id == userId ? '' : <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                        </View>
 
-                                    <TouchableOpacity onPress={() => toggleItem(item?.id)}>
-                                        <Image
-                                            source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
-                                            style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
-                                        />
-                                    </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => toggleItem(item?.id)}>
+                                            <Image
+                                                source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
+                                                style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>}
                                 </View>
                             )
                         })} />
@@ -396,7 +399,7 @@ export default CreateMsgMeeting;
 const PickerButton = ({ title, onPress }) => {
     return (
         <TouchableOpacity onPress={onPress} style={{
-            flexDirection: 'row', alignItems: 'center', borderWidth: 1, height: 40, paddingHorizontal: 8, borderRadius: 10, borderColor: COLOR.bordercolor
+            flexDirection: 'row', alignItems: 'center', borderWidth: 1, height: 40, paddingHorizontal: 6, borderRadius: 10, borderColor: COLOR.bordercolor
         }}>
             <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.titlecolor }}>{title}</Text>
             <Image source={require('../../../Assets/Image/down.png')}

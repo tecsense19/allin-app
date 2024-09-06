@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { Alert, Image, ScrollView, Text, View } from 'react-native';
 import DocumentScanner from 'react-native-document-scanner-plugin';
@@ -192,14 +194,6 @@ const ScanDocScreen = props => {
                     color={COLOR.white}
                     marginHorizontal={20}
                 />
-                <Button
-                    title={'View Docs'}
-                    bgColor={COLOR.green}
-                    marginTop={10}
-                    onPress={() => props.navigation.navigate('docstore')}
-                    color={COLOR.white}
-                    marginHorizontal={20}
-                />
                 {/* <Button
                     title={'Scan Text'}
                     bgColor={COLOR.green}
@@ -207,7 +201,7 @@ const ScanDocScreen = props => {
                     onPress={getImage}
                     color={COLOR.white}
                     marginHorizontal={20}
-                /> */}
+                />
                 <Button
                     title={'Close'}
                     marginHorizontal={20}

@@ -81,7 +81,6 @@ const WorkHours = props => {
             setClear(false)
         }
     }
-
     const list = ({ item }) => {
         const originalDate = new Date(item.start_date_time);
         const day = originalDate.getDate();
@@ -128,11 +127,13 @@ const WorkHours = props => {
         getuser()
 
     }, [clear, apiMonthyear,])
-    console.log(apiMonthyear);
+    // console.log(apiMonthyear);
     const get = async () => {
         const Token = await getToken()
         if (Token) {
             setToken(Token)
+            hanaleUserList(Token)
+
         } else {
             get()
         }
@@ -325,7 +326,6 @@ const WorkHours = props => {
             </Modal>
 
         </View >
-
     );
 };
 export default WorkHours;

@@ -206,7 +206,6 @@ const ChatUserListScreen = props => {
                 text: 'YES', onPress: () => {
                     logout(),
                         setLoading(true)
-
                 }, style: 'destructive'
             },
             ],
