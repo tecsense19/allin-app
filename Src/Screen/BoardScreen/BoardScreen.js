@@ -1,5 +1,5 @@
 import { View, Text, StatusBar, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import CalenderComponent from './CalenderComponent';
 import MeetingCommponent from './MeetingCommponent';
@@ -7,13 +7,14 @@ import EventsCommponent from './EventsCommponent';
 import TaskCommponent from './TaskCommponent';
 const BoardScreen = () => {
     const [isAcctive, setIsAcctive] = useState('Calender');
+
     return (
         <View
             style={styles.screenMainContainer}>
             <Text style={styles.boardTxt}>Board</Text>
             <StatusBar hidden={false} barStyle={'light-content'} />
-            <ScrollView showsVerticalScrollIndicator={false}
-                style={styles.scrollContainer}>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
+
                 <View style={styles.deatilsContainer}>
                     <TouchableOpacity style={[styles.topButton, { backgroundColor: isAcctive == 'Task' ? COLOR.green : COLOR.white }]} onPress={() => { setIsAcctive("Task") }}>
                         <Title name={'Task'} color={isAcctive == 'Task' ? COLOR.white : COLOR.black} />
