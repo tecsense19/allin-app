@@ -1,7 +1,3 @@
-
-
-
-// 
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
 import TimeZone from 'react-native-timezone';
@@ -18,19 +14,17 @@ const AllTasks = (props) => {
     const [search, setSearch] = useState('');
     const [token, setToken] = useState('');
     const [loading, setLoading] = useState(true);
-    const [selectedUserIds, setSelectedUserIds] = useState([]); // State to keep track of selected user IDs
-    const [messageid, setMessageID] = useState(''); // State to keep track of selected user IDs
+    const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const [messageid, setMessageID] = useState('');
     const [EmailSummary, setEmailSummary] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
-
 
     useEffect(() => {
         getuser();
         setMessageID(props.route.params)
     }, [token]);
     const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.id));
-    // console.log(filteredUserData); //show selected user by defualt one user for chat
     const AllUserIDs = selectedUserIds.join(',');
     // console.log(AllUserIDs);
     // console.log(selectedItems);
@@ -47,14 +41,9 @@ const AllTasks = (props) => {
         setToken(Token);
         await Task_User_List(Token, 'All Task')
             .then((res) => {
-                if (res.status_code == 200) {
-                    setAllUserData(res?.data?.userList);
-                    setLoading(false);
-                }
+                if (res.status_code == 200) { setAllUserData(res?.data?.userList); setLoading(false); }
             })
-            .catch((e) => {
-                console.log(e, 'userList screen');
-            });
+            .catch((e) => { console.log(e, 'userList screen'); });
     };
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
     const toggleUserSelection = (userId) => {
@@ -71,22 +60,21 @@ const AllTasks = (props) => {
     };
     const list = ({ item }) => {
         const userName = item?.name
-
         return (
-            <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 15, marginTop: 5 }}>
+            <View style={styles.listmainConatiner}>
                 <TouchableOpacity
-                    style={[styles.listcontainer, selectedUserIds.includes(item.id) ? styles.selectedUser : null]} // Apply styles for selected user
-                    onPress={() => { toggleUserSelection(item.id) }} // Toggle user selection onPress
+                    style={[styles.listcontainer, selectedUserIds.includes(item.id) ? styles.selectedUser : null]}
+                    onPress={() => { toggleUserSelection(item.id) }}
                 >
                     <View style={styles.imgAndNameView}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={styles.profileAndnameview}>
                             <Image source={{ uri: item?.profile }} style={styles.chetImg} />
                             <Text style={styles.name}>
                                 {userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}
                             </Text>
                         </View>
                         <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { toggleUserSelection(item.id) }}>
-                            <Image source={selectedUserIds.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
+                            <Image source={selectedUserIds.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={styles.checkBoxIcon} />
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
@@ -121,17 +109,15 @@ const AllTasks = (props) => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
-
             <View style={styles.detailsview}>
-                <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }} />
+                <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={styles.flatList} />
             </View>
             <View style={{ paddingBottom: isFocused ? 5 : 25, backgroundColor: COLOR.white }}>
-                {<View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20 }}>
-
+                {<View style={styles.selecteduserContainer}>
                     <FlatList style={{ flex: 1 }} horizontal data={filteredUserData} renderItem={({ item, index }) => {
                         return (
                             <View>
-                                <Image source={{ uri: index > 3 ? '' : item.profile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0, margin: 2 }} />
+                                <Image source={{ uri: index > 3 ? '' : item.profile }} style={[styles.selectedProfileImg, { marginLeft: index > 0 ? -20 : 0, }]} />
                             </View>
                         )
                     }} />

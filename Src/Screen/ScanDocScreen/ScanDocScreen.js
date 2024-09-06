@@ -1,7 +1,5 @@
-
-
 import React, { useState, useEffect } from 'react';
-import { Alert, Image, ScrollView, Text, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import DocumentScanner from 'react-native-document-scanner-plugin';
 import { PERMISSIONS, openSettings, request } from 'react-native-permissions';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
@@ -79,7 +77,6 @@ const ScanDocScreen = props => {
             else {
                 ScanDocStore(fileName, filePath, fileType)
             }
-
         }
     };
     const ScanDocStore = async (name, path, type) => {
@@ -94,9 +91,7 @@ const ScanDocScreen = props => {
         const token = await getToken()
         const data = await Docs_File_Uplode(token, formData,)
         setLoading(false)
-        console.log(data);
-
-
+        // console.log(data);
     }
     const SendScanDoc = async (name, path, type) => {
         setLoading(true)
@@ -145,73 +140,31 @@ const ScanDocScreen = props => {
             // console.log(error);
         }
     };
-
     useEffect(() => {
         requestCameraPermission();
     }, []);
 
-
     return (
-        <View style={{ flex: 1, backgroundColor: COLOR.black }}>
+        <View style={styles.mainContainer}>
             <View style={{ paddingHorizontal: 20 }}>
-                <NavigateHeader
-                    color={COLOR.white}
-                    title={'Scan document'}
-                    onPress={() => props.navigation.goBack()}
-                />
+                <NavigateHeader color={COLOR.white} title={'Scan document'} onPress={() => props.navigation.goBack()} />
             </View>
             <View
-                style={{
-                    flex: 1,
-                    marginTop: 10,
-                    backgroundColor: COLOR.white,
-                    borderTopRightRadius: 20,
-                    borderTopLeftRadius: 20,
-                }}>
-
+                style={styles.detailsContainer}>
                 <ScrollView style={{}} bounces={false}>
                     {text == '' ? <Image
                         resizeMode="contain"
-                        style={{
-                            width: 300,
-                            height: 350,
-                            resizeMode: 'contain',
-                            alignSelf: 'center',
-                            marginTop: 50
-                        }}
-                        source={
-                            scannedImage == undefined
-                                ? require('../../Assets/Image/scanner.png')
-                                : { uri: scannedImage.filePath }
-                        }
-                    /> : null}
-                    <Text style={{ fontSize: 16, marginTop: 20, fontWeight: 'bold', marginHorizontal: 20 }}>{text}</Text>
+                        style={styles.scaniconAndImage}
+                        source={scannedImage == undefined
+                            ? require('../../Assets/Image/scanner.png')
+                            : { uri: scannedImage.filePath }} /> : null}
+                    <Text style={styles.scanText}>{text}</Text>
                 </ScrollView>
-                <Button
-                    title={'Scan Docs'}
-                    bgColor={COLOR.green}
-                    onPress={scanDocument}
-                    color={COLOR.white}
-                    marginHorizontal={20}
-                />
-                {/* <Button
-                    title={'Scan Text'}
-                    bgColor={COLOR.green}
-                    marginTop={10}
-                    onPress={getImage}
-                    color={COLOR.white}
-                    marginHorizontal={20}
-                />
-                <Button
-                    title={'Close'}
-                    marginHorizontal={20}
-                    color={COLOR.black}
-                    bgColor={COLOR.white}
-                    onPress={() => props.navigation.goBack()}
-                    marginTop={10}
-                    marginBottom={30}
-                    borderWidth={1}
-                />
+
+                <Button title={'Scan Docs'} bgColor={COLOR.green} onPress={scanDocument} color={COLOR.white} marginHorizontal={20} />
+                <Button title={'View Docs'} bgColor={COLOR.green} marginTop={10} onPress={() => props.navigation.navigate('docstore')} color={COLOR.white} marginHorizontal={20} />
+                {/* <Button title={'Scan Text'} bgColor={COLOR.green} marginTop={10} onPress={getImage} color={COLOR.white} marginHorizontal={20}/> */}
+                <Button title={'Close'} marginHorizontal={20} color={COLOR.black} bgColor={COLOR.white} onPress={() => props.navigation.goBack()} marginTop={10} marginBottom={30} borderWidth={1} />
 
             </View>
             <Loader visible={loading} Retry={scanDocument} />
@@ -220,3 +173,10 @@ const ScanDocScreen = props => {
 };
 
 export default ScanDocScreen;
+
+const styles = StyleSheet.create({
+    mainContainer: { flex: 1, backgroundColor: COLOR.black },
+    detailsContainer: { flex: 1, marginTop: 10, backgroundColor: COLOR.white, borderTopRightRadius: 20, borderTopLeftRadius: 20, },
+    scaniconAndImage: { width: 300, height: 350, resizeMode: 'contain', alignSelf: 'center', marginTop: 50 },
+    scanText: { fontSize: 16, marginTop: 20, fontWeight: 'bold', marginHorizontal: 20 }
+})
