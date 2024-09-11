@@ -9,7 +9,7 @@ import {
 import React, { useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 
-const MainMenu = ({ visible, onPress, setting, onClose, title, QR, onRequestClose, onLogout, }) => {
+const MainMenu = ({ visible, onPress, setting, onClose, title, QR, onRequestClose, onLogout, onGroup }) => {
     const [onSelect, setOnSelect] = useState(1)
     return (
         <View>
@@ -23,8 +23,8 @@ const MainMenu = ({ visible, onPress, setting, onClose, title, QR, onRequestClos
                             <TouchableOpacity style={[styles.onselectlist, { backgroundColor: onSelect == 2 ? COLOR.lightgreen : COLOR.white }]} onPress={() => { setOnSelect(2), QR() }}>
                                 <Text style={styles.modalText}>Website QR</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.onselectlist, { backgroundColor: onSelect == 3 ? COLOR.lightgreen : COLOR.white }]} onPress={() => { setOnSelect(3), setting() }}>
-                                <Text style={styles.modalText}>Group</Text>
+                            <TouchableOpacity style={[styles.onselectlist, { backgroundColor: onSelect == 3 ? COLOR.lightgreen : COLOR.white }]} onPress={() => { setOnSelect(3), onGroup() }}>
+                                <Text style={styles.modalText}>Create Group</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.onselectlist, { backgroundColor: onSelect == 4 ? COLOR.lightgreen : COLOR.white }]} onPress={() => { setOnSelect(4), setting() }}>
                                 <Text style={styles.modalText}>Settings</Text>
