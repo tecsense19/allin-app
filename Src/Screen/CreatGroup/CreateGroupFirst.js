@@ -17,7 +17,6 @@ const CreateGroupFirstScreen = (props) => {
     const selectedUser = allUserData?.filter(user => { return user?.id })// by defualt selected user not show
     const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
 
-    console.log(filteredUserData);
 
     const getuser = async () => {
         setLoading(true)
@@ -74,6 +73,17 @@ const CreateGroupFirstScreen = (props) => {
         }
     };
 
+    const handaleNavigate = () => {
+        if (selectedItems.length < 2) {
+            alert('Please select at least 2 users to create group')
+            return
+        }
+        else {
+            props.navigation.navigate('creategroupsecond', filteredUserData)
+
+        }
+    }
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
@@ -104,7 +114,7 @@ const CreateGroupFirstScreen = (props) => {
                         <Text style={{ color: COLOR.black, fontWeight: '600', fontSize: 16 }}>Add Members</Text>
                         <Text style={{ textAlign: 'center', fontSize: 14 }}>{filteredUserData.length + '/' + allUserData.length}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => props.navigation.navigate('creategroupsecond')}>
+                    <TouchableOpacity onPress={handaleNavigate}>
                         <Text style={{ color: COLOR.black, fontWeight: '600', fontSize: 16 }}>Next</Text>
                     </TouchableOpacity>
                 </View>
