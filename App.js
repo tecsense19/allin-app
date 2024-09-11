@@ -1,5 +1,5 @@
 
-import { View, LogBox } from 'react-native'
+import { View, LogBox, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect } from 'react'
 import StackScreen from './Src/Navigation/Stack/Stcak'
 import { Provider } from 'react-redux';
@@ -22,6 +22,7 @@ const App = () => {
     <Provider store={store}>
       <View style={{ flex: 1 }}>
         <StackScreen />
+
       </View>
     </Provider>
   )
