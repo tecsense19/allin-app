@@ -4,7 +4,9 @@ import Loader from '../../Custom/Loader/loader'
 import { COLOR } from '../../Assets/AllFactors/AllFactors'
 import NavigateHeader from '../../Custom/Header/NavigateHeader'
 
-const CreateGroupSecondScreen = () => {
+const CreateGroupSecondScreen = (props) => {
+    console.log(props.route.params);
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
