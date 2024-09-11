@@ -298,6 +298,9 @@ const ChatUserListScreen = props => {
                     onClose={() => setVisible(false)}
                     setting={() => { props.navigation.navigate('edit'); setVisible(false); }}
                     onPress={() => { props.navigation.navigate('summarize'), setVisible(false) }}
+                    onGroup={() => { props.navigation.navigate('creategroup'), setVisible(false) }}
+
+
                 />
                 {!showSearch ? <ChatHeader
                     ProfileImage={profileData?.data?.userDetails?.profile}
