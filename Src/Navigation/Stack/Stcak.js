@@ -24,6 +24,9 @@ import Files from '../../Screen/Files/Files';
 import Calculator from '../../Screen/calculater';
 import DocumentStore from '../../Screen/DocumentStore/DocumentStore';
 import TmeScreen from '../../Screen/TmeScreen/TmeScreen';
+import CreateGroup from '../../Screen/CreatGroup/CreateGroupFirst';
+import CreateGroupFirstScreen from '../../Screen/CreatGroup/CreateGroupFirst';
+import CreateGroupSecondScreen from '../../Screen/CreatGroup/CreateGroupSecondScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -32,7 +35,7 @@ const StackScreen = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                // initialRouteName="docstore"
+                initialRouteName="creategroup"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 {/* <Stack.Screen name="cals" component={Calculator} /> */}
                 <Stack.Screen name="splase" component={SplaseScreen} />
@@ -56,6 +59,8 @@ const StackScreen = () => {
                 <Stack.Screen name="files" component={Files} />
                 <Stack.Screen name="docstore" component={DocumentStore} />
                 <Stack.Screen name="tme" component={TmeScreen} />
+                <Stack.Screen name="creategroup" component={CreateGroupFirstScreen} />
+                <Stack.Screen name="creategroupsecond" component={CreateGroupSecondScreen} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
 
 
