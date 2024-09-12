@@ -105,13 +105,15 @@ const ChatProfileScreen = props => {
                         <CallMsg img={require('../../Assets/Image/telephone.png')} onPress={() => { onhandalePhoneCall() }} />
                         <CallMsg img={require('../../Assets/Image/group.png')} onPress={() => { props.navigation.goBack() }} />
                     </View>
-                    {chatProfileData?.description == null || chatProfileData?.title == null ? '' : <View style={{ marginHorizontal: 30, borderRadius: 15, padding: 15, marginTop: 20, backgroundColor: COLOR.lightgreen }}>
-                        <Text style={{ textAlign: 'center', fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{chatProfileData?.title}</Text>
-                        <Text style={{ marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center' }}>
-                            {chatProfileData?.description}
-                        </Text>
-                        <Text style={{  marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center'  }}>{chatProfileData.email}</Text>
-                    </View>}
+                    {chatProfileData?.description == 'null' || chatProfileData?.title == 'null' || chatProfileData?.description || chatProfileData?.title ?
+                        null :
+                        <View style={{ marginHorizontal: 30, borderRadius: 15, padding: 15, marginTop: 20, backgroundColor: COLOR.lightgreen }}>
+                            <Text style={{ textAlign: 'center', fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{chatProfileData?.title}</Text>
+                            <Text style={{ marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center' }}>
+                                {chatProfileData?.description}
+                            </Text>
+                            <Text style={{ marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center' }}>{chatProfileData.email}</Text>
+                        </View>}
 
                     <FlatList data={socialMedia} renderItem={list} horizontal style={{ alignSelf: 'center', marginTop: 20 }} bounces={false} />
                 </View>
