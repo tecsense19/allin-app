@@ -1,10 +1,11 @@
 import { View, Text, StatusBar, StyleSheet, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { COLOR } from '../../Assets/AllFactors/AllFactors'
 import Timezone from 'react-native-timezone'
 import { User_List } from '../../Service/actions'
 import { getToken } from '../../Service/AsyncStorage'
 import Loader from '../../Custom/Loader/loader'
+import { useFocusEffect } from '@react-navigation/native'
 
 
 const CreateGroupFirstScreen = (props) => {
@@ -16,6 +17,7 @@ const CreateGroupFirstScreen = (props) => {
 
     const selectedUser = allUserData?.filter(user => { return user?.id })// by defualt selected user not show
     const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.id)); //show selected user by defualt one user for chat
+    console.log(selectedItems);
 
 
     const getuser = async () => {
@@ -34,22 +36,27 @@ const CreateGroupFirstScreen = (props) => {
             // Handle error case, e.g., show alert or retry logic
         }
     };
+    useFocusEffect(useCallback(() => {
+        setSelectedItems('')
+    }, []))
     useEffect(() => {
         getuser()
     }, [])
     const list = ({ item, index }) => {
+        const username = item.first_name + ' ' + item.last_name
         return (
-            <TouchableOpacity style={{ height: 80, }} onPress={() => toggleItem(item.id)}>
+            <TouchableOpacity style={{ height: 80, marginLeft: 20, }} onPress={() => toggleItem(item.id)}>
                 <Image source={{ uri: item.profile }} style={{
                     height: 50, width: 50,
-                    borderRadius: 100, marginLeft: 20,
+                    borderRadius: 100,
                 }} />
-                <View style={{ backgroundColor: COLOR.lightgray, position: 'absolute', padding: 5, borderRadius: 50, right: 0 }}>
+                <View style={{ backgroundColor: COLOR.lightgreen, position: 'absolute', padding: 5, borderRadius: 50, right: 0 }}>
                     <Image source={require('../../Assets/Image/x.png')} style={{
                         height: 7, width: 7,
 
                     }} />
                 </View>
+                <Text style={{ alignSelf: 'center', }}>{username.length > 6 ? username.slice(0, 6) + '...' : username}</Text>
             </TouchableOpacity>
         )
     }
@@ -74,12 +81,13 @@ const CreateGroupFirstScreen = (props) => {
     };
 
     const handaleNavigate = () => {
+        const Data = { userinfo: filteredUserData, userid: selectedItems, totaluser: allUserData?.length, selecteduser: filteredUserData?.length }
         if (selectedItems.length < 2) {
             alert('Please select at least 2 users to create group')
             return
         }
         else {
-            props.navigation.navigate('creategroupsecond', filteredUserData)
+            props.navigation.navigate('creategroupsecond', Data)
 
         }
     }
