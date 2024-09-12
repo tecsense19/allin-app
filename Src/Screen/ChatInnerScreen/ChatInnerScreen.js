@@ -1,7 +1,5 @@
-
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { View, Alert, Vibration, Image, LogBox, BackHandler, Modal, Linking, TouchableOpacity, FlatList, Text, TextInput, SectionList, ScrollView, KeyboardAvoidingView } from 'react-native';
-import uuid from 'react-native-uuid';
 import DocumentPicker from 'react-native-document-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Contacts from 'react-native-contacts';
@@ -32,7 +30,6 @@ import Button from '../../Custom/Button/Button';
 import MsgMapImage from './ChatCustomFile/MsgMapView';
 import { getToken } from '../../Service/AsyncStorage';
 LogBox.ignoreAllLogs();
-
 
 const ChatInnerScreen = props => {
     const [messages, setMessages] = useState([]);
@@ -75,7 +72,11 @@ const ChatInnerScreen = props => {
             scrollViewRef.current.scrollToEnd({ animated: false });
         }
     };
-    useEffect(() => { scrollToBottom() }, [messages,]);
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages]);
+
     useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
     useEffect(() => {
         const extractMessageIds = () => {
@@ -165,12 +166,9 @@ const ChatInnerScreen = props => {
         const bodyData = { id: Userid, start: 0, limit: 1000, timezone: Timezone.getTimeZone(), filter: change == true ? 'filter' : null }
         const data = await Get_All_Messages(bodyData, Token)
         if (data?.status_code == 200) {
-            // console.log(data?.data?.chat);
             setUserDetails(data.data.userData);
             setMessages(data?.data?.chat);
             setLoding(false);
-
-
         } else {
             setLoding(false);
             Alert.alert(data?.message);
@@ -358,6 +356,7 @@ const ChatInnerScreen = props => {
             </View>
         ));
     }, [messages, selectedMSG]);
+
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
             {msgType == 'Location' ?
@@ -370,7 +369,6 @@ const ChatInnerScreen = props => {
                     >
                         <Text style={{ textAlign: 'right', marginTop: 80, marginRight: 30, fontSize: 12, color: COLOR.black, fontWeight: 'bold', marginBottom: 5 }}>{location?.latitude}</Text>
                         <Text style={{ textAlign: 'right', marginRight: 30, fontSize: 12, color: COLOR.black, fontWeight: 'bold' }}>{location?.longitude}</Text>
-
                         {/* <Marker coordinate={{ latitude: location.latitude, longitude: location.longitude }} /> */}
                     </MapView>
                     <View style={{ position: 'absolute', bottom: 55, left: 30, right: 30 }}>
@@ -418,10 +416,8 @@ const ChatInnerScreen = props => {
                             </View>
                             <View style={styles.GiftedChat}>
                                 <ScrollView ref={scrollViewRef}
-                                    invertStickyHeaders={true}
-                                    onScroll={handleScroll}
-                                    scrollEventThrottle={16}>
 
+                                >
                                     {memoizedMessages}
                                 </ScrollView>
                             </View >
