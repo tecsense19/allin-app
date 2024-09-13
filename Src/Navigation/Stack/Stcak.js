@@ -35,7 +35,7 @@ const StackScreen = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="creategroup"
+                // initialRouteName="creategroup"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 {/* <Stack.Screen name="cals" component={Calculator} /> */}
                 <Stack.Screen name="splase" component={SplaseScreen} />
