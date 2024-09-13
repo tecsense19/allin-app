@@ -2,7 +2,7 @@
 import { View, Image, Text, TouchableOpacity, StyleSheet, Alert, } from 'react-native';
 import React, { } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-const MsgTask = ({ data, onPress, disabled }) => {
+const MsgTask = ({ data, onPress, disabled, ThreeDott }) => {
 
     const createTwoButtonAlert = () =>
         Alert.alert(
@@ -45,7 +45,7 @@ const MsgTask = ({ data, onPress, disabled }) => {
                                 data?.messageDetails?.task_name?.slice(0, 42) + '...' : data?.messageDetails?.task_name}</Text>}
                 </View>
                 {data?.sentBy == 'loginUser' ? <TouchableOpacity
-                    //  onPress={createTwoButtonAlert}
+                    onPress={ThreeDott}
                     style={styles.onThreeDott}>
                     <Image source={require('../../../Assets/Image/dott.png')} style={styles.threedottImg} />
                 </TouchableOpacity> : null}
