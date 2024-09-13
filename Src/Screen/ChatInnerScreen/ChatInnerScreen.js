@@ -54,14 +54,11 @@ const ChatInnerScreen = props => {
     const [filteredContacts, setFilteredContacts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [token, setToken] = useState('');
+    const [taskpopup, setTaskpopup] = useState('');
+
     const [loadedMessagesCount, setLoadedMessagesCount] = useState(15);
 
-    const handleScroll = event => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        if (offsetY === 0) {
-            getAllMessages()
-        }
-    };
+
     const Userid = props?.route?.params
     const userName = userDetails.first_name == undefined && userDetails.last_name == undefined ? '' : userDetails.first_name + ' ' + userDetails.last_name
     const scrollViewRef = useRef();
@@ -77,7 +74,7 @@ const ChatInnerScreen = props => {
         scrollToBottom()
     }, [messages]);
 
-    useEffect(() => { if (selectedMSG == '') { setIsSelected(false) } }, [selectedMSG])
+    useEffect(() => { if (selectedMSG?.length == 0) { setIsSelected(false) } }, [selectedMSG])
     useEffect(() => {
         const extractMessageIds = () => {
             const ids = [];
@@ -155,11 +152,14 @@ const ChatInnerScreen = props => {
         setSelectedMSG('')
         getAllMessages()
     }
+
     const onhandaleSelected = msg => {
         if (selectedMSG.includes(msg)) {
             setSelectedMSG(selectedMSG.filter((id) => id !== msg));
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
+
+
     const getAllMessages = async () => {
         const Token = await getToken()
         setToken(Token)
@@ -299,6 +299,8 @@ const ChatInnerScreen = props => {
             </TouchableOpacity>
         )
     }
+    console.log(taskpopup);
+
     const ChatMessage = React.memo(({ message }) => {
         const renderMessage = () => {
             switch (message?.messageType) {
@@ -307,7 +309,7 @@ const ChatInnerScreen = props => {
                 case 'Attachment':
                     return <MsgAttachment data={message} />;
                 case 'Task':
-                    return <MsgTask data={message} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
+                    return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
                 case 'Meeting':
                     return <MsgMeeting data={message} />
                 case 'Reminder':
@@ -320,17 +322,44 @@ const ChatInnerScreen = props => {
                     return;
             }
         };
+
         return (
             <View style={{ backgroundColor: selectedMSG.includes(message) ? COLOR.green : COLOR.white, marginVertical: 2 }}>
+                {/* <View style={{ marginVertical: 2 }}> */}
                 <TouchableOpacity style={{ marginHorizontal: 30, marginVertical: 2, }}
-                    delayLongPress={500}
+                    delayLongPress={300}
                     onLongPress={() => { setIsSelected(true), onhandaleSelected(message) }}
-                    onPress={() => { isSelected ? onhandaleSelected(message) : '', message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : '' }}>
+                    onPress={() => {
+                        // isSelected ? onhandaleSelected(message) : '',
+                        message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : ''
+                    }}>
                     {renderMessage()}
+                    {selectedMSG[selectedMSG?.length - 1]?.messageId == message?.messageId && message.messageType == 'Text' && selectedMSG.length <= 1 ?
+                        <View style={{ height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', borderRadius: 10, width: '70%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, alignSelf: 'center', marginTop: -30 }}>
+                            <TouchableOpacity onPress={() => onhandaleSelected(message)} style={{ flexDirection: 'row', padding: 10 }}>
+                                <Text style={{ color: 'red', fontSize: 15, fontWeight: '600', }}>
+                                    Ignore
+                                </Text>
+                                <Image source={require('../../Assets/Image/ignore.png')} style={{ height: 20, width: 20, marginLeft: 5 }} />
+                            </TouchableOpacity>
+                            <View style={{ height: 25, width: 2, backgroundColor: COLOR.lightgray }}></View>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10 }}>
+                                <Text style={{ color: COLOR.green, fontSize: 15, fontWeight: '600' }}>
+                                    Add Task
+                                </Text>
+                                <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
+
+                            </TouchableOpacity>
+                        </View> : null}
+                    {/* {taskpopup?.messageId == message?.messageId ?
+                        <View style={{ height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', borderRadius: 10, width: '70%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, alignSelf: 'center' }}>
+
+                        </View> : null} */}
                 </TouchableOpacity>
             </View>
         );
     });
+
     const SendFormetedContactArray = selectedContact.map(obj => ({
         givenName: obj.givenName,
         phoneNumbers: obj.phoneNumbers.map(phone => phone.number)
@@ -416,7 +445,6 @@ const ChatInnerScreen = props => {
                             </View>
                             <View style={styles.GiftedChat}>
                                 <ScrollView ref={scrollViewRef}
-
                                 >
                                     {memoizedMessages}
                                 </ScrollView>
