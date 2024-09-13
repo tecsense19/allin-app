@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, TextInput, FlatList } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, TextInput, FlatList, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Loader from '../../Custom/Loader/loader'
 import { COLOR } from '../../Assets/AllFactors/AllFactors'
@@ -8,6 +8,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 
 const CreateGroupSecondScreen = (props) => {
     const Data = props?.route?.params
+    const screenWidth = Dimensions.get('window').width;
 
 
     const [groupName, setGroupName] = useState('')
@@ -30,7 +31,7 @@ const CreateGroupSecondScreen = (props) => {
         const username = item?.first_name + ' ' + item?.last_name
         return (
             <TouchableOpacity
-                style={styles.itemContainer}
+                style={[styles.itemContainer, { width: (screenWidth / 5) - 20, margin: screenWidth / 28,  }]}
                 onPress={() => handleItemClick(item.id)}
             >
                 <View style={{}}>
@@ -152,7 +153,8 @@ const styles = StyleSheet.create({
     itemContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 15
+
+
     },
 
     itemImage: {
