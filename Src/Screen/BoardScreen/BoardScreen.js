@@ -47,11 +47,11 @@ const Title = ({ name, color }) => {
 export default BoardScreen;
 
 const styles = StyleSheet.create({
-    topButton: { flex: 1, backgroundColor: 'white', margin: 3, justifyContent: 'center', alignItems: 'center', shadowOpacity: 0.2, shadowOffset: { height: 1, width: 2 }, shadowRadius: 5, borderRadius: 10 },
-    headerTopButtonTitle: { fontSize: 16, fontWeight: 'bold', },
+    topButton: { flex: 1, backgroundColor: 'white', margin: 3, justifyContent: 'center', alignItems: 'center', shadowOpacity: 0.2, shadowOffset: { height: 1, width: 2 }, shadowRadius: 5, borderRadius: 30 },
+    headerTopButtonTitle: { fontSize: 15, fontWeight: 'bold', },
     screenMainContainer: { flex: 1, backgroundColor: COLOR.black, },
     boardTxt: { marginTop: 60, fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: COLOR.white },
     scrollContainer: { flex: 1, marginTop: 20, backgroundColor: COLOR.white, borderRadius: 20, paddingTop: 15 },
-    deatilsContainer: { height: 100, flex: 1, paddingVertical: 10, paddingHorizontal: 10, justifyContent: 'center', flexDirection: 'row' },
+    deatilsContainer: { height: 70, flex: 1, paddingVertical: 10, paddingHorizontal: 10, justifyContent: 'center', flexDirection: 'row', marginBottom: 10 },
 
 })
