@@ -53,6 +53,7 @@ const ChatUserListScreen = props => {
         try {
             const jsonValue = await AsyncStorage.getItem('myData');
             const userData = JSON.parse(jsonValue);
+
             setProfileData(userData);
         } catch (e) { }
     };
@@ -114,6 +115,7 @@ const ChatUserListScreen = props => {
             }
         };
         const userName = item?.first_name + ' ' + item.last_name
+        const groupName = item.name
         const swipeRightSide = () => {
             return (
                 <View style={styles.swipeView}>
@@ -170,16 +172,21 @@ const ChatUserListScreen = props => {
                     <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 20, marginTop: 5 }}>
                         <TouchableOpacity
                             style={styles.listcontainer}
-                            onPress={() => { props.navigation.navigate('chatinner', item.id), setShowSearch(false) }}
+                            onPress={() => { item.type == 'user' ? props.navigation.navigate('chatinner', item.id) : props.navigation.navigate('groupchat', item.id), setShowSearch(false) }}
                         >
                             <View style={styles.imgAndNameView}>
                                 <Image source={{ uri: item?.profile }} style={styles.chetImg} />
                                 <View style={{}}>
-                                    <Text style={styles.name}>
-                                        {userName?.length >= 16
-                                            ? userName?.slice(0, 16) + ' . . . ' || ''
+                                    {item.type == 'user' ? <Text style={styles.name}>
+                                        {userName?.length >= 17
+                                            ? userName?.slice(0, 17) + '...' || ''
                                             : userName}
-                                    </Text>
+                                    </Text> :
+                                        <Text style={styles.name}>
+                                            {groupName?.length >= 17
+                                                ? groupName?.slice(0, 16) + '...' || ''
+                                                : groupName}
+                                        </Text>}
                                     {item?.last_message ? <Text style={styles.bio}>
                                         {item?.last_message?.length >= 30 ? item?.last_message?.slice(0, 30) : item?.last_message}
                                     </Text> : ''}
@@ -230,6 +237,7 @@ const ChatUserListScreen = props => {
                 const res = await User_List(bodydata, Token);
                 if (res.status_code === 200) {
                     setAllUserData(res.data.userList);
+                    console.log(res.data.userList);
                     setLoading(false);
                 } else {
                     console.log('User_List API returned error:', res);
