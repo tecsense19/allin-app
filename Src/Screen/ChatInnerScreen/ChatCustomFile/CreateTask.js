@@ -33,9 +33,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
         if (title == '') {
             Alert.alert('Please enter title and descriptions');
         }
-        else if (
-            descriptions.length < 50
-        ) { Alert.alert('Write descriptions minimum 50 Character') }
+
         else {
             onSubmit(data);
             setDescription(null)
@@ -131,13 +129,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     color: COLOR.textcolor,
                 }}
             />
-            {descriptions?.length > 50 ? '' : <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                <Image source={require('../../../Assets/Image/notice.png')} style={{ height: 15, width: 15, marginRight: 5, tintColor: COLOR.placeholder }} />
-                <Text style={{
-                    color: COLOR.placeholder, fontWeight: '500',
-                    textAlign: 'left', fontSize: 14, width: '90%'
-                }}>{'Descriptions minimum 50 characters are require'}</Text>
-            </View>}
+
             <View style={{ alignSelf: 'center', marginTop: 50 }}>
                 <PickerButton title={'Remind'} onPress={() => setVisible(true)} />
             </View>
