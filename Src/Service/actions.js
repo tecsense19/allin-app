@@ -696,6 +696,58 @@ export const User_Mobile_Number = async (token) => {
     const response = await res.json()
     return response
 }
+export const Create_group = async (token, data) => {
+    const formData = new FormData();
+    formData.append('name', data?.name);
+    const profileImageUri = data?.profile.uri;
+    const profileimageName = profileImageUri ? profileImageUri.split('/').pop() : ''; // Extract image name from URI
+
+    if (profileimageName) { formData.append('profile', { uri: profileImageUri, name: profileimageName, type: data?.profile.type }); }
+    console.log(data.name);
+
+    const res = await fetch(ACTIONS.CREATE_GROUP, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+    })
+
+
+    const response = await res.json()
+    return response
+}
+export const Add_Group_Mamber = async (token, id, user) => {
+
+    const res = await fetch(ACTIONS.ADD_GROUP_MAMBER, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: id, user_id: user })
+    })
+
+
+    const response = await res.json()
+    return response
+}
+export const User_List_For_Group = async (token, Id) => {
+
+    const res = await fetch(ACTIONS.USER_LIST_FOR_GROUP, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, })
+    })
+
+
+    const response = await res.json()
+    return response
+}
 export const Refresh_Token = async (token) => {
     console.log(token, '=>>>>>');
     try {
