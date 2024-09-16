@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, TextInput, FlatList, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, TextInput, FlatList, Dimensions, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Loader from '../../Custom/Loader/loader'
 import { COLOR } from '../../Assets/AllFactors/AllFactors'
 import NavigateHeader from '../../Custom/Header/NavigateHeader'
 import ProfileModal from '../../Custom/Modal/ProfileModal'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import { Add_Group_Mamber, Create_group } from '../../Service/actions'
+import { getToken } from '../../Service/AsyncStorage'
 
 const CreateGroupSecondScreen = (props) => {
     const Data = props?.route?.params
@@ -25,13 +27,38 @@ const CreateGroupSecondScreen = (props) => {
     const ids = data ? data?.map(item => item?.id) : ''
     console.log(groupName);
 
+    const CreteNewGroup = async () => {
+        setLoading(true)
+        const token = await getToken()
+        const groupCreateData = { name: groupName, profile: img }
+        await Create_group(token, groupCreateData).then((res) => {
+            if (res.status_code == 200) {
+                const groupId = res.data.id
+                Add_Group_Mamber(token, groupId, ids.toString()).then((i) => {
+                    if (i.status_code == 200) {
+                        props.navigation.navigate('chats')
+                        setLoading(false)
+                    }
+                })
+            } else {
+                setLoading(false)
+
+                Alert.alert(res?.message)
+
+            }
+        }).catch((err) => {
+
+        }
+        )
+
+    }
 
 
     const list = ({ item }) => {
         const username = item?.first_name + ' ' + item?.last_name
         return (
             <TouchableOpacity
-                style={[styles.itemContainer, { width: (screenWidth / 5) - 20, margin: screenWidth / 28,  }]}
+                style={[styles.itemContainer, { width: (screenWidth / 5) - 20, margin: screenWidth / 28, }]}
                 onPress={() => handleItemClick(item.id)}
             >
                 <View style={{}}>
@@ -76,7 +103,7 @@ const CreateGroupSecondScreen = (props) => {
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
             <View style={{ paddingHorizontal: 20 }}>
-                <NavigateHeader title={'New Group'} onCreate={''} title3={'Create'} color={COLOR.white} onPress={() => props.navigation.goBack()} />
+                <NavigateHeader title={'New Group'} onCreate={CreteNewGroup} title3={'Create'} color={COLOR.white} onPress={() => props.navigation.goBack()} />
             </View>
             <View
                 style={{
@@ -104,7 +131,7 @@ const CreateGroupSecondScreen = (props) => {
                 <FlatList data={data} renderItem={list} numColumns={4} style={{ marginTop: 10 }} />
             </View>
             <ProfileModal visible={isOpen} onCemera={profileImgCemera} onGallery={profileImgGallery} onClose={() => setIsOpen(false)} />
-            {/* <Loader visible={loading} Retry={getuser} /> */}
+            <Loader visible={loading} Retry={CreteNewGroup} />
         </View>
     )
 }
