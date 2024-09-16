@@ -237,7 +237,6 @@ const ChatUserListScreen = props => {
                 const res = await User_List(bodydata, Token);
                 if (res.status_code === 200) {
                     setAllUserData(res.data.userList);
-                    console.log(res.data.userList);
                     setLoading(false);
                 } else {
                     console.log('User_List API returned error:', res);
