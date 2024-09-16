@@ -94,13 +94,12 @@ const ChatInnerScreen = props => {
         const fetchData = async () => {
             await getAllMessages();
             // setLoadedMessagesCount(loadedMessagesCount + 5)
-
             if (messageIds) {
                 await Read_Unread_Messages(token, messageIds);
             }
         }
         fetchData();
-    }, [messageIds, token, change]);
+    }, [messageIds, token, change, taskpopup]);
     useEffect(() => {
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress', closeModal,);
@@ -351,10 +350,32 @@ const ChatInnerScreen = props => {
 
                             </TouchableOpacity>
                         </View> : null}
-                    {/* {taskpopup?.messageId == message?.messageId ?
-                        <View style={{ height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', borderRadius: 10, width: '70%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, alignSelf: 'center' }}>
+                    {taskpopup?.messageId == message?.messageId ?
+                        <View style={{ height: 120, justifyContent: 'space-around', borderRadius: 10, width: '40%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, marginTop: -50, alignSelf: 'flex-end', position: 'absolute' }}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => setTaskpopup('')}>
+                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
+                                    Reminder
+                                </Text>
+                                <Image source={require('../../Assets/Image/taskreminder.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
 
-                        </View> : null} */}
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => setTaskpopup('')}>
+                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
+                                    Edit TAsk
+                                </Text>
+                                <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
+
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => setTaskpopup('')}>
+                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
+                                    Detele Task
+                                </Text>
+                                <Image source={require('../../Assets/Image/bin.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
+
+                            </TouchableOpacity>
+
+                        </View> : null}
+
                 </TouchableOpacity>
             </View>
         );
