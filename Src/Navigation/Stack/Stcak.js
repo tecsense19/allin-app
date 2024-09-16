@@ -27,6 +27,7 @@ import TmeScreen from '../../Screen/TmeScreen/TmeScreen';
 import CreateGroup from '../../Screen/CreatGroup/CreateGroupFirst';
 import CreateGroupFirstScreen from '../../Screen/CreatGroup/CreateGroupFirst';
 import CreateGroupSecondScreen from '../../Screen/CreatGroup/CreateGroupSecondScreen';
+import GroupChatScreen from '../../Screen/GroupChatScreen/GroupChatScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -61,6 +62,7 @@ const StackScreen = () => {
                 <Stack.Screen name="tme" component={TmeScreen} />
                 <Stack.Screen name="creategroup" component={CreateGroupFirstScreen} />
                 <Stack.Screen name="creategroupsecond" component={CreateGroupSecondScreen} />
+                <Stack.Screen name="groupchat" component={GroupChatScreen} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
 
 
