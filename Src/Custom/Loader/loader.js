@@ -5,7 +5,7 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors'
 const Loader = ({ visible, Retry }) => {
     const [isRetry, setIsRetry] = useState(false)
     useEffect(() => {
-        setTimeout(() => {
+        setInterval(() => {
             visible == true ? setIsRetry(true) : setIsRetry(false)
         }, 10000)
 
@@ -27,7 +27,7 @@ const Loader = ({ visible, Retry }) => {
             {isRetry ? <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ height: 100, width: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.white, borderRadius: 10 }}>
                     <TouchableOpacity onPress={handleRetry} >
-                        <Image source={{ uri: 'https://cdn2.iconfinder.com/data/icons/game-hard-type/512/refresh-1024.png' }} style={{ height: 20, width: 20, alignSelf: 'center' }} />
+                        <Image source={require('../../Assets/Image/retry.png')} style={{ height: 20, width: 20, alignSelf: 'center' }} />
                         <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', marginTop: 5 }} >Retry</Text>
 
                     </TouchableOpacity>
