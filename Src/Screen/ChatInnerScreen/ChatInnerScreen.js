@@ -361,7 +361,7 @@ const ChatInnerScreen = props => {
                             </TouchableOpacity>
                             <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => setTaskpopup('')}>
                                 <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
-                                    Edit TAsk
+                                    Edit Task
                                 </Text>
                                 <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
 
