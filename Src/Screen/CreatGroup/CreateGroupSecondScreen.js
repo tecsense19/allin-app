@@ -115,9 +115,11 @@ const CreateGroupSecondScreen = (props) => {
                     paddingHorizontal: 20
                 }}>
                 <View style={{ backgroundColor: COLOR.lightgreen, height: 70, marginTop: 20, borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
-                    <TouchableOpacity style={{ height: 50, width: 50, backgroundColor: COLOR.black, justifyContent: 'center', borderRadius: 50 }} onPress={() => setIsOpen(true)}>
+                    {img ? <TouchableOpacity style={{ height: 50, width: 50, backgroundColor: COLOR.black, justifyContent: 'center', borderRadius: 50 }} onPress={() => setIsOpen(true)}>
+                        <Image source={{ uri: img.uri }} style={{ flex: 1, borderRadius: 50 }} />
+                    </TouchableOpacity> : <TouchableOpacity style={{ height: 50, width: 50, backgroundColor: COLOR.black, justifyContent: 'center', borderRadius: 50 }} onPress={() => setIsOpen(true)}>
                         <Image source={require('../../Assets/Image/camera.png')} style={{ height: 25, width: 25, alignSelf: 'center' }} />
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                     <TextInput
                         value={groupName}
                         onChangeText={(txt) => setGroupName(txt)}
