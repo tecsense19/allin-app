@@ -23,7 +23,7 @@ import DeleteChatHeader from './ChatCustomFile/DeleteChatHeader';
 import Loader from '../../Custom/Loader/loader';
 import Timezone from 'react-native-timezone'
 import MsgAttachment from './ChatCustomFile/MsgAttachment';
-import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, Contact_Message, File_Uplode, Get_All_Messages, Location_Messages, Meeting_Messages, Read_Unread_Messages, Reminder_Messages, Task_Messages } from '../../Service/actions';
+import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, Contact_Message, File_Uplode, Get_All_Messages, Location_Messages, Meeting_Messages, Read_Unread_Messages, Reminder_Messages, Reminder_Ping, Task_Messages } from '../../Service/actions';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Button from '../../Custom/Button/Button';
@@ -301,7 +301,13 @@ const ChatInnerScreen = props => {
         )
     }
     // console.log(taskpopup?.messageDetails?.message_id);
+    const onhandleNotification = async (MsgId) => {
+        const token = await getToken()
+        await Reminder_Ping(token, MsgId)
+            .then(() => {
 
+            })
+    }
     const ChatMessage = React.memo(({ message }) => {
         const renderMessage = () => {
             switch (message?.messageType) {
@@ -355,7 +361,7 @@ const ChatInnerScreen = props => {
                         </View> : null}
                     {taskpopup?.messageId == message?.messageId ?
                         <View style={{ height: 120, justifyContent: 'space-around', borderRadius: 10, width: '40%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, marginTop: -50, alignSelf: 'flex-end', position: 'absolute' }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => setTaskpopup('')}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { onhandleNotification(message?.messageId), setTaskpopup('') }}>
                                 <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
                                     Reminder
                                 </Text>

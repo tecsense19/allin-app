@@ -773,6 +773,23 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle) => {
 
     return response
 }
+export const Reminder_Ping = async (token, msgId) => {
+
+    const res = await fetch(ACTIONS.REMINDER_PING, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: msgId })
+    })
+
+
+    const response = await res.json()
+    console.log(response);
+
+    return response
+}
 export const Refresh_Token = async (token) => {
     console.log(token, '=>>>>>');
     try {

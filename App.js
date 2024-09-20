@@ -9,13 +9,13 @@ import messaging from '@react-native-firebase/messaging';
 LogBox.ignoreAllLogs();
 const App = () => {
 
-  // useEffect(() => { getFcmToken() }, [])
-  // const getFcmToken = async () => {
-  //   try {
-  //     const D_token = await messaging().getToken();
-  //     console.log(D_token, '====================================');
-  //   } catch (error) { console.error('Error getting FCM token:', error) }
-  // }
+  useEffect(() => { getFcmToken() }, [])
+  const getFcmToken = async () => {
+    try {
+      const D_token = await messaging().getToken();
+      console.log(D_token, '====================================');
+    } catch (error) { console.error('Error getting FCM token:', error) }
+  }
 
 
   return (
