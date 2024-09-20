@@ -360,10 +360,14 @@ export const Edit_Profile = async (token, phone, fname, lname, title, descriptio
 }
 
 export const Task_Messages = async (token, MsgType, taskData) => {
+    const LableArr = taskData.checkbox
+    const commaSeparatedtitle = LableArr.map(item => item.checkbox).join(', ');
 
     const remindId = taskData?.remind
-    var stringArray = remindId?.map(String);
-    var id = stringArray?.join(',');
+    const stringArray = remindId?.map(String);
+    const id = stringArray?.join(',');
+
+
 
     const res = await fetch(ACTIONS.MESSAGE_TASK, {
         method: "POST",
@@ -371,10 +375,11 @@ export const Task_Messages = async (token, MsgType, taskData) => {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ message_type: MsgType, receiver_id: id, task_name: taskData?.tasktitle, task_description: taskData?.taskdescriptions })
+        body: JSON.stringify({ message_type: MsgType, receiver_id: id, task_name: taskData?.tasktitle, checkbox: commaSeparatedtitle, date: taskData?.date, time: taskData?.time })
 
     })
     const response = await res.json()
+
     return response
 }
 
@@ -746,6 +751,26 @@ export const User_List_For_Group = async (token, Id) => {
 
 
     const response = await res.json()
+    return response
+}
+export const Edit_Task = async (token, msgId, checkBoxData, taskTitle) => {
+    const commaSeparatedIds = checkBoxData.map(item => item.id).join(',');
+    const commaSeparatedtitle = checkBoxData.map(item => item.checkbox).join(',');
+    const commaSeparatedboolean = checkBoxData.map(item => item.task_checked).join(',');
+
+    const res = await fetch(ACTIONS.TASK_UPDATE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean })
+    })
+
+
+    const response = await res.json()
+    console.log(response);
+
     return response
 }
 export const Refresh_Token = async (token) => {
