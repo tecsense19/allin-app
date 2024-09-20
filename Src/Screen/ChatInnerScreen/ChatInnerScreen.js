@@ -56,7 +56,6 @@ const ChatInnerScreen = props => {
     const [token, setToken] = useState('');
     const [taskpopup, setTaskpopup] = useState('');
 
-    const [loadedMessagesCount, setLoadedMessagesCount] = useState(15);
 
 
     const Userid = props?.route?.params
@@ -93,7 +92,7 @@ const ChatInnerScreen = props => {
     useEffect(() => {
         const fetchData = async () => {
             await getAllMessages();
-            // setLoadedMessagesCount(loadedMessagesCount + 5)
+
             if (messageIds) {
                 await Read_Unread_Messages(token, messageIds);
             }
@@ -145,20 +144,21 @@ const ChatInnerScreen = props => {
         );
     }, []);
     const selectedMsgDelete = async () => {
+        const id = taskpopup.messageId
+        if (taskpopup) {
+            Chat_Delete_Messages(token, id)
+        }
         selectedMSG.forEach((res) => {
             Chat_Delete_Messages(token, res?.messageId)
         })
         setSelectedMSG('')
         getAllMessages()
     }
-
     const onhandaleSelected = msg => {
         if (selectedMSG.includes(msg)) {
             setSelectedMSG(selectedMSG.filter((id) => id !== msg));
         } else { setSelectedMSG([...selectedMSG, msg]); }
     }
-
-
     const getAllMessages = async () => {
         const Token = await getToken()
         setToken(Token)
@@ -194,6 +194,8 @@ const ChatInnerScreen = props => {
         if (inputText.trim() == '' && msgType == 'Text') {
             return null
         }
+        console.log('============>', currentMsgData);
+
         setMsgType('Text')
         switch (msgType) {
             case 'Text':
@@ -298,7 +300,7 @@ const ChatInnerScreen = props => {
             </TouchableOpacity>
         )
     }
-    console.log(taskpopup);
+    // console.log(taskpopup?.messageDetails?.message_id);
 
     const ChatMessage = React.memo(({ message }) => {
         const renderMessage = () => {
@@ -308,7 +310,8 @@ const ChatInnerScreen = props => {
                 case 'Attachment':
                     return <MsgAttachment data={message} />;
                 case 'Task':
-                    return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
+                    return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} />
+                // return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
                 case 'Meeting':
                     return <MsgMeeting data={message} />
                 case 'Reminder':
@@ -359,14 +362,14 @@ const ChatInnerScreen = props => {
                                 <Image source={require('../../Assets/Image/taskreminder.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
 
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => setTaskpopup('')}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { setReMeCkModal(true), setMsgType('Task') }}>
                                 <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
                                     Edit Task
                                 </Text>
                                 <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
 
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => setTaskpopup('')}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { setTaskpopup(''), selectedMsgDelete() }}>
                                 <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
                                     Detele Task
                                 </Text>
@@ -406,6 +409,8 @@ const ChatInnerScreen = props => {
             </View>
         ));
     }, [messages, selectedMSG]);
+
+
 
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
@@ -471,7 +476,7 @@ const ChatInnerScreen = props => {
                                 </ScrollView>
                             </View >
                             <PlusModal
-                                onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); }}
+                                onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); setTaskpopup('') }}
                                 onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
                                 onReminder={() => { setMsgType('Reminder'); setVisible(false); setReMeCkModal(true); }}
                                 onCamera={() => { onCamera(); setMsgType('Attachment'); }}
@@ -490,7 +495,7 @@ const ChatInnerScreen = props => {
                                     <CtrateHeader source={userDetails.profile} onBack={() => setReMeCkModal(false)} title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName} />
                                     <View style={styles.createItemModalView2}>
                                         {msgType == 'Task' ? (
-                                            <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={Userid} />
+                                            <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={Userid} editData={taskpopup} type={'Task'} />
                                         ) : msgType == 'Meeting' ? (
                                             <CreateMsgMeeting token={token} onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={Userid} />
                                         ) : msgType == 'Reminder' ? (
