@@ -208,13 +208,14 @@ import uuid from 'react-native-uuid'
 import Button from '../../../Custom/Button/Button'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors'
 import NavigateHeader from '../../../Custom/Header/NavigateHeader'
-import { User_List } from '../../../Service/actions'
+import { Edit_Task, User_List } from '../../../Service/actions'
 import Timezone from 'react-native-timezone'
 import Loader from '../../../Custom/Loader/loader'
 import DatePicker from 'react-native-date-picker'
+import { getToken } from '../../../Service/AsyncStorage'
 
 
-const CreateTask = ({ onSubmit, userId, token }) => {
+const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const [descriptions, setDescription] = useState('');
 
     const [isFocused, setIsFocused] = useState(false);
@@ -224,6 +225,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
     const [myID, setMyId] = useState('');
     const [loading, setLoading] = useState(false);
     const id = uuid.v4()
+
 
 
     const [taskTitle, setTaskTitle] = useState(''); // State for task title
@@ -237,6 +239,18 @@ const CreateTask = ({ onSubmit, userId, token }) => {
     const [taskTime, setTaskTime] = useState(new Date());
     const [openTime, setOpenTime] = useState(false);
     const [openDate, setOpenDate] = useState(false);
+
+    useEffect(() => {
+        if (editData) {
+            setTaskTitle(editData.messageDetails.task_name)
+            setCheckboxes(editData.messageDetails.tasks);
+            setSelectedItems(editData.messageDetails.users.map((user, ind) => {
+                return user.id
+            }));
+        }
+    }, [])
+
+    
 
 
     const year = taskDate.getUTCFullYear();
@@ -265,21 +279,23 @@ const CreateTask = ({ onSubmit, userId, token }) => {
     })// by defualt selected user not show
 
     const handleSubmit = () => {
-        const data = { taskId: id, type: 'Checklist', tasktitle: taskTitle, remind: selectedItems, time: taskTime, date: taskDate, checkbox: checkboxes }
-        console.log(data);
-
+        const data = { taskId: uuid.v4, type: 'Checklist', tasktitle: taskTitle, remind: selectedItems, time: taskTime, date: taskDate, checkbox: checkboxes }
         if (taskTitle == '') {
             Alert.alert('Please Enter Title');
         }
         else if (checkboxes.length < 1) {
             Alert.alert('Add minimum one checkbox');
-
         }
         else {
             onSubmit(data);
             setDescription(null)
         }
     };
+    const handleUpdate = async () => {
+        const messageId = editData?.messageId
+        const token = await getToken()
+        Edit_Task(token, messageId, checkboxes,taskTitle)
+    }
     const getuser = async () => {
         setLoading(true)
         const timezone = { timezone: Timezone.getTimeZone() }
@@ -317,7 +333,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
     const openEditCheckBoxModal = (index) => {
         setIsEditing(true);
         setEditingIndex(index);
-        setNewCheckBoxLabel(checkboxes[index].label); // Pre-fill with current label
+        setNewCheckBoxLabel(checkboxes[index].checkbox); // Pre-fill with current label
         setModalVisible(true); // Show modal
     };
 
@@ -325,7 +341,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
 
     const toggleCheckbox = (index) => {
         const updatedCheckboxes = [...checkboxes];
-        updatedCheckboxes[index].checked = !updatedCheckboxes[index].checked;
+        updatedCheckboxes[index].task_checked = !updatedCheckboxes[index].task_checked;
         setCheckboxes(updatedCheckboxes);
     };
     const openCreateCheckBoxModal = () => {
@@ -340,11 +356,11 @@ const CreateTask = ({ onSubmit, userId, token }) => {
         if (isEditing) {
             // If editing, update the checkbox label
             const updatedCheckboxes = [...checkboxes];
-            updatedCheckboxes[editingIndex].label = newCheckBoxLabel;
+            updatedCheckboxes[editingIndex].checkbox = newCheckBoxLabel;
             setCheckboxes(updatedCheckboxes);
         } else {
             // If not editing, add a new checkbox
-            setCheckboxes([...checkboxes, { label: newCheckBoxLabel, checked: false, id: checkboxes.length + 1 }]);
+            setCheckboxes([...checkboxes, { checkbox: newCheckBoxLabel, task_checked: false, id: uuid.v4() }]);
         }
 
         setNewCheckBoxLabel('');
@@ -365,7 +381,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                 borderRadius: 20,
                 marginBottom: isFocused ? '80%' : 0
             }}>
-            <Text style={{ textAlign: 'center', marginTop: 30, fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Create Task</Text>
+            <Text style={{ textAlign: 'center', marginTop: 30, fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>{editData ? 'Edit Task' : 'Create Task'}</Text>
 
             <TextInput
                 onFocus={() => setIsFocused(true)}
@@ -412,7 +428,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                             <TouchableOpacity onPress={() => toggleCheckbox(index)}>
                                 <Image
                                     source={
-                                        checkbox.checked
+                                        checkbox.task_checked
                                             ? require('../../../Assets/Image/check.png') // Path to checked image
                                             : require('../../../Assets/Image/box.png') // Path to unchecked image
                                     }
@@ -420,11 +436,11 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                                         width: 24,
                                         height: 24,
                                         marginRight: 10,
-                                        tintColor: checkbox.checked ? COLOR.green : COLOR.black
+                                        tintColor: checkbox.task_checked ? COLOR.green : COLOR.black
                                     }}
                                 />
                             </TouchableOpacity>
-                            <Text>{checkbox?.label?.length > 33 ? checkbox?.label.slice(0, 33) + '...' : checkbox?.label}</Text>
+                            <Text>{checkbox?.checkbox?.length > 33 ? checkbox?.checkbox.slice(0, 33) + '...' : checkbox?.checkbox}</Text>
                         </View>
                         <TouchableOpacity onPress={() => { setSelectedCheckBox(checkbox) }} style={styles.menuButton}>
                             <Image source={require('../../../Assets/Image/dott.png')}
@@ -458,7 +474,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
 
             <TouchableOpacity onPress={openCreateCheckBoxModal} style={{ height: 45, backgroundColor: COLOR.green, marginTop: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', paddingHorizontal: 20, borderRadius: 50 }}>
                 <Image source={require('../../../Assets/Image/+.png')} style={{ width: 18, height: 18, marginRight: 5, tintColor: COLOR.white, resizeMode: 'contain' }} />
-                <Text style={{ fontSize: 18, color: COLOR.white, fontWeight: 'bold' }}>Create Task</Text>
+                <Text style={{ fontSize: 18, color: COLOR.white, fontWeight: 'bold' }}>Add Task</Text>
             </TouchableOpacity>
             {/* Modal for adding a new checkbox */}
             <Modal
@@ -515,9 +531,9 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                 </TouchableOpacity>
             </View> : null}
             <Button
-                onPress={handleSubmit}
+                onPress={editData ? handleUpdate : handleSubmit}
                 marginTop={20} marginBottom={30}
-                title={'Submit'}
+                title={editData ? 'Update' : 'Submit'}
                 bgColor={COLOR.green}
                 color={COLOR.white}
             />
@@ -528,7 +544,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     </View>
                     <View style={{ marginTop: 10, paddingHorizontal: 20, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
                         <FlatList data={selectedUser} renderItem={(({ item }) => {
-                            console.log(item);
+                            // console.log(item);
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
                                 <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
@@ -563,7 +579,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     setTaskDate(date)
                 }}
                 onCancel={() => {
-                    setOpen(false)
+                    setOpenDate(false)
                 }}
             />
             <DatePicker
@@ -579,7 +595,7 @@ const CreateTask = ({ onSubmit, userId, token }) => {
                     setOpenTime(false)
                 }}
             />
-            <Loader visible={loading} Retry={''} />
+            <Loader visible={loading} Retry={getuser} />
         </ScrollView>
     )
 }
