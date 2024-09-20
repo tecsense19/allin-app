@@ -51,5 +51,6 @@ export const ACTIONS = {
     GROUP_LIST: BASE_PATH + '/group-list',
     EDIT_GROUP: BASE_PATH + '/edit-group',
     REMOVE_GROUP_USER: BASE_PATH + '/remove-group-user',
+    TASK_UPDATE: BASE_PATH + '/tasks/update',
 
 }
