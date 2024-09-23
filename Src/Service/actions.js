@@ -753,10 +753,14 @@ export const User_List_For_Group = async (token, Id) => {
     const response = await res.json()
     return response
 }
-export const Edit_Task = async (token, msgId, checkBoxData, taskTitle) => {
+export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => {
     const commaSeparatedIds = checkBoxData.map(item => item.id).join(',');
     const commaSeparatedtitle = checkBoxData.map(item => item.checkbox).join(',');
     const commaSeparatedboolean = checkBoxData.map(item => item.task_checked).join(',');
+    const commaSeparateduser = user.map(item => item).join(',');
+    // console.log(commaSeparateduser);
+
+    // // console.log({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean });
 
     const res = await fetch(ACTIONS.TASK_UPDATE, {
         method: "POST",
@@ -764,12 +768,12 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean })
+        body: JSON.stringify({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean, receiver_id: commaSeparateduser })
     })
 
 
     const response = await res.json()
-    console.log(response);
+    // console.log(response);
 
     return response
 }
