@@ -242,6 +242,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
 
     useEffect(() => {
         if (editData) {
+            // console.log('===================>', editData);
+
             setTaskTitle(editData.messageDetails.task_name)
             setCheckboxes(editData.messageDetails.tasks);
             setSelectedItems(editData.messageDetails.users.map((user, ind) => {
@@ -250,7 +252,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
         }
     }, [])
 
-    
+    // console.log('===================>',selectedItems);
+
 
 
     const year = taskDate.getUTCFullYear();
@@ -294,7 +297,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const handleUpdate = async () => {
         const messageId = editData?.messageId
         const token = await getToken()
-        Edit_Task(token, messageId, checkboxes,taskTitle)
+        Edit_Task(token, messageId, checkboxes, taskTitle, selectedItems)
     }
     const getuser = async () => {
         setLoading(true)
@@ -595,7 +598,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                     setOpenTime(false)
                 }}
             />
-            <Loader visible={loading} Retry={getuser} />
+            {/* <Loader visible={loading} Retry={getuser} /> */}
         </ScrollView>
     )
 }
