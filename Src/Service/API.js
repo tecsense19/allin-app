@@ -44,9 +44,15 @@ export const ACTIONS = {
     TASK_DONE: BASE_PATH + '/sent-task-done',
     TASK_SUMMARIZE_SEND: BASE_PATH + '/sent-task-summary-email',
     EVENTS_CREATE_UPDATE: BASE_PATH + '/events-create-update',
-    MEETINGS: BASE_PATH + '/meetings'
-
-
+    MEETINGS: BASE_PATH + '/meetings',
+    CREATE_GROUP: BASE_PATH + '/create-group',
+    ADD_GROUP_MAMBER: BASE_PATH + '/add-group-user',
+    USER_LIST_FOR_GROUP: BASE_PATH + '/user-list-for-group',
+    GROUP_LIST: BASE_PATH + '/group-list',
+    EDIT_GROUP: BASE_PATH + '/edit-group',
+    REMOVE_GROUP_USER: BASE_PATH + '/remove-group-user',
+    TASK_UPDATE: BASE_PATH + '/tasks/update',
+    REMINDER_PING: BASE_PATH + '/message-task-notification',
 
 
 }

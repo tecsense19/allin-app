@@ -38,12 +38,10 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
 
     const handleSubmit = () => {
         const data = { type: 'Reminder', reminddescriptions: descriptions, remindtitle: title, apiTime, apiDate, remind: selectedItems }
-        if (descriptions == '') {
+        if (descriptions == '' || title == '') {
             Alert.alert('Please enter title and description');
         }
-        else if (
-            descriptions.length < 50
-        ) { Alert.alert('Write minimum 50 Character') }
+
         else {
             onSubmit(data);
             setDescription('')
@@ -74,7 +72,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 4 ? <Image source={{ uri: item.profile }} style={{
+                {index < 3 ? <Image source={{ uri: item.profile }} style={{
                     height: 40, width: 40,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
@@ -141,27 +139,19 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
                 }}
 
             />
-            {descriptions.length > 50 ? '' : <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                <Image source={require('../../../Assets/Image/notice.png')} style={{ height: 15, width: 15, marginRight: 5, tintColor: COLOR.orange }} />
-                <Text style={{
-                    color: COLOR.orange, fontWeight: '500',
-                    textAlign: 'left', fontSize: 14, width: '90%'
-                }}>{'Descriptions minimum 50 characters are require'}</Text>
-            </View>}
-
-
-
-
 
             {filteredUserData ? <View style={{
-                width: filteredUserData?.length < 2 ? 65
-                    : filteredUserData?.length < 3 ? 85
-                        : filteredUserData?.length < 4 ? 105 : 125,
-                alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginVertical: 10
+                width: filteredUserData?.length < 2 ? 85
+                    : filteredUserData?.length < 3 ? 105
+                        : filteredUserData?.length < 4 ? 125 : 150,
+                alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginVertical: 30
             }}>
                 <FlatList data={filteredUserData} renderItem={list} horizontal bounces={false}
                     style={{}} />
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{filteredUserData.length <= 4 ? '' : '+' + (filteredUserData.length - 4)}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor, marginRight: 5 }}>{filteredUserData.length <= 3 ? '' : '+' + (filteredUserData.length - 3)}</Text>
+                <TouchableOpacity onPress={() => setVisible(true)} style={{ height: 40, width: 40, backgroundColor: COLOR.green, alignItems: 'center', justifyContent: 'center', borderRadius: 100 }}>
+                    <Image source={require('../../../Assets/Image/+.png')} style={{ height: 20, width: 20, tintColor: COLOR.white }} />
+                </TouchableOpacity>
             </View> : null}
             <Button
                 onPress={handleSubmit}
@@ -229,7 +219,7 @@ export default CreateReminder
 
 const PickerButton = ({ title, onPress }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 10, borderRadius: 10, borderColor: COLOR.bordercolor, marginHorizontal: 10, }}>
+        <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 10, borderRadius: 10, borderColor: COLOR.bordercolor, margin:5 }}>
             <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.titlecolor }}>{title}</Text>
             <Image source={require('../../../Assets/Image/down.png')}
                 style={{ height: 18, width: 18, resizeMode: 'contain', marginTop: -5, marginLeft: 5, tintColor: COLOR.green }} />

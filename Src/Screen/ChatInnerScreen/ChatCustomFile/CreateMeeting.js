@@ -70,9 +70,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
         if (title == '' || descriptions == '') {
             Alert.alert('Please Enter title and description');
         }
-        else if (
-            descriptions.length < 50
-        ) { Alert.alert('Write minimum 50 Character') }
+
         else {
             onSubmit(data);
             setTitle(null)
@@ -85,7 +83,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const list = ({ item, index }) => {
         return (
             <View>
-                {index < 4 ? <Image source={{ uri: item.profile }} style={{
+                {index < 3 ? <Image source={{ uri: item.profile }} style={{
                     height: 50, width: 50,
                     borderRadius: 100, marginLeft: index == 0 ? 0 : -20
                 }} /> : ''}
@@ -104,7 +102,6 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
         const timezone = { timezone: Timezone.getTimeZone() }
         await User_List(timezone, token).then((res) => {
             if (res.status_code == 200) {
-
                 setUserData(res?.data?.userList)
 
             }
@@ -236,23 +233,17 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     color: COLOR.textcolor,
                 }}
             />
-            {descriptions.length > 50 ? '' : <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                <Image source={require('../../../Assets/Image/notice.png')} style={{ height: 15, width: 15, marginRight: 5, tintColor: COLOR.orange }} />
-                <Text style={{
-                    color: COLOR.orange, fontWeight: '500',
-                    textAlign: 'left', fontSize: 14, width: '90%',
-                }}>{'Descriptions Minimum 50 Characters Are Require'}</Text>
-            </View>}
             <View
                 style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    alignSelf: 'center',
+                    // justifyContent: 'space-between',
                     marginTop: 25,
                 }}>
                 <PickerButton title={meetingdate} onPress={() => { setOpen(true) }} />
                 <PickerButton title={meetingDesplayTime} onPress={() => { setOpenTime(true) }} />
-                <PickerButton title={'Remind'} onPress={() => setVisible(true)} />
+                {/* <PickerButton title={'Remind'} onPress={() => setVisible(true)} /> */}
             </View>
             <TextInput
                 onFocus={() => setIsFocused(true)}
@@ -313,15 +304,20 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 </MapView>
             )}
             {filteredUserData ? <View style={{
-                width: filteredUserData?.length < 2 ? 80
-                    : filteredUserData?.length < 3 ? 110
-                        : filteredUserData?.length < 4 ? 140 : 170,
+                width: filteredUserData?.length < 2 ? 105
+                    : filteredUserData?.length < 3 ? 135
+                        : filteredUserData?.length < 4 ? 165 : 190,
                 alignSelf: 'center', flexDirection: 'row', alignItems: 'center', marginTop: 40
             }}>
                 <FlatList data={filteredUserData} renderItem={list} horizontal bounces={false}
                     style={{}} />
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor }}>{filteredUserData.length <= 4 ? '' : '+' + (filteredUserData.length - 4)}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.titlecolor, marginRight: 5 }}>{filteredUserData.length <= 3 ? '' : '+' + (filteredUserData.length - 3)}</Text>
+                <TouchableOpacity onPress={() => setVisible(true)} style={{ height: 50, width: 50, backgroundColor: COLOR.green, alignItems: 'center', justifyContent: 'center', borderRadius: 100 }}>
+                    <Image source={require('../../../Assets/Image/+.png')} style={{ height: 25, width: 25, tintColor: COLOR.white }} />
+                </TouchableOpacity>
             </View> : null}
+
+
             <Button
                 onPress={handleSubmit}
                 marginTop={40}
@@ -362,25 +358,23 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     <View style={{ paddingHorizontal: 20 }}>
                         <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
                     </View>
-                    <View style={{ marginTop: 10, paddingHorizontal: 20, padding: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
-                        <FlatList data={selectedUser} renderItem={(({ item }) => {
+                    <View style={{ marginTop: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
+                        <FlatList style={{ paddingHorizontal: 20, marginBottom: 70 }} data={selectedUser} renderItem={(({ item }) => {
                             // console.log(item);
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
-                                <View>
-                                    {item.id == userId ? '' : <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
-                                        </View>
+                                <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                    </View>
 
-                                        <TouchableOpacity onPress={() => toggleItem(item?.id)}>
-                                            <Image
-                                                source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
-                                                style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>}
+                                    <TouchableOpacity onPress={() => toggleItem(item?.id)}>
+                                        <Image
+                                            source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
+                                            style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
                             )
                         })} />
@@ -399,7 +393,7 @@ export default CreateMsgMeeting;
 const PickerButton = ({ title, onPress }) => {
     return (
         <TouchableOpacity onPress={onPress} style={{
-            flexDirection: 'row', alignItems: 'center', borderWidth: 1, height: 40, paddingHorizontal: 6, borderRadius: 10, borderColor: COLOR.bordercolor
+            flexDirection: 'row', alignItems: 'center', borderWidth: 1, height: 40, paddingHorizontal: 8, borderRadius: 10, borderColor: COLOR.bordercolor, margin: 5
         }}>
             <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.titlecolor }}>{title}</Text>
             <Image source={require('../../../Assets/Image/down.png')}

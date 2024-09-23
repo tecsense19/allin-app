@@ -3,7 +3,7 @@ import React from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 COLOR
 
-const NavigateHeader = ({ title, title2, tintColor, onPress, top, color, smallTitleSize }) => {
+const NavigateHeader = ({ title, title2, tintColor, onPress, top, color, smallTitleSize, title3, onCreate }) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={onPress} style={styles.onback}>
@@ -16,6 +16,9 @@ const NavigateHeader = ({ title, title2, tintColor, onPress, top, color, smallTi
             <Text style={[styles.headertitle, { marginTop: top, color: color }]}>{title}</Text>
 
             <Text style={[styles.title2, { fontSize: smallTitleSize ? smallTitleSize : 14 }]}>{title2}</Text>
+            <TouchableOpacity onPress={onCreate} style={styles.oncreate}>
+                <Text style={{ color: COLOR.white, fontSize: 18, fontWeight: 'bold' }}>{title3}</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -55,4 +58,12 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontWeight: '500',
     },
+    oncreate: {
+        borderRadius: 100,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        right: 0,
+    }
 });

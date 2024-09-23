@@ -360,10 +360,14 @@ export const Edit_Profile = async (token, phone, fname, lname, title, descriptio
 }
 
 export const Task_Messages = async (token, MsgType, taskData) => {
+    const LableArr = taskData.checkbox
+    const commaSeparatedtitle = LableArr.map(item => item.checkbox).join(', ');
 
     const remindId = taskData?.remind
-    var stringArray = remindId?.map(String);
-    var id = stringArray?.join(',');
+    const stringArray = remindId?.map(String);
+    const id = stringArray?.join(',');
+
+
 
     const res = await fetch(ACTIONS.MESSAGE_TASK, {
         method: "POST",
@@ -371,10 +375,11 @@ export const Task_Messages = async (token, MsgType, taskData) => {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ message_type: MsgType, receiver_id: id, task_name: taskData?.tasktitle, task_description: taskData?.taskdescriptions })
+        body: JSON.stringify({ message_type: MsgType, receiver_id: id, task_name: taskData?.tasktitle, checkbox: commaSeparatedtitle, date: taskData?.date, time: taskData?.time })
 
     })
     const response = await res.json()
+
     return response
 }
 
@@ -694,6 +699,99 @@ export const User_Mobile_Number = async (token) => {
 
 
     const response = await res.json()
+    return response
+}
+export const Create_group = async (token, data) => {
+    const formData = new FormData();
+    formData.append('name', data?.name);
+    const profileImageUri = data?.profile.uri;
+    const profileimageName = profileImageUri ? profileImageUri.split('/').pop() : ''; // Extract image name from URI
+
+    if (profileimageName) { formData.append('profile', { uri: profileImageUri, name: profileimageName, type: data?.profile.type }); }
+    console.log(data.name);
+
+    const res = await fetch(ACTIONS.CREATE_GROUP, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+    })
+
+
+    const response = await res.json()
+    return response
+}
+export const Add_Group_Mamber = async (token, id, user) => {
+
+    const res = await fetch(ACTIONS.ADD_GROUP_MAMBER, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: id, user_id: user })
+    })
+
+
+    const response = await res.json()
+    return response
+}
+export const User_List_For_Group = async (token, Id) => {
+
+    const res = await fetch(ACTIONS.USER_LIST_FOR_GROUP, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id, })
+    })
+
+
+    const response = await res.json()
+    return response
+}
+export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => {
+    const commaSeparatedIds = checkBoxData.map(item => item.id).join(',');
+    const commaSeparatedtitle = checkBoxData.map(item => item.checkbox).join(',');
+    const commaSeparatedboolean = checkBoxData.map(item => item.task_checked).join(',');
+    const commaSeparateduser = user.map(item => item).join(',');
+    // console.log(commaSeparateduser);
+
+    // // console.log({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean });
+
+    const res = await fetch(ACTIONS.TASK_UPDATE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean, receiver_id: commaSeparateduser })
+    })
+
+
+    const response = await res.json()
+    // console.log(response);
+
+    return response
+}
+export const Reminder_Ping = async (token, msgId) => {
+
+    const res = await fetch(ACTIONS.REMINDER_PING, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: msgId })
+    })
+
+
+    const response = await res.json()
+    console.log(response);
+
     return response
 }
 export const Refresh_Token = async (token) => {
