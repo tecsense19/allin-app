@@ -758,7 +758,7 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => 
     const commaSeparatedtitle = checkBoxData.map(item => item.checkbox).join(',');
     const commaSeparatedboolean = checkBoxData.map(item => item.task_checked).join(',');
     const commaSeparateduser = user.map(item => item).join(',');
-    // console.log(commaSeparateduser);
+
 
     // // console.log({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean });
 
@@ -773,7 +773,7 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => 
 
 
     const response = await res.json()
-    // console.log(response);
+    // console.log('------------', response);
 
     return response
 }
@@ -786,6 +786,23 @@ export const Reminder_Ping = async (token, msgId) => {
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ message_id: msgId })
+    })
+
+
+    const response = await res.json()
+    // console.log(response);
+
+    return response
+}
+export const Meeting_Onhandale_Accept = async (token, msgId, id, type) => {
+
+    const res = await fetch(ACTIONS.MEETING_DONE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: msgId, user_id: id, type: type })
     })
 
 
