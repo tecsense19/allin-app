@@ -9,3 +9,12 @@ export const getToken = async () => {
     // console.log('====================================');
     return token
 };
+export const MyID = async () => {
+    const jsonValue = await AsyncStorage.getItem('myData');
+    const userData = JSON.parse(jsonValue);
+    const myID = userData.data.userDetails.id
+    // console.log('====================================');
+    // console.log(myID);
+    // console.log('====================================');
+    return myID
+};
