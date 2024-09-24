@@ -53,5 +53,7 @@ export const ACTIONS = {
     REMOVE_GROUP_USER: BASE_PATH + '/remove-group-user',
     TASK_UPDATE: BASE_PATH + '/tasks/update',
     REMINDER_PING: BASE_PATH + '/message-task-notification',
+    MEETING_DONE: BASE_PATH + '/sent-meeting-done',
+
 
 }
