@@ -10,6 +10,7 @@ import {
     BackHandler,
     ScrollViw,
     Alert,
+    KeyboardAvoidingView,
 } from 'react-native';
 import MenuModal from '../../Custom/Modal/MainMenu'
 import { useState, useEffect } from 'react';
@@ -81,112 +82,113 @@ const MyTopTabs = props => {
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <StatusBar
-                backgroundColor={COLOR.black}
-                barStyle={'dark-content'}
-                hidden={false}
-            />
-            <View style={{ backgroundColor: COLOR.black }}>
-
-                <MenuModal
-                    onRequestClose={closeModal}
-                    visible={visible}
-                    setting={() => {
-                        props.navigation.navigate('setting'), setVisible(false);
-                    }}
-                    QR={() => {
-                        Alert.alert('Website QR'), setVisible(false);
-                    }}
-                    onClose={() => setVisible(false)}
-                    title={'Received'}
-                    onLogout={createTwoButtonAlert}
-                    onPress={() => {
-                        props.navigation.goBack(), setVisible(false);
-                    }}
+        <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
+                <StatusBar
+                    backgroundColor={COLOR.black}
+                    barStyle={'dark-content'}
+                    hidden={false}
                 />
-                {showSearch ? (
-                    <View style={styles.headerView}>
-                        <TextInput
-                            onSubmitEditing={() => setShowSearch(false)}
-                            autoFocus
-                            style={styles.TextInput}
-                            placeholder="WHO TO SEND"
-                            value={search}
-                            onChangeText={(txt) => { setSearch(txt) }}
-                            placeholderTextColor={COLOR.textcolor}
-                        />
-                        <TouchableOpacity onPress={() => setShowSearch(false)}>
-                            <Image
-                                source={require('../../Assets/Image/search.png')}
-                                style={styles.inputinicon}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                ) : (
-                    <ChatHeader
-                        tintColor={COLOR.white}
-                        onMenu={() => setVisible(true)}
-                        title={'Summerize'}
-                        onSearch={() => setShowSearch(true)}
-                        value={true}
-                        onBack={() => { props.navigation.goBack() }}
-                        hide={true}
+                <View style={{ backgroundColor: COLOR.black }}>
 
+                    <MenuModal
+                        onRequestClose={closeModal}
+                        visible={visible}
+                        setting={() => {
+                            props.navigation.navigate('setting'), setVisible(false);
+                        }}
+                        QR={() => {
+                            Alert.alert('Website QR'), setVisible(false);
+                        }}
+                        onClose={() => setVisible(false)}
+                        title={'Received'}
+                        onLogout={createTwoButtonAlert}
+                        onPress={() => {
+                            props.navigation.goBack(), setVisible(false);
+                        }}
                     />
-                )}
-            </View>
-            <Tab.Navigator
-                tabBarOptions={{
-                    indicatorStyle: { backgroundColor: COLOR.green, height: 4, width: 100, marginLeft: 15 },
-                    inactiveTintColor: COLOR.black,
-                }}
-                screenOptions={{
-                    tabBarLabelStyle: { color: COLOR.white },
-                    // tabBarItemStyle: { width: 90,marginLeft:5},
-                    tabBarStyle: { backgroundColor: COLOR.black },
-                }}
-                initialRouteName="received"
-                style={{}}>
-                <Tab.Screen
-                    name="received"
-                    component={ReceivedTask}
-                    // component={() => ReceivedTask({search:search})}
-                    // initialParams={{ searchText: search }}
-                    key={1}
-                    options={{
-                        tabBarLabel: ({ focused }) => (
-                            <Text
-                                style={{
-                                    color: focused ? COLOR.green : COLOR.white,
-                                    fontSize: 15,
-                                    fontWeight: 'bold',
-                                }}>
-                                Received
-                            </Text>
-                        ),
-                    }}
-                />
-                <Tab.Screen
-                    name="given"
-                    component={GivenTasks}
-                    // initialParams={{ searchText: search }}
+                    {showSearch ? (
+                        <View style={styles.headerView}>
+                            <TextInput
+                                onSubmitEditing={() => setShowSearch(false)}
+                                autoFocus
+                                style={styles.TextInput}
+                                placeholder="WHO TO SEND"
+                                value={search}
+                                onChangeText={(txt) => { setSearch(txt) }}
+                                placeholderTextColor={COLOR.textcolor}
+                            />
+                            <TouchableOpacity onPress={() => setShowSearch(false)}>
+                                <Image
+                                    source={require('../../Assets/Image/search.png')}
+                                    style={styles.inputinicon}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <ChatHeader
+                            tintColor={COLOR.white}
+                            onMenu={() => setVisible(true)}
+                            title={'Summerize'}
+                            onSearch={() => setShowSearch(true)}
+                            value={true}
+                            onBack={() => { props.navigation.goBack() }}
+                            hide={true}
 
-                    key={2}
-                    options={{
-                        tabBarLabel: ({ focused }) => (
-                            <Text
-                                style={{
-                                    color: focused ? COLOR.green : COLOR.white,
-                                    fontSize: 15,
-                                    fontWeight: 'bold',
-                                }}>
-                                Given
-                            </Text>
-                        ),
+                        />
+                    )}
+                </View>
+                <Tab.Navigator
+                    tabBarOptions={{
+                        indicatorStyle: { backgroundColor: COLOR.green, height: 4, width: 100, marginLeft: 15 },
+                        inactiveTintColor: COLOR.black,
                     }}
-                />
-                {/* <Tab.Screen
+                    screenOptions={{
+                        tabBarLabelStyle: { color: COLOR.white },
+                        // tabBarItemStyle: { width: 90,marginLeft:5},
+                        tabBarStyle: { backgroundColor: COLOR.black },
+                    }}
+                    initialRouteName="received"
+                    style={{}}>
+                    <Tab.Screen
+                        name="received"
+                        component={ReceivedTask}
+                        // component={() => ReceivedTask({search:search})}
+                        // initialParams={{ searchText: search }}
+                        key={1}
+                        options={{
+                            tabBarLabel: ({ focused }) => (
+                                <Text
+                                    style={{
+                                        color: focused ? COLOR.green : COLOR.white,
+                                        fontSize: 15,
+                                        fontWeight: 'bold',
+                                    }}>
+                                    Received
+                                </Text>
+                            ),
+                        }}
+                    />
+                    <Tab.Screen
+                        name="given"
+                        component={GivenTasks}
+                        // initialParams={{ searchText: search }}
+
+                        key={2}
+                        options={{
+                            tabBarLabel: ({ focused }) => (
+                                <Text
+                                    style={{
+                                        color: focused ? COLOR.green : COLOR.white,
+                                        fontSize: 15,
+                                        fontWeight: 'bold',
+                                    }}>
+                                    Given
+                                </Text>
+                            ),
+                        }}
+                    />
+                    {/* <Tab.Screen
                     name="mytasks"
                     component={MyTasks}
                     key={3}
@@ -203,32 +205,33 @@ const MyTopTabs = props => {
                         ),
                     }}
                 /> */}
-                <Tab.Screen
-                    name="alltasks"
-                    component={AllTasks}
-                    // initialParams={{ searchText: search }}
-                    key={4}
-                    options={{
-                        tabBarLabel: ({ focused }) => (
-                            <Text
-                                style={{
-                                    color: focused ? COLOR.green : COLOR.white,
-                                    fontSize: 15,
-                                    fontWeight: 'bold',
-                                }}>
-                                All Tasks
-                            </Text>
-                        ),
-                    }}
-                />
-            </Tab.Navigator>
-            {/* <View style={{paddingBottom:30,backgroundColor:COLOR.white}}>
+                    <Tab.Screen
+                        name="alltasks"
+                        component={AllTasks}
+                        // initialParams={{ searchText: search }}
+                        key={4}
+                        options={{
+                            tabBarLabel: ({ focused }) => (
+                                <Text
+                                    style={{
+                                        color: focused ? COLOR.green : COLOR.white,
+                                        fontSize: 15,
+                                        fontWeight: 'bold',
+                                    }}>
+                                    All Tasks
+                                </Text>
+                            ),
+                        }}
+                    />
+                </Tab.Navigator>
+                {/* <View style={{paddingBottom:30,backgroundColor:COLOR.white}}>
                 <ChatInputToolBar hidePlus={true} source={require('../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
                     onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={'SendEmail'}
                 />
             </View> */}
-            <Loader visible={loading} Retry={onLogOut} />
-        </View>
+                <Loader visible={loading} Retry={onLogOut} />
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 export default MyTopTabs;
