@@ -66,11 +66,11 @@ export const MsgMeeting = ({ data, onAccept, onDecline }) => {
 
                 </View>
 
-                <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+                {data.messageDetails.location ? <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
                     <Image source={require('../../../Assets/Image/location.png')} style={{ height: 20, width: 20, resizeMode: 'contain', marginLeft: -2 }} />
                     < Text style={{ fontSize: 13, color: COLOR.gray, fontWeight: '600', marginRight: 15, marginLeft: 3 }}>{data.messageDetails.location ? data.messageDetails.location : 'Empty'}</Text>
 
-                </View>
+                </View> : ''}
                 {data?.sentBy == 'loginUser' ? null
                     : acceptresult ?
                         <View style={{ backgroundColor: COLOR.lightgreen, paddingHorizontal: 10, padding: 5, borderRadius: 10, marginTop: 15, alignSelf: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
