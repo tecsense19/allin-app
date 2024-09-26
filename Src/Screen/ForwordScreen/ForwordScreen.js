@@ -52,23 +52,25 @@ const ForwordScreen = (props) => {
         const userName = item?.first_name + ' ' + item.last_name;
 
         return (
-            <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 15, marginTop: 5 }}>
-                <TouchableOpacity
-                    style={[styles.listcontainer, selectedUserIds.includes(item.id) ? styles.selectedUser : null]} // Apply styles for selected user
-                    onPress={() => toggleUserSelection(item.id)} // Toggle user selection onPress
-                >
-                    <View style={styles.imgAndNameView}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Image source={{ uri: item?.profile }} style={styles.chetImg} />
-                            <Text style={styles.name}>
-                                {userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}
-                            </Text>
+            <View>
+                {item.type == 'user' ? <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 15, marginTop: 5 }}>
+                    <TouchableOpacity
+                        style={[styles.listcontainer, selectedUserIds.includes(item.id) ? styles.selectedUser : null]} // Apply styles for selected user
+                        onPress={() => toggleUserSelection(item.id)} // Toggle user selection onPress
+                    >
+                        <View style={styles.imgAndNameView}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Image source={{ uri: item?.profile }} style={styles.chetImg} />
+                                <Text style={styles.name}>
+                                    {userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}
+                                </Text>
+                            </View>
+                            <TouchableOpacity style={{ marginRight: 5 }} onPress={() => toggleUserSelection(item.id)}>
+                                <Image source={selectedUserIds.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
+                            </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => toggleUserSelection(item.id)}>
-                            <Image source={selectedUserIds.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
-                        </TouchableOpacity>
-                    </View>
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                </View> : null}
             </View>
         );
     };
