@@ -233,19 +233,16 @@ const ChatUserListScreen = props => {
 
             const bodydata = { timezone: Timezone.getTimeZone(), search: search };
 
-            try {
-                const res = await User_List(bodydata, Token);
-                if (res.status_code === 200) {
-                    setAllUserData(res.data.userList);
-                    setLoading(false);
-                } else {
-                    console.log('User_List API returned error:', res);
-                    // Handle error case, e.g., show alert or retry logic
-                }
-            } catch (error) {
-                console.log('User_List API error:', error);
-                // Handle network error, e.g., show alert or retry logic
+
+            const res = await User_List(bodydata, Token);
+            if (res.status_code === 200) {
+                setAllUserData(res.data.userList);
+                setLoading(false);
+            } else {
+                console.log('User_List API returned error:', res);
+                // Handle error case, e.g., show alert or retry logic
             }
+
         }
     };
 
