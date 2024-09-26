@@ -103,6 +103,7 @@ const ChatProfileScreen = props => {
                     </Text>
                     <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center', alignSelf: 'center', }}>
                         <CallMsg img={require('../../Assets/Image/telephone.png')} onPress={() => { onhandalePhoneCall() }} />
+                        <CallMsg img={require('../../Assets/Image/upload.png')} onPress={() => { props.navigation.goBack() }} />
                         <CallMsg img={require('../../Assets/Image/group.png')} onPress={() => { props.navigation.goBack() }} />
                     </View>
                     {chatProfileData?.description == 'null' || chatProfileData?.title == 'null' || chatProfileData?.description || chatProfileData?.title ?
