@@ -773,7 +773,7 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => 
 
 
     const response = await res.json()
-    // console.log('------------', response);
+    console.log('------------', response);
 
     return response
 }
@@ -803,6 +803,40 @@ export const Meeting_Onhandale_Accept = async (token, msgId, id, type) => {
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ message_id: msgId, user_id: id, type: type })
+    })
+
+
+    const response = await res.json()
+    console.log(response);
+
+    return response
+}
+export const Get_Group_Details = async (token, id,zone) => {
+
+    const res = await fetch(ACTIONS.GROUP_DETAILS, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ group_id: id, start: 0,timezone:zone })
+    })
+
+
+    const response = await res.json()
+    console.log(response);
+
+    return response
+}
+export const Send_Group_Text_Message = async (token, msg, id) => {
+
+    const res = await fetch(ACTIONS.GROUP_SEND_TEXT_MESSAGE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_type: 'Text', message: msg, group_id: id })
     })
 
 
