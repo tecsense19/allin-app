@@ -54,6 +54,8 @@ export const ACTIONS = {
     TASK_UPDATE: BASE_PATH + '/tasks/update',
     REMINDER_PING: BASE_PATH + '/message-task-notification',
     MEETING_DONE: BASE_PATH + '/sent-meeting-done',
+    GROUP_DETAILS: BASE_PATH + '/user-group-details',
+    GROUP_SEND_TEXT_MESSAGE: BASE_PATH + '/group-text-message',
 
 
 }
