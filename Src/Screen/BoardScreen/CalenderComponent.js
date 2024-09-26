@@ -17,19 +17,56 @@ const CalenderComponent = () => {
     }
     const list = ({ item }) => {
         const userName = item.name
+        const date = new Date(item.date);
+        console.log(item);
+
+        // Get day, month, and year
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        const year = date.getUTCFullYear();
+
+        // Format the date as DD/MM/YYYY
+        const formattedDate = `${day}/${month}/${year}`;
+
+
+
+        const time = new Date(item.time);
+        time.setHours(time.getHours());
+        time.setMinutes(time.getMinutes());
+        const hours = String(time.getHours()).padStart(2, '0');
+        const minutes = String(time.getMinutes()).padStart(2, '0');
+        const seconds = String(time.getSeconds()).padStart(2, '0');
+        const meetingtime = `${hours}:${minutes}:${seconds}`;
+        const formattedHours = hours % 12 || 12;
+        const period = hours < 12 ? 'AM' : 'PM';
+        const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
+
+
         return (
             <View style={styles.ListmainContainer}>
                 <View style={styles.secondContainer}>
                     <View style={styles.twoContainerDevide}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Image source={{ uri: item?.profile }} style={styles.profileImg} />
-                            <Text style={styles.taskUserListName}>{userName?.length >= 20 ? userName?.slice(0, 20) + ' . . . ' || '' : userName}</Text>
+                            <View>
+                                <Text style={styles.taskUserListName}>{userName?.length >= 20 ? userName?.slice(0, 20) + ' . . . ' || '' : userName}</Text>
+                                {isFocus == 'Receive' ? '' : <View>
+                                    <Text style={{ fontSize: 14 }}>{item.completedCount + "/" + item.totalTasks + 'Completed'}</Text>
+                                </View>}
+                            </View>
                         </View>
-                        <TouchableOpacity style={{ marginRight: 5 }} disabled={isFocus == 'Given' || item.taskStatus ? true : false} onPress={() => { handalTaskDone(item.id) }}>
+                        {isFocus == 'Receive' ? '' : <View style={{ alignItems: 'flex-end' }}>
+                            <Text>{meetingDesplayTime}</Text>
+                            <Text>{formattedDate}</Text>
+                        </View>}
+
+                        {/* <TouchableOpacity style={{ marginRight: 5 }} disabled={isFocus == 'Given' || item.taskStatus ? true : false} onPress={() => { handalTaskDone(item.id) }}>
                             <Image source={item.taskStatus ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={styles.checkBoxStyle} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
+
                 </View>
+
             </View>
         );
     };
