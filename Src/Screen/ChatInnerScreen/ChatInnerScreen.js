@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { View, Alert, Vibration, Image, LogBox, BackHandler, Modal, Linking, TouchableOpacity, FlatList, Text, TextInput, SectionList, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Alert, Vibration, Image, LogBox, BackHandler, Modal, Linking, TouchableOpacity, FlatList, Text, TextInput, SectionList, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Contacts from 'react-native-contacts';
@@ -23,12 +23,12 @@ import DeleteChatHeader from './ChatCustomFile/DeleteChatHeader';
 import Loader from '../../Custom/Loader/loader';
 import Timezone from 'react-native-timezone'
 import MsgAttachment from './ChatCustomFile/MsgAttachment';
-import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, Contact_Message, File_Uplode, Get_All_Messages, Location_Messages, Meeting_Messages, Read_Unread_Messages, Reminder_Messages, Reminder_Ping, Task_Messages } from '../../Service/actions';
+import { Chat_Delete_Messages, Chat_File_Message, Chat_Text_Messages, Contact_Message, File_Uplode, Get_All_Messages, Location_Messages, Meeting_Messages, Meeting_Onhandale_Accept, Read_Unread_Messages, Reminder_Messages, Reminder_Ping, Task_Messages } from '../../Service/actions';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Button from '../../Custom/Button/Button';
 import MsgMapImage from './ChatCustomFile/MsgMapView';
-import { getToken } from '../../Service/AsyncStorage';
+import { getToken, MyID } from '../../Service/AsyncStorage';
 LogBox.ignoreAllLogs();
 
 const ChatInnerScreen = props => {
@@ -64,9 +64,7 @@ const ChatInnerScreen = props => {
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
     const scrollToBottom = () => {
-        if (scrollViewRef.current) {
-            scrollViewRef.current.scrollToEnd({ animated: false });
-        }
+        scrollViewRef.current.scrollToEnd({ animated: false });
     };
 
     useEffect(() => {
@@ -194,7 +192,11 @@ const ChatInnerScreen = props => {
         if (inputText.trim() == '' && msgType == 'Text') {
             return null
         }
-        console.log('============>', currentMsgData);
+        console.log(currentMsgData);
+
+        // if(currentMsgData=='edit'){
+
+        // }
 
         setMsgType('Text')
         switch (msgType) {
@@ -205,7 +207,7 @@ const ChatInnerScreen = props => {
                 File_Message(); setFileUpload('')
                 break;
             case 'Task':
-                Task_Messages(token, msgType, currentMsgData)
+                Task_Messages(token, msgType, currentMsgData);
                 break;
             case 'Meeting':
                 Meeting_Messages(token, currentMsgData)
@@ -308,7 +310,19 @@ const ChatInnerScreen = props => {
 
             })
     }
+    const onHandalMeeting = async (msg, type) => {
+        const token = await getToken()
+        const myid = await MyID()
+        const messageId = msg?.messageId;
+
+        Meeting_Onhandale_Accept(token, messageId, myid, type)
+
+
+    }
+    console.log('===========================>>>>>>>>>>', selectedMSG.length);
+
     const ChatMessage = React.memo(({ message }) => {
+
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -316,10 +330,10 @@ const ChatInnerScreen = props => {
                 case 'Attachment':
                     return <MsgAttachment data={message} />;
                 case 'Task':
-                    return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} />
+                return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} />
                 // return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
                 case 'Meeting':
-                    return <MsgMeeting data={message} />
+                    return <MsgMeeting onAccept={() => onHandalMeeting(message, 'accept')} onDecline={() => onHandalMeeting(message, 'decline')} data={message} />
                 case 'Reminder':
                     return <MsgReminder data={message} />
                 case 'Location':
@@ -339,7 +353,8 @@ const ChatInnerScreen = props => {
                     onLongPress={() => { setIsSelected(true), onhandaleSelected(message) }}
                     onPress={() => {
                         // isSelected ? onhandaleSelected(message) : '',
-                        message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : ''
+                        message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : '',
+                            setTaskpopup('')
                     }}>
                     {renderMessage()}
                     {selectedMSG[selectedMSG?.length - 1]?.messageId == message?.messageId && message.messageType == 'Text' && selectedMSG.length <= 1 ?
@@ -351,8 +366,8 @@ const ChatInnerScreen = props => {
                                 <Image source={require('../../Assets/Image/ignore.png')} style={{ height: 20, width: 20, marginLeft: 5 }} />
                             </TouchableOpacity>
                             <View style={{ height: 25, width: 2, backgroundColor: COLOR.lightgray }}></View>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10 }}>
-                                <Text style={{ color: COLOR.green, fontSize: 15, fontWeight: '600' }}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10 }} onPress={() => { setReMeCkModal(true), setMsgType('Task') }}>
+                                <Text style={{ color: '#0CC73F', fontSize: 15, fontWeight: '600' }}>
                                     Add Task
                                 </Text>
                                 <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
@@ -414,7 +429,7 @@ const ChatInnerScreen = props => {
                 })}
             </View>
         ));
-    }, [messages, selectedMSG]);
+    }, [messages, selectedMSG,]);
 
 
 
@@ -475,12 +490,15 @@ const ChatInnerScreen = props => {
                                         Count={selectedMSG ? selectedMSG?.length : null} onDelete={() => { selectedMsgDelete() }}
                                         onBack={() => { setIsSelected(false); setSelectedMSG([]) }} />}
                             </View>
-                            <View style={styles.GiftedChat}>
-                                <ScrollView ref={scrollViewRef}
-                                >
-                                    {memoizedMessages}
-                                </ScrollView>
-                            </View >
+                            <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: COLOR.white }} onPress={() => setTaskpopup('')}>
+                                <View style={styles.GiftedChat}>
+                                    <ScrollView ref={scrollViewRef}>
+
+                                        {memoizedMessages}
+                                    </ScrollView>
+
+                                </View >
+                            </TouchableWithoutFeedback>
                             <PlusModal
                                 onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); setTaskpopup('') }}
                                 onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
@@ -501,7 +519,7 @@ const ChatInnerScreen = props => {
                                     <CtrateHeader source={userDetails.profile} onBack={() => setReMeCkModal(false)} title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName} />
                                     <View style={styles.createItemModalView2}>
                                         {msgType == 'Task' ? (
-                                            <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata) }} userId={Userid} editData={taskpopup} type={'Task'} />
+                                            <CreateTask token={token} onSubmit={(taskdata) => { setMsgType('Text'), setReMeCkModal(false); handleSend(taskdata), setTaskpopup('') }} userId={Userid} editData={selectedMSG.length == 1 ? selectedMSG : taskpopup} type={'Task'} />
                                         ) : msgType == 'Meeting' ? (
                                             <CreateMsgMeeting token={token} onSubmit={(data) => { handleSend(data); setMsgType('Text'), setReMeCkModal(false); }} userId={Userid} />
                                         ) : msgType == 'Reminder' ? (
@@ -522,10 +540,8 @@ const ChatInnerScreen = props => {
                             />
                         </View>
                         : null}
-                    {/* {showButton && (<ChatScrollEnd onPress={scrollToEnd} />)} */}
                 </View>
             }
-
         </KeyboardAvoidingView>
     );
 };
