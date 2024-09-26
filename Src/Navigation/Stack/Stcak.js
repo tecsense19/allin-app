@@ -28,6 +28,7 @@ import CreateGroup from '../../Screen/CreatGroup/CreateGroupFirst';
 import CreateGroupFirstScreen from '../../Screen/CreatGroup/CreateGroupFirst';
 import CreateGroupSecondScreen from '../../Screen/CreatGroup/CreateGroupSecondScreen';
 import GroupChatScreen from '../../Screen/GroupChatScreen/GroupChatScreen';
+import GroupProfile from '../../Screen/GroupChatScreen/GroupProfile';
 
 
 const Stack = createNativeStackNavigator();
@@ -36,7 +37,7 @@ const StackScreen = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                // initialRouteName="creategroup"
+                // initialRouteName="summarize"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 {/* <Stack.Screen name="cals" component={Calculator} /> */}
                 <Stack.Screen name="splase" component={SplaseScreen} />
@@ -63,6 +64,7 @@ const StackScreen = () => {
                 <Stack.Screen name="creategroup" component={CreateGroupFirstScreen} />
                 <Stack.Screen name="creategroupsecond" component={CreateGroupSecondScreen} />
                 <Stack.Screen name="groupchat" component={GroupChatScreen} />
+                <Stack.Screen name="groupProfile" component={GroupProfile} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
 
 
