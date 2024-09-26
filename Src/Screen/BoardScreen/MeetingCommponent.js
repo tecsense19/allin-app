@@ -162,7 +162,7 @@ const MeetingCommponent = () => {
                 <Text style={styles.meetingTxt}>Meeting</Text>
                 <View style={{ height: 1.5, backgroundColor: COLOR.lightgray, marginHorizontal: 15, marginTop: 5 }}></View>
                 <View style={styles.meetingDetailsView}>
-                    <Text style={{ fontSize: 15, color: COLOR.black, fontWeight: 'bold', marginTop: 5 }}>{item.title}</Text>
+                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', marginTop: 5 }}>{item.title}</Text>
 
                     <Text style={{ fontSize: 13, marginTop: 5, color: COLOR.gray, fontWeight: '600', }}>{item.description?.length > 100 ? item.description.slice(0, 100) + '....' : item.description}</Text>
                     <View style={{ height: 1.5, backgroundColor: COLOR.lightgray, marginTop: 10, }}></View>
