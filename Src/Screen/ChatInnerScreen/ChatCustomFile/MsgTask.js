@@ -1,16 +1,21 @@
 import { View, Image, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import React from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
+import { MyID } from '../../../Service/AsyncStorage';
 
 const MsgTask = ({ data, onPress, disabled, ThreeDott }) => {
 
 
-    const CheckBox = data.messageDetails.tasks;
+    const TaskData = data.messageDetails.tasks;
+    const user = data.messageDetails.users
+    // const users = task.task_checked_users.split(',').map(Number);
+    // console.log(data);
 
 
 
     return (
-        <TouchableOpacity onPress={onPress} disabled={disabled} style={styles.container}>
+        // <TouchableOpacity onPress={onPress} disabled={disabled} style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.View1}>
                 <View style={{
                     flexDirection: 'row',
@@ -28,8 +33,8 @@ const MsgTask = ({ data, onPress, disabled, ThreeDott }) => {
                     </View>
 
                 </View>
-                {CheckBox.map((item, index) => {
-                    console.log(item.task_checked)
+                {/* {TaskData.map((item, index) => {
+                    // console.log(CheckBox)
                     return (
                         <View key={index} style={styles.checkboxContainer}>
                             <Image
@@ -39,10 +44,30 @@ const MsgTask = ({ data, onPress, disabled, ThreeDott }) => {
                             <Text>{item.checkbox}</Text>
                         </View>
                     )
-                })}
+                })} */}
+                {
+                    TaskData.map(async (task, index) => {
+                        const users = task.task_checked_users.split(',').map(Number);
+                        console.log(users);
+                        const myID = await MyID()
+                        console.log(users.includes(myID));
+
+
+                        return (
+                            <View key={index} style={styles.checkboxContainer}>
+                                <Image
+                                    source={users.includes(myID) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
+                                    style={[styles.checkImg, { tintColor: users.includes(myID) ? COLOR.green : COLOR.black }]}
+                                />
+                                <Text>{task.checkbox}</Text>
+                            </View>
+                        )
+                    })
+                }
             </View>
             <Text style={styles.tasktime}>{data?.time}</Text>
-        </TouchableOpacity>
+        </View>
+        // </TouchableOpacity>
     );
 };
 
