@@ -48,12 +48,12 @@ const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count, onForword 
                         style={{ height: 22, width: 22, tintColor: COLOR.white, marginRight: 20, transform: [{ scaleX: -1 }] }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onMenu} style={{}}>
+                {/* <TouchableOpacity onPress={onMenu} style={{}}>
                     <Image
                         source={require('../../../Assets/Image/dott.png')}
                         style={{ height: 35, width: 35, tintColor: COLOR.white }}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </View>
 
