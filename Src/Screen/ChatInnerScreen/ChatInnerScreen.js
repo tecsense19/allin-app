@@ -330,7 +330,7 @@ const ChatInnerScreen = props => {
                 case 'Attachment':
                     return <MsgAttachment data={message} />;
                 case 'Task':
-                return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} />
+                    return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} />
                 // return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG.length >= 1} onPress={() => props.navigation.navigate('task', { taskId: message.messageDetails.id, token: token, user: userDetails })} />
                 case 'Meeting':
                     return <MsgMeeting onAccept={() => onHandalMeeting(message, 'accept')} onDecline={() => onHandalMeeting(message, 'decline')} data={message} />
@@ -370,7 +370,7 @@ const ChatInnerScreen = props => {
                                 <Text style={{ color: '#0CC73F', fontSize: 15, fontWeight: '600' }}>
                                     Add Task
                                 </Text>
-                                <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
+                                <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: '#0CC73F', marginLeft: 5 }} />
 
                             </TouchableOpacity>
                         </View> : null}
