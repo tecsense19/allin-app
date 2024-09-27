@@ -212,7 +212,7 @@ import { Edit_Task, User_List } from '../../../Service/actions'
 import Timezone from 'react-native-timezone'
 import Loader from '../../../Custom/Loader/loader'
 import DatePicker from 'react-native-date-picker'
-import { getToken } from '../../../Service/AsyncStorage'
+import { getToken, MyID } from '../../../Service/AsyncStorage'
 
 
 const CreateTask = ({ onSubmit, userId, token, editData }) => {
@@ -225,8 +225,6 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const [myID, setMyId] = useState('');
     const [loading, setLoading] = useState(false);
     const id = uuid.v4()
-
-
 
     const [taskTitle, setTaskTitle] = useState(''); // State for task title
     const [checkboxes, setCheckboxes] = useState([]); // State for holding checkboxes
@@ -241,8 +239,11 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const [openDate, setOpenDate] = useState(false);
 
     useEffect(() => {
-        if (editData) {
-            // console.log('===================>', editData);
+        myid()
+        if (editData[0]?.messageType == 'Text') {
+            setTaskTitle(editData[0].messageDetails)
+        } else if (editData.messageType == 'Task') {
+            // console.log(editData.messageType == 'Task');
 
             setTaskTitle(editData.messageDetails.task_name)
             setCheckboxes(editData.messageDetails.tasks);
@@ -250,18 +251,16 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                 return user.id
             }));
         }
-    }, [])
 
-    // console.log('===================>',selectedItems);
-
-
-
+    }, [myID])
+    const myid = async () => {
+        const a = await MyID()
+        setMyId(a)
+    }
     const year = taskDate.getUTCFullYear();
     const month = (taskDate.getUTCMonth() + 1).toString().padStart(2, '0'); // Add 1 to the month and pad with zero
     const day = taskDate.getUTCDate().toString().padStart(2, '0'); // Pad with zero
     const TaskDate = year + '-' + month + '-' + day
-
-
 
     const time = new Date(taskTime);
     time.setHours(time.getHours());
@@ -280,6 +279,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
             return user?.id
         }
     })// by defualt selected user not show
+    console.log(editData);
 
     const handleSubmit = () => {
         const data = { taskId: uuid.v4, type: 'Checklist', tasktitle: taskTitle, remind: selectedItems, time: taskTime, date: taskDate, checkbox: checkboxes }
@@ -298,6 +298,12 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
         const messageId = editData?.messageId
         const token = await getToken()
         Edit_Task(token, messageId, checkboxes, taskTitle, selectedItems)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    onSubmit('edit')
+                }
+
+            })
     }
     const getuser = async () => {
         setLoading(true)
@@ -313,7 +319,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     useEffect(() => {
         getuser()
 
-    }, [myID])
+    }, [])
     const list = ({ item, index }) => {
         // console.log(item);
         return (
@@ -332,16 +338,12 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
             setSelectedItems([...selectedItems, itemId]);
         }
     };
-
     const openEditCheckBoxModal = (index) => {
         setIsEditing(true);
         setEditingIndex(index);
         setNewCheckBoxLabel(checkboxes[index].checkbox); // Pre-fill with current label
         setModalVisible(true); // Show modal
     };
-
-
-
     const toggleCheckbox = (index) => {
         const updatedCheckboxes = [...checkboxes];
         updatedCheckboxes[index].task_checked = !updatedCheckboxes[index].task_checked;
@@ -352,7 +354,6 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
         setModalVisible(true);
         setNewCheckBoxLabel(''); // Reset label input when creating
     };
-
     const submitCheckBox = () => {
         if (newCheckBoxLabel.trim() === '') return; // Avoid empty checkbox labels
 
@@ -373,6 +374,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
         const updatedCheckboxes = checkboxes.filter((_, i) => i !== index);
         setCheckboxes(updatedCheckboxes);
     };
+    console.log(checkboxes);
 
     return (
         <ScrollView
@@ -409,6 +411,9 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
             />
 
             {checkboxes.map((checkbox, index) => {
+                const users = checkbox?.task_checked_users?.split(',')?.map(Number);
+                // console.log(users?.includes(myID));
+
                 return (
                     <View key={index} style={{
                         flexDirection: 'row',
@@ -431,7 +436,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                             <TouchableOpacity onPress={() => toggleCheckbox(index)}>
                                 <Image
                                     source={
-                                        checkbox.task_checked
+                                        checkbox.task_checked || users?.includes(myID)
                                             ? require('../../../Assets/Image/check.png') // Path to checked image
                                             : require('../../../Assets/Image/box.png') // Path to unchecked image
                                     }
@@ -439,7 +444,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                                         width: 24,
                                         height: 24,
                                         marginRight: 10,
-                                        tintColor: checkbox.task_checked ? COLOR.green : COLOR.black
+                                        tintColor: checkbox.task_checked || users?.includes(myID) ? COLOR.green : COLOR.black
                                     }}
                                 />
                             </TouchableOpacity>
@@ -534,7 +539,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                 </TouchableOpacity>
             </View> : null}
             <Button
-                onPress={editData ? handleUpdate : handleSubmit}
+                onPress={editData[0]?.messageType == 'Text' ? handleSubmit : editData?.messageType == 'Task' ? handleUpdate : handleSubmit}
                 marginTop={20} marginBottom={30}
                 title={editData ? 'Update' : 'Submit'}
                 bgColor={COLOR.green}
@@ -550,18 +555,20 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                             // console.log(item);
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
-                                <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                        <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
-                                    </View>
+                                <View>
+                                    {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                        </View>
 
-                                    <TouchableOpacity onPress={() => toggleItem(item?.id)}>
-                                        <Image
-                                            source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
-                                            style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
-                                        />
-                                    </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => toggleItem(item?.id)}>
+                                            <Image
+                                                source={selectedItems.includes(item.id) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
+                                                style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
+                                            />
+                                        </TouchableOpacity>
+                                    </View> : null}
                                 </View>
                             )
                         })} />
