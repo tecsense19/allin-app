@@ -13,8 +13,10 @@ export const User_List = async (timeZone, Token, Search) => {
         },
         body: JSON.stringify(timeZone)
     })
+    console.log(res);
+
     const response = await res.json()
-    // console.log('response', response);
+    console.log('response', response);
 
     return response
 }
@@ -197,7 +199,19 @@ export const Chat_Text_Messages = async (token, msgType, inputText, userId) => {
     const response = await res.json()
     return response
 }
+export const Edit_Text_Message = async (token, id, msg, TimeZone) => {
 
+    const res = await fetch(ACTIONS.EDIT_TEXT_MESSAGE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_id: id, message: msg, timezone: TimeZone })
+    })
+    const response = await res.json()
+    return response
+}
 export const Read_Unread_Messages = async (token, id) => {
     const res = await fetch(ACTIONS.MESSAGE_READE_UNREADE, {
         method: "POST",
@@ -497,14 +511,14 @@ export const Contact_Message = async (token, data, id) => {
     return response
 }
 
-export const Add_Work_Hour = async (token, Start, End, Summary, timeZone) => {
+export const Add_Work_Hour = async (token, Start, End, Summary, timeZone, Location) => {
     const res = await fetch(ACTIONS.ADD_WORK_HOURS, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ start_date_time: Start, end_date_time: End, summary: Summary, timezone: timeZone })
+        body: JSON.stringify({ start_date_time: Start, end_date_time: End, summary: Summary, timezone: timeZone, location: Location })
     })
     const response = await res.json()
     // console.log(response);
@@ -525,7 +539,7 @@ export const Work_Hour = async (token, Month) => {
     return response
 }
 
-export const Edit_Work_Hour_Summary = async (token, Id, summary) => {
+export const Edit_Work_Hour_Summary = async (token, Id, summary, Location) => {
 
     const res = await fetch(ACTIONS.EDIT_WORK_HOURS_NOTE, {
         method: "POST",
@@ -533,7 +547,7 @@ export const Edit_Work_Hour_Summary = async (token, Id, summary) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ id: Id, summary: summary })
+        body: JSON.stringify({ id: Id, summary: summary, location: Location })
     })
     const response = await res.json()
     return response
@@ -658,6 +672,42 @@ export const Events_Create_Update = async (token, formData) => {
     })
     const response = await res.json()
     // console.log(response);
+    return response
+}
+export const Event_List = async (token, myid, Timezone) => {
+    const res = await fetch(ACTIONS.EVENT_LIST, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: myid, timezone: Timezone })
+    })
+    const response = await res.json()
+    return response
+}
+export const Task_Meeting_Event_Count = async (token,) => {
+    const res = await fetch(ACTIONS.TASK_METTIN_EVENT_COUNT, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_type: 'Meeting,Task,event' })
+    })
+    const response = await res.json()
+    return response
+}
+export const Task_Meeting_Event_Unread = async (token, type, id) => {
+    const res = await fetch(ACTIONS.READ_UNREAD_COUNT, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message_type: type, messageIds: id, status: 'Read' })
+    })
+    const response = await res.json()
     return response
 }
 export const Task_Done = async (token, id) => {
@@ -811,7 +861,7 @@ export const Meeting_Onhandale_Accept = async (token, msgId, id, type) => {
 
     return response
 }
-export const Get_Group_Details = async (token, id,zone) => {
+export const Get_Group_Details = async (token, id, zone) => {
 
     const res = await fetch(ACTIONS.GROUP_DETAILS, {
         method: "POST",
@@ -819,7 +869,7 @@ export const Get_Group_Details = async (token, id,zone) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ group_id: id, start: 0,timezone:zone })
+        body: JSON.stringify({ group_id: id, start: 0, timezone: zone })
     })
 
 
@@ -838,15 +888,105 @@ export const Send_Group_Text_Message = async (token, msg, id) => {
         },
         body: JSON.stringify({ message_type: 'Text', message: msg, group_id: id })
     })
-
-
     const response = await res.json()
-    console.log(response);
-
     return response
 }
+export const Group_User_List = async (token, Id,) => {
+    const res = await fetch(ACTIONS.GROUP_USER_LIST, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Id })
+    })
+    const response = await res.json()
+    return response
+}
+export const Group_User_Search = async (token, Id, term) => {
+    const res = await fetch(ACTIONS.GROUP_USER_SEARCH, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ group_id: Id, search_term: term })
+    })
+    const response = await res.json()
+    return response
+}
+export const Group_User_Remove = async (token, Groupid, userId) => {
+    const res = await fetch(ACTIONS.GROUP_USER_REMOVE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Groupid, user_id: userId })
+    })
+    const response = await res.json()
+    return response
+}
+export const Group_User_Add = async (token, Groupid, userId) => {
+    const res = await fetch(ACTIONS.GROUP_ADD_USER, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Groupid, user_id: userId })
+    })
+    const response = await res.json()
+    return response
+}
+export const Edit_Group = async (token, groupid, img, groupname,) => {
+
+    const formData = new FormData();
+    formData.append('id', groupid);
+    formData.append('name', groupname);
+    formData.append('description', '');
+    if (img?.uri) {
+        const profileImageUri = img?.uri;
+        const profileImageName = profileImageUri ? profileImageUri.split('/').pop() : '';
+        const profileImageType = img?.type;
+        formData.append('profile', {
+            uri: profileImageUri,
+            name: profileImageName,
+            type: profileImageType
+        });
+        console.log(profileImageUri, profileImageName, profileImageType);
+    }
+
+
+    const res = await fetch(ACTIONS.GROUP_EDIT, {
+        method: "POST",
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+        body: formData
+    })
+    const response = await res.json()
+
+
+    return response
+
+}
+export const Group_Delete = async (token, Groupid,) => {
+    const res = await fetch(ACTIONS.GROUP_DELETE, {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ group_id: Groupid, })
+    })
+    const response = await res.json()
+    return response
+}
+
 export const Refresh_Token = async (token) => {
-    console.log(token, '=>>>>>');
+
     try {
         const response = await fetch(ACTIONS.REFRESH_TOKEN, {
             method: 'POST',
@@ -856,7 +996,7 @@ export const Refresh_Token = async (token) => {
             },
         });
         const data = await response.json();
-        // await AsyncStorage.setItem('myData', JSON.stringify({ data: { token: newToken } }));
+
         return data;
     } catch (error) {
         console.error('Error refreshing token:', error);

@@ -21,25 +21,20 @@ import ScanDocScreen from '../../Screen/ScanDocScreen/ScanDocScreen';
 import MyTopTabs from '../TopTab/TopTabScreen';
 import CreateEvent from '../../Screen/CreateEvent/CreateEvent';
 import Files from '../../Screen/Files/Files';
-import Calculator from '../../Screen/calculater';
 import DocumentStore from '../../Screen/DocumentStore/DocumentStore';
 import TmeScreen from '../../Screen/TmeScreen/TmeScreen';
-import CreateGroup from '../../Screen/CreatGroup/CreateGroupFirst';
 import CreateGroupFirstScreen from '../../Screen/CreatGroup/CreateGroupFirst';
 import CreateGroupSecondScreen from '../../Screen/CreatGroup/CreateGroupSecondScreen';
 import GroupChatScreen from '../../Screen/GroupChatScreen/GroupChatScreen';
-import GroupProfile from '../../Screen/GroupChatScreen/GroupProfile';
-
+import GroupInfo from '../../Screen/GroupInfo/GroupInfo';
 
 const Stack = createNativeStackNavigator();
-
 const StackScreen = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                // initialRouteName="summarize"
+                // initialRouteName="groupinfo"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
-                {/* <Stack.Screen name="cals" component={Calculator} /> */}
                 <Stack.Screen name="splase" component={SplaseScreen} />
                 <Stack.Screen name="first" component={FirstScreen} />
                 <Stack.Screen name="login" component={LoginScreen} />
@@ -64,10 +59,8 @@ const StackScreen = () => {
                 <Stack.Screen name="creategroup" component={CreateGroupFirstScreen} />
                 <Stack.Screen name="creategroupsecond" component={CreateGroupSecondScreen} />
                 <Stack.Screen name="groupchat" component={GroupChatScreen} />
-                <Stack.Screen name="groupProfile" component={GroupProfile} />
+                <Stack.Screen name="groupinfo" component={GroupInfo} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
-
-
             </Stack.Navigator>
         </NavigationContainer>
     );

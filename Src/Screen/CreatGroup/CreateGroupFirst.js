@@ -138,7 +138,7 @@ const CreateGroupFirstScreen = (props) => {
                 <FlatList style={{ paddingHorizontal: 20, marginBottom: 20 }} data={searchResults.length > 0 ? searchResults : selectedUser} renderItem={(({ item }) => {
                     // console.log(item);
                     const userName = item?.first_name + ' ' + item.last_name
-                    console.log(item.type);
+
                     return (
                         <View>
                             {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>

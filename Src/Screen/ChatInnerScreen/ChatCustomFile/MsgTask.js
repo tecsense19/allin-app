@@ -3,7 +3,7 @@ import React from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 import { MyID } from '../../../Service/AsyncStorage';
 
-const MsgTask = ({ data, onPress, disabled, ThreeDott }) => {
+const MsgTask = ({ data, ThreeDott }) => {
 
 
     const TaskData = data.messageDetails.tasks;
@@ -31,20 +31,8 @@ const MsgTask = ({ data, onPress, disabled, ThreeDott }) => {
                             <Image source={require('../../../Assets/Image/dott.png')} style={styles.threedottImg} />
                         </TouchableOpacity>
                     </View>
-
                 </View>
-                {/* {TaskData.map((item, index) => {
-                    // console.log(CheckBox)
-                    return (
-                        <View key={index} style={styles.checkboxContainer}>
-                            <Image
-                                source={item.task_checked ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
-                                style={[styles.checkImg, { tintColor: item.task_checked ? COLOR.green : COLOR.black }]}
-                            />
-                            <Text>{item.checkbox}</Text>
-                        </View>
-                    )
-                })} */}
+
                 {
                     TaskData.map(async (task, index) => {
                         const users = task.task_checked_users.split(',').map(Number);
@@ -59,7 +47,7 @@ const MsgTask = ({ data, onPress, disabled, ThreeDott }) => {
                                     source={users.includes(myID) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
                                     style={[styles.checkImg, { tintColor: users.includes(myID) ? COLOR.green : COLOR.black }]}
                                 />
-                                <Text>{task.checkbox}</Text>
+                                <Text style={{ color: COLOR.gray, fontWeight: '600' }}>{task.checkbox}</Text>
                             </View>
                         )
                     })
@@ -76,7 +64,7 @@ export default MsgTask;
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-        marginVertical: 5,
+        // marginVertical: 5,
     },
     View1: {
         width: '100%',

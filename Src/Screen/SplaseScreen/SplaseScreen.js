@@ -1,22 +1,15 @@
-import { View, StatusBar, Image, StyleSheet, Alert, } from 'react-native';
-import React, { useCallback, useEffect, useState, } from 'react';
+import { View, StatusBar, Image, StyleSheet, } from 'react-native';
+import React, { useEffect, } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { notificationsPermission } from '../../Service/Functions';
 import TimeZone from 'react-native-timezone'
 import { Refresh_Token, User_List } from '../../Service/actions';
-import { useFocusEffect } from '@react-nav2igation/native';
-import messaging from '@react-native-firebase/messaging';
-import { useDispatch, useSelector } from 'react-redux';
-import { ExpireToken } from '../../Service/Redux/Actions';
 
 const SplaseScreen = props => {
     const timezone = { timezone: TimeZone.getTimeZone() };
-    const dispetch = useDispatch()
 
     useEffect(() => {
-        // getNotificationData()
-
         setTimeout(() => {
             getMyData()
             notificationsPermission()
@@ -25,10 +18,8 @@ const SplaseScreen = props => {
 
 
     const getMyData = async () => {
-
         const jsonValue = await AsyncStorage.getItem('myData');
         const userData = JSON.parse(jsonValue);
-        // console.log(jsonValue);
 
         if (jsonValue == null) {
             return props.navigation.reset({ routes: [{ name: 'first' }] });
@@ -37,13 +28,10 @@ const SplaseScreen = props => {
         }
     };
     const getuser = async (token) => {
-
         await User_List(timezone, token).then(async (data) => {
             if (data.message == 'Token Expired' && data.status_code == 401) {
                 return (
-                    // dispetch(ExpireToken()),
                     await Refresh_Token(token).then((res) => {
-                        console.log(res, '--------------------------------');
                     }),
                     props.navigation.reset({ routes: [{ name: 'first' }] })
                 )
@@ -60,7 +48,7 @@ const SplaseScreen = props => {
         <View style={styles.container}>
             <StatusBar backgroundColor={COLOR.black} hidden={false} />
             <Image
-                source={require('../../Assets/Image/allin_logo.png')}
+                source={require('../../Assets/Image/splashlogo.gif')}
                 style={styles.logoimg}
             />
         </View>
@@ -68,13 +56,13 @@ const SplaseScreen = props => {
 };
 export default SplaseScreen;
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: COLOR.white },
+    container: { flex: 1, backgroundColor: COLOR.white, alignItems: 'center', justifyContent: 'center' },
     logoimg: {
-        height: '15%',
-        width: '30%',
+        height: 142,
+        width: 142,
         resizeMode: 'contain',
         position: 'absolute',
         alignSelf: 'center',
-        top: '35%',
+
     }
 })

@@ -9,10 +9,11 @@ import ChatInputToolBar from '../ChatInnerScreen/ChatCustomFile/ChatInputToolBar
 import GroupChatheader from './GroupChatHeader';
 import GroupMsgText from './GroupTextMsg';
 import Timezone from 'react-native-timezone'
+import { useFocusEffect } from '@react-navigation/native';
 
 const GroupChatScreen = (props) => {
     const groupId = props.route.params
-    console.log(groupId);
+
 
     const [messages, setMessages] = useState([])
     const [groupData, setGroupData] = useState()
@@ -68,6 +69,9 @@ const GroupChatScreen = (props) => {
         extractMessageIds();
 
     }, [messageIds, messages]);
+    useFocusEffect(React.useCallback(() => {
+        getMEssage()
+    }, []))
 
     const getMEssage = async () => {
         setLoading(true)
@@ -79,6 +83,8 @@ const GroupChatScreen = (props) => {
                     setMessages(res.data.groupChat)
                     setGroupData(res.data.groupData)
                     setLoading(false)
+                    console.log(res.data.groupData);
+
                 }
             })
     }
@@ -102,15 +108,19 @@ const GroupChatScreen = (props) => {
     });
 
     const memoizedMessages = useMemo(() => {
-        return Object.keys(messages).map(date => (
-            <View key={date}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>
-                {messages[date]?.map(message => {
+        return Object.keys(messages).map(date => {
+            console.log();
 
-                    return <ChatMessage key={message?.messageId} message={message} />;
-                })}
-            </View>
-        ));
+            return (
+                <View key={date}>
+                    {messages[date].length == 0 ? null : <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>}
+                    {messages[date]?.map(message => {
+
+                        return <ChatMessage key={message?.messageId} message={message} />;
+                    })}
+                </View>
+            )
+        });
     }, [messages]);
     return (
         <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
@@ -118,12 +128,12 @@ const GroupChatScreen = (props) => {
                 <View style={{ paddingHorizontal: 10 }}>
 
                     <GroupChatheader
-                        // onProfile={() => { props.navigation.navigate('groupProfile') }}
-                        onChange={() => { { } }}
+                        onProfile={() => { props.navigation.navigate('groupinfo', groupData) }}
+                        // onChange={() => { { } }}
                         source={{ uri: groupData?.profile_pic }}
                         title={groupData?.name?.length >= 20 ? groupData?.name?.slice(0, 15) + ' . . . ' : groupData?.name}
                         onSearch={() => Alert.alert('search')}
-                        onBack={() => props.navigation.goBack()}
+                        onBack={() => { props.navigation.goBack() }}
                     />
 
                 </View>

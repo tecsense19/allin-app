@@ -95,7 +95,7 @@ export const MsgMeeting = ({ data, onAccept, onDecline }) => {
                                 </TouchableOpacity>
                             </View>}
             </View>
-            <Text style={{ fontSize: 13, color: COLOR.black, fontWeight: 'bold', marginLeft: 15, marginTop: 10 }}>{'Assigned Task :' + Member.length}</Text>
+            <Text style={{ fontSize: 13, color: COLOR.black, fontWeight: 'bold', marginLeft: 15, marginTop: 10 }}>{'Assigned Task:' + " " + Member.length + ' person'}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 15, marginTop: 10, justifyContent: 'space-between', marginBottom: 5 }}>
                 <View style={{ alignSelf: 'center', flexDirection: 'row', alignItems: 'center', }}>
                     {Member?.map((i, ind) => {

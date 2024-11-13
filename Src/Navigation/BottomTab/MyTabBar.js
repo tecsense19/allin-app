@@ -5,7 +5,6 @@ import {
   Image,
   StyleSheet,
   BackHandler,
-  Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
@@ -13,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setFalse } from '../../Service/Redux/Actions';
 
 const offTabColor = COLOR.verylightgray
+
 const MyTabBar = ({ navigation }) => {
   const [active, setActive] = useState(3);
   const isTrue = useSelector((state) => state.boolean.isTrue)
@@ -146,6 +146,3 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
 });
-
-
-

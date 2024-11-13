@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20, marginTop: 10
     },
     listcontainer: {
-        padding: 8,
-        marginTop: 5,
+
+
         justifyContent: 'space-between',
         flexDirection: 'row',
         alignItems: 'center',

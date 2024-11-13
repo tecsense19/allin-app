@@ -1,4 +1,3 @@
-
 import {
     View,
     StatusBar,
@@ -23,7 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import Timezone from 'react-native-timezone'
 import { useFocusEffect } from '@react-navigation/native';
-import { Clear_Chat, Delete_Chat_User, User_List, User_Logout } from '../../Service/actions';
+import { Clear_Chat, Delete_Chat_User, Group_Delete, User_List, User_Logout } from '../../Service/actions';
 import Loader from '../../Custom/Loader/loader';
 import { getToken } from '../../Service/AsyncStorage';
 import { useDispatch } from 'react-redux';
@@ -47,8 +46,6 @@ const ChatUserListScreen = props => {
     const handleSetTrue = () => {
         dispatch(setTrue());
     };
-    // console.log(profileData.data.userDetails.profile);
-
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('myData');
@@ -81,6 +78,14 @@ const ChatUserListScreen = props => {
             [
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'Cancel', },
                 { text: 'Delete', onPress: () => { DeleteUser(id) }, style: 'destructive' },
+            ],)
+    }
+    const DeleteGroupAlert = (id) => {
+        Alert.alert(
+            'Delete User', 'You are about to delete Group,Are you sure you want to proceed ?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'Cancel', },
+                { text: 'Delete', onPress: () => { DeleteGroup(id) }, style: 'destructive' },
             ],)
     }
     const list = ({ item, index }) => {
@@ -116,12 +121,14 @@ const ChatUserListScreen = props => {
         };
         const userName = item?.first_name + ' ' + item.last_name
         const groupName = item.name
+        console.log(item);
+
         const swipeRightSide = () => {
             return (
                 <View style={styles.swipeView}>
                     <TouchableOpacity
                         style={styles.onbin}
-                        onPress={() => DeleteAlert(item.id)}>
+                        onPress={() => { item.type == 'user' ? DeleteAlert(item.id) : DeleteGroupAlert(item.id) }}>
                         <Image
                             source={require('../../Assets/Image/bin.png')}
                             style={styles.swipeicon}
@@ -152,7 +159,7 @@ const ChatUserListScreen = props => {
                 {index == 0 ? <TouchableOpacity onPress={() => {
                     props.navigation.navigate('tme')
                     // handleSetTrue()
-                }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, padding: 5, flexDirection: 'row', alignItems: 'center' }}>
+                }} style={{ height: 55, marginTop: 10, marginHorizontal: 20, marginVertical: 10, flexDirection: 'row', alignItems: 'center' }}>
                     <Image source={require('../../Assets/Image/aichatlogo2.png')} style={{ height: 55, width: 55 }} />
                     <Text style={{ fontSize: 18, fontWeight: '600', color: COLOR.black, marginLeft: 10 }}>T.me</Text>
 
@@ -169,11 +176,10 @@ const ChatUserListScreen = props => {
                         }
                         swipeableRef.current[item.id] = ref;
                     }}>
-                    <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 20, marginTop: 5 }}>
+                    <View style={{ backgroundColor: COLOR.white, marginHorizontal: 20, borderTopWidth: 0.5, borderColor: COLOR.lightgray, paddingVertical: 10, }}>
                         <TouchableOpacity
                             style={styles.listcontainer}
-                            onPress={() => { item.type == 'user' ? props.navigation.navigate('chatinner', item.id) : props.navigation.navigate('groupchat', item.id), setShowSearch(false) }}
-                        >
+                            onPress={() => { item.type == 'user' ? props.navigation.navigate('chatinner', item.id) : props.navigation.navigate('groupchat', item.id), setShowSearch(false) }}>
                             <View style={styles.imgAndNameView}>
                                 <Image source={{ uri: item?.profile }} style={styles.chetImg} />
                                 <View style={{}}>
@@ -225,15 +231,11 @@ const ChatUserListScreen = props => {
             setVisible(false);
         } catch (e) { }
     };
-
     const getuser = async () => {
         const Token = await getToken();
         if (Token) {
             setToken(Token);
-
             const bodydata = { timezone: Timezone.getTimeZone(), search: search };
-
-
             const res = await User_List(bodydata, Token);
             if (res.status_code === 200) {
                 setAllUserData(res.data.userList);
@@ -245,7 +247,6 @@ const ChatUserListScreen = props => {
 
         }
     };
-
     useFocusEffect(useCallback(() => {
         getuser();
         getFcmToken()
@@ -289,6 +290,18 @@ const ChatUserListScreen = props => {
 
 
     }
+    const DeleteGroup = async (id) => {
+        setLoading(true)
+        const token = await getToken()
+        Group_Delete(token, id)
+            .then((res) => {
+                if (res?.status_code == 200) {
+                    Alert.alert('Group deleted successfully')
+                    getuser()
+                    setLoading(false)
+                }
+            })
+    }
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
@@ -298,7 +311,7 @@ const ChatUserListScreen = props => {
                     onRequestClose={closeModal}
                     title={'Summarize'}
                     visible={visible}
-                    onLogout={() => LogoutTwoButtonAlert()}
+                    onLogout={() => { LogoutTwoButtonAlert(), setVisible(false) }}
                     onClose={() => setVisible(false)}
                     setting={() => { props.navigation.navigate('edit'); setVisible(false); }}
                     onPress={() => { props.navigation.navigate('summarize'), setVisible(false) }}
