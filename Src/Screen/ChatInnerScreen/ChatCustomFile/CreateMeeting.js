@@ -36,6 +36,8 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [MapState, setMapState] = useState('');
+    const [meetingType, setMeetingType] = useState('online')
+    const [onlineMeetingUrl, setOnlineMeetingUrl] = useState('')
 
     const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
     const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo';
@@ -245,14 +247,28 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 <PickerButton title={meetingDesplayTime} onPress={() => { setOpenTime(true) }} />
                 {/* <PickerButton title={'Remind'} onPress={() => setVisible(true)} /> */}
             </View>
-            <TextInput
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', alignSelf: 'center', marginTop: 20 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10 }}>
+                    <TouchableOpacity onPress={() => { setMeetingType('online') }}>
+                        <Image style={{ height: 18, width: 18 }} source={meetingType == 'online' ? require('../../../Assets/Image/meetingradioselect.png') : require('../../../Assets/Image/meetingradiounselect.png')} />
+                    </TouchableOpacity>
+                    <Text style={{ marginLeft: 5, color: COLOR.black, fontWeight: '500', fontSize: 15 }}>Online </Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10 }}>
+                    <TouchableOpacity onPress={() => { setMeetingType('ofline') }}>
+                        <Image style={{ height: 18, width: 18 }} source={meetingType == 'ofline' ? require('../../../Assets/Image/meetingradioselect.png') : require('../../../Assets/Image/meetingradiounselect.png')} />
+                    </TouchableOpacity>
+                    <Text style={{ marginLeft: 5, color: COLOR.black, fontWeight: '500', fontSize: 15 }}>Ofline </Text>
+                </View>
+
+            </View>
+            {meetingType == 'online' ? <TextInput
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                placeholder="write a location"
-                value={query}
+                placeholder="Enter URL"
+                value={onlineMeetingUrl}
                 onChangeText={(text) => {
-                    setQuery(text);
-                    fetchSuggestions(text);
+                    setOnlineMeetingUrl(text)
                 }}
                 placeholderTextColor={COLOR.placeholder}
                 style={{
@@ -265,6 +281,26 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     color: COLOR.textcolor, marginTop: 25
                 }}
             />
+                : <TextInput
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    placeholder="write a location"
+                    value={query}
+                    onChangeText={(text) => {
+                        setQuery(text);
+                        fetchSuggestions(text);
+                    }}
+                    placeholderTextColor={COLOR.placeholder}
+                    style={{
+                        backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 1, width: 1 },
+                        height: 45,
+                        borderRadius: 5,
+                        paddingLeft: 10,
+                        fontWeight: '500',
+                        fontSize: 16,
+                        color: COLOR.textcolor, marginTop: 25
+                    }}
+                />}
             {suggestions.length > 0 && (
                 <FlatList
                     style={{ width: '100%', maxHeight: 300 }}
