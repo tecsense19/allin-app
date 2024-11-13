@@ -1,0 +1,7 @@
+/Users/tecsense/Library/Developer/Xcode/DerivedData/AllIn-dginlzuvnosywwchteifgyaexhvf/Build/Products/Debug-iphonesimulator/FirebaseCore/FirebaseCore_Privacy.bundle
+/Users/tecsense/Library/Developer/Xcode/DerivedData/AllIn-dginlzuvnosywwchteifgyaexhvf/Build/Products/Debug-iphonesimulator/FirebaseCoreExtension/FirebaseCoreExtension_Privacy.bundle
+/Users/tecsense/Library/Developer/Xcode/DerivedData/AllIn-dginlzuvnosywwchteifgyaexhvf/Build/Products/Debug-iphonesimulator/FirebaseCoreInternal/FirebaseCoreInternal_Privacy.bundle
+/Users/tecsense/Library/Developer/Xcode/DerivedData/AllIn-dginlzuvnosywwchteifgyaexhvf/Build/Products/Debug-iphonesimulator/FirebaseInstallations/FirebaseInstallations_Privacy.bundle
+/Users/tecsense/Library/Developer/Xcode/DerivedData/AllIn-dginlzuvnosywwchteifgyaexhvf/Build/Products/Debug-iphonesimulator/FirebaseMessaging/FirebaseMessaging_Privacy.bundle
+/Users/tecsense/Library/Developer/Xcode/DerivedData/AllIn-dginlzuvnosywwchteifgyaexhvf/Build/Products/Debug-iphonesimulator/GoogleDataTransport/GoogleDataTransport_Privacy.bundle
+/Users/tecsense/Library/Developer/Xcode/DerivedData/AllIn-dginlzuvnosywwchteifgyaexhvf/Build/Products/Debug-iphonesimulator/GoogleUtilities/GoogleUtilities_Privacy.bundle
