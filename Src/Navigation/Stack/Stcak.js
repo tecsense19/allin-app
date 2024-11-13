@@ -27,13 +27,14 @@ import CreateGroupFirstScreen from '../../Screen/CreatGroup/CreateGroupFirst';
 import CreateGroupSecondScreen from '../../Screen/CreatGroup/CreateGroupSecondScreen';
 import GroupChatScreen from '../../Screen/GroupChatScreen/GroupChatScreen';
 import GroupInfo from '../../Screen/GroupInfo/GroupInfo';
+import CreateSurvey from '../../Screen/CreateSurvey/CreateSurvey';
 
 const Stack = createNativeStackNavigator();
 const StackScreen = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                // initialRouteName="groupinfo"
+                // initialRouteName="createsurvey"
                 screenOptions={{ headerShown: false, animation: 'fade_from_bottom', }}>
                 <Stack.Screen name="splase" component={SplaseScreen} />
                 <Stack.Screen name="first" component={FirstScreen} />
@@ -60,6 +61,7 @@ const StackScreen = () => {
                 <Stack.Screen name="creategroupsecond" component={CreateGroupSecondScreen} />
                 <Stack.Screen name="groupchat" component={GroupChatScreen} />
                 <Stack.Screen name="groupinfo" component={GroupInfo} />
+                <Stack.Screen name="createsurvey" component={CreateSurvey} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
             </Stack.Navigator>
         </NavigationContainer>
