@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     checkImg: {
-        height: 20,
-        width: 20,
+        height: 22,
+        width: 22,
         marginRight: 10,
     },
     taskTitle: {
