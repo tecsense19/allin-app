@@ -45,5 +45,5 @@ const styles = StyleSheet.create({
     imageAndTitleContainer: { flexDirection: 'row', alignItems: 'center', },
     onBackContainer: { backgroundColor: COLOR.green, borderRadius: 50, height: 30, width: 30, alignItems: 'center', justifyContent: 'center', marginRight: 10 },
     backicon: { height: 16, width: 16, resizeMode: 'contain', tintColor: COLOR.black, marginLeft: -2 },
-    ProfileImageview: { height: 50, width: 50, borderRadius: 50, marginLeft: 10 }
+    ProfileImageview: { height: 60, width: 60, borderRadius: 50, marginLeft: 10 }
 });

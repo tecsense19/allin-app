@@ -16,6 +16,6 @@ export const styles = StyleSheet.create({
     GiftedChat: { flex: 1, backgroundColor: COLOR.white, borderTopRightRadius: 20, borderTopLeftRadius: 20, paddingTop: 15 },
     selectCatagoryModalView: { backgroundColor: COLOR.lightgray, },
     createItemModalView: { backgroundColor: COLOR.black, flex: 1 },
-    createItemModalView2: { flex: 1, justifyContent: 'center', marginTop: 10 }
+    createItemModalView2: { flex: 1, justifyContent: 'center', marginTop: 20 }
 
 })

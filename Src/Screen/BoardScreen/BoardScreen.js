@@ -1,32 +1,64 @@
 import { View, Text, StatusBar, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import CalenderComponent from './CalenderComponent';
 import MeetingCommponent from './MeetingCommponent';
 import EventsCommponent from './EventsCommponent';
 import TaskCommponent from './TaskCommponent';
+import { getToken } from '../../Service/AsyncStorage';
+import { Task_Meeting_Event_Count } from '../../Service/actions';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 const BoardScreen = () => {
     const [isAcctive, setIsAcctive] = useState('Calender');
-
+    const [taskCount, setTaskCount] = useState('');
+    const [meetingCount, seetMeetingCount] = useState('');
+    const [eventCount, setEventCount] = useState('');
+    useEffect(() => {
+        getCount()
+        setInterval(() => {
+            getCount()
+        }, 2000);
+    }, [])
+    const getCount = async () => {
+        const token = await getToken()
+        Task_Meeting_Event_Count(token)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    seetMeetingCount(res.data.unread_counts.Meeting)
+                    setTaskCount(res.data.unread_counts.Task)
+                    setEventCount(res.data.unread_counts.event)
+                }
+            })
+    }
     return (
         <View
             style={styles.screenMainContainer}>
             <Text style={styles.boardTxt}>Board</Text>
             <StatusBar hidden={false} barStyle={'light-content'} />
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
+            <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={styles.scrollContainer}>
 
                 <View style={styles.deatilsContainer}>
                     <TouchableOpacity style={[styles.topButton, { backgroundColor: isAcctive == 'Task' ? COLOR.green : COLOR.white }]} onPress={() => { setIsAcctive("Task") }}>
                         <Title name={'Task'} color={isAcctive == 'Task' ? COLOR.white : COLOR.black} />
+                        {taskCount ? <View style={{ height: 18, width: 18, backgroundColor: '#DD5D3D', borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: -7, right: 5 }}>
+                            <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.white }}>{taskCount}</Text>
+                        </View> : ''}
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.topButton, { backgroundColor: isAcctive == 'Calender' ? COLOR.green : COLOR.white }]} onPress={() => { setIsAcctive("Calender") }}>
-                        <Title name={'Calender'} color={isAcctive == 'Calender' ? COLOR.white : COLOR.black} />
+                        <Title name={'Calendar'} color={isAcctive == 'Calender' ? COLOR.white : COLOR.black} />
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.topButton, { backgroundColor: isAcctive == 'Meetings' ? COLOR.green : COLOR.white }]} onPress={() => { setIsAcctive("Meetings") }}>
                         <Title name={'Meetings'} color={isAcctive == 'Meetings' ? COLOR.white : COLOR.black} />
+                        {meetingCount ? <View style={{ height: 18, width: 18, backgroundColor: '#DD5D3D', borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: -7, right: 5 }}>
+                            <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.white }}>{meetingCount}</Text>
+                        </View> : ''}
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.topButton, { backgroundColor: isAcctive == 'Events' ? COLOR.green : COLOR.white }]} onPress={() => { setIsAcctive("Events") }}>
                         <Title name={'Events'} color={isAcctive == 'Events' ? COLOR.white : COLOR.black} />
+                        {eventCount ? <View style={{ height: 18, width: 18, backgroundColor: '#DD5D3D', borderRadius: 10, justifyContent: 'center', alignItems: 'center', position: 'absolute', top: -7, right: 5 }}>
+                            <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.white }}>{eventCount}</Text>
+                        </View>
+                            : ''}
                     </TouchableOpacity>
                 </View>
                 {isAcctive == 'Task' ? <TaskCommponent /> :
@@ -52,6 +84,6 @@ const styles = StyleSheet.create({
     screenMainContainer: { flex: 1, backgroundColor: COLOR.black, },
     boardTxt: { marginTop: 60, fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: COLOR.white },
     scrollContainer: { flex: 1, marginTop: 20, backgroundColor: COLOR.white, borderRadius: 20, paddingTop: 15 },
-    deatilsContainer: { height: 70, flex: 1, paddingVertical: 10, paddingHorizontal: 10, justifyContent: 'center', flexDirection: 'row', marginBottom: 10 },
+    deatilsContainer: { height: 70, flex: 1, paddingVertical: 10, paddingHorizontal: 10, justifyContent: 'center', flexDirection: 'row', marginBottom: 20 },
 
 })

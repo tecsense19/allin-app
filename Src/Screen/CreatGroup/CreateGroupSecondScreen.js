@@ -114,21 +114,26 @@ const CreateGroupSecondScreen = (props) => {
                     borderTopLeftRadius: 20,
                     paddingHorizontal: 20
                 }}>
-                <View style={{ backgroundColor: COLOR.lightgreen, height: 70, marginTop: 20, borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
-                    {img ? <TouchableOpacity style={{ height: 50, width: 50, backgroundColor: COLOR.black, justifyContent: 'center', borderRadius: 50 }} onPress={() => setIsOpen(true)}>
-                        <Image source={{ uri: img.uri }} style={{ flex: 1, borderRadius: 50 }} />
-                    </TouchableOpacity> : <TouchableOpacity style={{ height: 50, width: 50, backgroundColor: COLOR.black, justifyContent: 'center', borderRadius: 50 }} onPress={() => setIsOpen(true)}>
-                        <Image source={require('../../Assets/Image/camera.png')} style={{ height: 25, width: 25, alignSelf: 'center' }} />
-                    </TouchableOpacity>}
-                    <TextInput
-                        value={groupName}
-                        onChangeText={(txt) => setGroupName(txt)}
-                        placeholder='Group Name (Optional)'
-                        style={{ fontSize: 16, fontWeight: '600', marginLeft: 15, width: '80%' }} />
+                <View style={{ borderWidth: 2, height: 105, marginTop: 20, borderRadius: 5, paddingHorizontal: 10, borderStyle: 'dashed', borderColor: COLOR.lightgray, justifyContent: 'center', alignItems: 'center' }}>
+                    {img ? <TouchableOpacity onPress={() => setIsOpen(true)}>
+                        <Image source={{ uri: img.uri }} style={{ borderRadius: 50, height: 36, width: 36, alignSelf: 'center' }} />
+                    </TouchableOpacity> :
+                        <TouchableOpacity onPress={() => setIsOpen(true)}>
+                            <Image source={require('../../Assets/Image/camera.png')} style={{ height: 36, width: 36, alignSelf: 'center' }} />
+                        </TouchableOpacity>}
+                    <TouchableOpacity onPress={() => setIsOpen(true)}>
+                        <Text style={{ fontSize: 12, color: COLOR.black, fontWeight: 'medium', marginTop: 12 }}>Upload image or <Text style={{ color: COLOR.green }}>Browse</Text></Text>
+                    </TouchableOpacity>
+
                 </View>
+                <TextInput
+                    value={groupName}
+                    onChangeText={(txt) => setGroupName(txt)}
+                    placeholder='Group name...'
+                    style={{ fontSize: 16, fontWeight: '600', shadowOpacity: 0.2, backgroundColor: COLOR.white, height: 45, shadowOffset: { height: 1, width: 1 }, marginTop: 15, borderRadius: 5, paddingLeft: 10 }} />
 
                 <Text style={{ marginTop: 30, fontSize: 15, color: COLOR.gray, fontWeight: '600', }}>
-                    MEMBERS:{data.length + '/' + Data?.totaluser}
+                    MEMBERS:{" " + data.length + ' OF ' + Data?.totaluser}
                 </Text>
                 <FlatList data={data} renderItem={list} numColumns={4} style={{ marginTop: 10 }} />
             </View>

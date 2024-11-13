@@ -1,6 +1,6 @@
 // 
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
+import { View, Text, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
 import TimeZone from 'react-native-timezone';
 import { getToken } from '../../Service/AsyncStorage';
 import { Forword_Messages, Task_Summarize_Send, Task_User_List, User_List } from '../../Service/actions';
@@ -96,11 +96,13 @@ const ReceivedTask = (props) => {
 
     return (
         <View style={styles.container}>
+
             <StatusBar barStyle="light-content" />
 
             <View style={styles.detailsview}>
                 <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }} />
             </View>
+
             <View style={{ paddingBottom: isFocused ? 5 : 25, backgroundColor: COLOR.white }}>
                 {<View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20 }}>
 

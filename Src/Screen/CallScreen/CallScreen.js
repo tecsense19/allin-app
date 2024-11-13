@@ -48,7 +48,7 @@ const CallScreen = (props) => {
         const userName = item.first_name + ' ' + item.last_name
         return (
             <View style={{ backgroundColor: COLOR.white, }}>
-                <View style={styles.listcontainer}>
+                {item.type == 'user' ? <View style={styles.listcontainer}>
                     <View style={styles.imgAndNameView}>
                         <Image source={{ uri: item.profile }} style={styles.chetImg} />
                         <View>
@@ -73,7 +73,7 @@ const CallScreen = (props) => {
                         />
                         <Text style={styles.time}>{item.time}</Text>
                     </TouchableOpacity>
-                </View>
+                </View> : ''}
             </View>
         );
     };

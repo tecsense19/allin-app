@@ -187,7 +187,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
                                 <View>
-                                    {item.id == userId ? '' : <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
+                                    {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
                                             <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
@@ -199,7 +199,7 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
                                                 style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
                                             />
                                         </TouchableOpacity>
-                                    </View>}
+                                    </View> : null}
                                 </View>
                             )
                         })} />
@@ -219,7 +219,7 @@ export default CreateReminder
 
 const PickerButton = ({ title, onPress }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 10, borderRadius: 10, borderColor: COLOR.bordercolor, margin:5 }}>
+        <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 10, borderRadius: 10, borderColor: COLOR.bordercolor, margin: 5 }}>
             <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.titlecolor }}>{title}</Text>
             <Image source={require('../../../Assets/Image/down.png')}
                 style={{ height: 18, width: 18, resizeMode: 'contain', marginTop: -5, marginLeft: 5, tintColor: COLOR.green }} />

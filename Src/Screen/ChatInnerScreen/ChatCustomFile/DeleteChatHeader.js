@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StyleSheet, Alert, onCopy } from 'react-native'
 import React from 'react'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count, onForword }) => {
+const DeleteChatHeader = ({ onBack, onedit, onDelete, Count, onCopy, edithide }) => {
+
     const createDeleteAlert = () =>
         Alert.alert(
             'Deleted Messages...?',
@@ -15,6 +16,7 @@ const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count, onForword 
                 { text: 'DELETE', onPress: onDelete, style: 'destructive' },
             ],
         );
+
     return (
         <View style={styles.container}>
             <View style={styles.view1}>
@@ -36,22 +38,22 @@ const DeleteChatHeader = ({ onBack, onMenu, onDelete, onReply, Count, onForword 
                     />
                 </TouchableOpacity> */}
 
-                <TouchableOpacity onPress={createDeleteAlert} style={{ marginRight: 30 }}>
+                {edithide ? <TouchableOpacity onPress={onedit} style={{ marginRight: 15 }}>
                     <Image
-                        source={require('../../../Assets/Image/bin.png')}
-                        style={{ height: 20, width: 20 }}
+                        source={require('../../../Assets/Image/groupediticon.png')}
+                        style={{ height: 20, width: 20, tintColor: COLOR.white, resizeMode: 'contain' }}
+                    />
+                </TouchableOpacity> : ''}
+                <TouchableOpacity onPress={createDeleteAlert} style={{ marginRight: 15 }}>
+                    <Image
+                        source={require('../../../Assets/Image/groupbinicon.png')}
+                        style={{ height: 20, width: 20, tintColor: COLOR.white, }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onForword} style={{ marginRight: 15 }}>
+                <TouchableOpacity onPress={onCopy} style={{ marginRight: 15 }}>
                     <Image
-                        source={require('../../../Assets/Image/reply.png')}
-                        style={{ height: 22, width: 22, tintColor: COLOR.white, marginRight: 20, transform: [{ scaleX: -1 }] }}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onMenu} style={{}}>
-                    <Image
-                        source={require('../../../Assets/Image/dott.png')}
-                        style={{ height: 35, width: 35, tintColor: COLOR.white }}
+                        source={require('../../../Assets/Image/copyicon.png')}
+                        style={{ height: 20, width: 20, tintColor: COLOR.white, resizeMode: 'contain' }}
                     />
                 </TouchableOpacity>
 

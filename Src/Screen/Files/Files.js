@@ -132,18 +132,20 @@ const Files = (props) => {
                         <FlatList data={selectedUser} style={styles.FlatList} renderItem={(({ item }) => {
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
-                                <View style={styles.listMainContainer}>
-                                    <View style={styles.imageAndNameContainer}>
-                                        <Image source={{ uri: item?.profile }} style={styles.profileimage} />
-                                        <Text style={styles.username}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
-                                    </View>
+                                <View>
+                                    {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                        </View>
 
-                                    <TouchableOpacity onPress={() => toggleItem(item?.id)}>
-                                        <Image
-                                            source={selectedItems.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')}
-                                            style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
-                                        />
-                                    </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => toggleItem(item?.id)}>
+                                            <Image
+                                                source={selectedItems.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')}
+                                                style={{ height: 25, width: 25, tintColor: selectedItems.includes(item.id) ? COLOR.green : COLOR.lightgray }}
+                                            />
+                                        </TouchableOpacity>
+                                    </View> : null}
                                 </View>
                             )
                         })} />

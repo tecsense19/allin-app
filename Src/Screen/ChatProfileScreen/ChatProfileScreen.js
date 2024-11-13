@@ -17,6 +17,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import styles from './ChatProfileScreenStyle';
+import MapView, { Marker } from 'react-native-maps';
 
 
 LogBox.ignoreAllLogs();
@@ -85,7 +86,7 @@ const ChatProfileScreen = props => {
                             textAlign: 'center',
                             color: COLOR.titlecolor,
                             fontSize: 18,
-                            fontWeight: '600',
+                            fontWeight: 'bold',
                         }}>
 
                         {userName}
@@ -95,20 +96,21 @@ const ChatProfileScreen = props => {
                             textAlign: 'center',
                             color: COLOR.textcolor,
                             fontSize: 14,
-                            fontWeight: '600',
+                            fontWeight: '500',
                             letterSpacing: 1,
                             marginTop: 10,
                         }}>
                         {chatProfileData?.country_code + ' ' + chatProfileData.mobile}
                     </Text>
-                    <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center', alignSelf: 'center', }}>
-                        <CallMsg img={require('../../Assets/Image/telephone.png')} onPress={() => { onhandalePhoneCall() }} />
-                        <CallMsg img={require('../../Assets/Image/group.png')} onPress={() => { props.navigation.goBack() }} />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginHorizontal: 20, padding: 10 }}>
+                        <CallMsg title={'call'} img={require('../../Assets/Image/groupaudioicon.png')} onPress={() => { onhandalePhoneCall() }} />
+                        <CallMsg title={'Message'} img={require('../../Assets/Image/profilemsgicon.png')} onPress={() => { props.navigation.goBack() }} />
+                        <CallMsg type={'share'} title={'share'} img={require('../../Assets/Image/profileuploadicon.png')} onPress={() => { props.navigation.goBack() }} />
                     </View>
-                    {chatProfileData?.description == 'null' || chatProfileData?.title == 'null' || chatProfileData?.description || chatProfileData?.title ?
+                    {chatProfileData?.description == null || chatProfileData?.title == null ?
                         null :
-                        <View style={{ marginHorizontal: 30, borderRadius: 15, padding: 15, marginTop: 20, backgroundColor: COLOR.lightgreen }}>
-                            <Text style={{ textAlign: 'center', fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{chatProfileData?.title}</Text>
+                        <View style={{ marginHorizontal: 30, borderRadius: 15, padding: 15, marginTop: 20, }}>
+                            <Text style={{ textAlign: 'center', fontSize: 18, color: COLOR.gray, fontWeight: 'bold' }}>{chatProfileData?.title}</Text>
                             <Text style={{ marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center' }}>
                                 {chatProfileData?.description}
                             </Text>
@@ -117,6 +119,27 @@ const ChatProfileScreen = props => {
 
                     <FlatList data={socialMedia} renderItem={list} horizontal style={{ alignSelf: 'center', marginTop: 20 }} bounces={false} />
                 </View>
+                <View style={{ paddingHorizontal: 30, marginTop: 35 }}>
+                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', }}>Address</Text>
+                    <View style={{ height: 200, marginTop: 10, borderRadius: 10, marginBottom: 30 }}>
+                        {<MapView
+                            scrollEnabled={true}
+                            zoomEnabled={true}
+                            showsUserLocation={false}
+                            followsUserLocation={true}
+                            style={{ height: 200, width: '100%', borderRadius: 10 }}
+                            initialRegion={{
+                                latitude: 23.0697,
+                                longitude: 72.5229,
+                                latitudeDelta: 0.02,
+                                longitudeDelta: 0.02
+                            }}>
+                            <Marker coordinate={{ latitude: 23.0697, longitude: 72.5229 }} >
+                                <Image style={{ height: 25, width: 25, tintColor: 'darkred' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
+                            </Marker>
+                        </MapView>}
+                    </View>
+                </View>
 
             </View>
         </ScrollView>
@@ -124,10 +147,11 @@ const ChatProfileScreen = props => {
 };
 
 export default ChatProfileScreen;
-const CallMsg = ({ img, onPress }) => {
+const CallMsg = ({ img, onPress, title, type }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={{ backgroundColor: COLOR.green, margin: 5, borderRadius: 10 }} >
-            <Image source={img} style={{ height: 25, width: 25, margin: 10, marginHorizontal: 20, tintColor: COLOR.white }} />
+        <TouchableOpacity onPress={onPress} style={{ height: 57, flex: 1, backgroundColor: COLOR.white, margin: 5, borderRadius: 7, alignItems: 'center', shadowOpacity: 0.2, shadowOffset: { height: 1, width: 1 }, justifyContent: 'center' }} >
+            <Image source={img} style={{ height: type == 'share' ? 25 : 20, width: type == 'share' ? 25 : 20, marginHorizontal: 20, tintColor: COLOR.green, resizeMode: 'contain' }} />
+            <Text style={{ color: COLOR.gray, fontWeight: 'medium', marginTop: 3 }}>{title}</Text>
         </TouchableOpacity>
     )
 }

@@ -16,13 +16,6 @@ const Loader = ({ visible, Retry }) => {
     };
     return (
 
-        // <Modal visible={visible} transparent>
-        //     <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' }}>
-
-        //         <ActivityIndicator size={'small'} style={{ padding: 40, backgroundColor: COLOR.white, alignItems: 'center', justifyContent: 'center', borderRadius: 10 }} />
-
-        //     </View>
-        // </Modal >
         <Modal visible={visible} transparent>
             {isRetry ? <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' }}>
                 <View style={{ height: 100, width: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.white, borderRadius: 10 }}>
