@@ -18,6 +18,11 @@ const CreateSurvey = (props) => {
         { id: Date.now().toString(), text: 'new Option', votes: 13 },
 
     ]);
+    const img = [
+        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
+        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
+        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
+    ]
     const totalVotes = 13
     const calculatePercentage = (votes) => {
         if (totalVotes === 0) return 0;
@@ -146,9 +151,18 @@ const CreateSurvey = (props) => {
                                         </TouchableOpacity>
                                         <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.text}</Text>
                                     </View>
-                                    <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.votes}</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <View>
+                                            <FlatList horizontal data={img} renderItem={({ item, index }) => {
+                                                return (
+                                                    <Image source={{ uri: item.uri }} style={{ height: 20, width: 20, borderRadius: 20, marginLeft: index == '0' ? 0 : -10 }} />
+                                                )
+                                            }} />
+                                        </View>
+                                        <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.votes}</Text>
+                                    </View>
                                 </View>
-                                <Progress.Bar unfilledColor={COLOR.lightgray} borderColor={COLOR.lightgray} color={COLOR.green} progress={calculatePercentage(item.votes)} width={WIDTH - 100} style={{ marginTop: 7 }} />
+                                <Progress.Bar unfilledColor={COLOR.lightgray} borderColor={COLOR.lightgray} color={COLOR.green} progress={calculatePercentage(item.votes)} width={WIDTH - 100} style={{ marginTop: 10 }} />
 
                             </View>
                         )
