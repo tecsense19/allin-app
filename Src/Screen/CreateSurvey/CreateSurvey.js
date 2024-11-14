@@ -60,7 +60,7 @@ const CreateSurvey = (props) => {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <View style={{ flex: 1, backgroundColor: COLOR.black, }}>
                 <View style={{ paddingHorizontal: 30 }}>
-                    <NavigateHeader onPress={() => { props }} title={'Create Survey'} color={COLOR.white} />
+                    <NavigateHeader onPress={() => { props.navigation.goBack() }} title={'Create Survey'} color={COLOR.white} />
                 </View>
                 <View style={{ flex: 1, backgroundColor: COLOR.white, paddingHorizontal: 30, marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
                     <Text style={{ marginTop: 30, fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Question</Text>
