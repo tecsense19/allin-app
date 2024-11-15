@@ -13,10 +13,9 @@ export const User_List = async (timeZone, Token, Search) => {
         },
         body: JSON.stringify(timeZone)
     })
-    // console.log(res);
-
+    console.log(res);
     const response = await res.json()
-    // console.log('response', response);
+    console.log('response', response);
 
     return response
 }

@@ -30,6 +30,7 @@ import Button from '../../Custom/Button/Button';
 import MsgMapImage from './ChatCustomFile/MsgMapView';
 import { getToken, MyID } from '../../Service/AsyncStorage';
 import Clipboard from '@react-native-clipboard/clipboard';
+import AddContactCard from './ChatCustomFile/AddContactCard';
 
 LogBox.ignoreAllLogs();
 
@@ -53,6 +54,7 @@ const ChatInnerScreen = props => {
     // const [showButton, setShowButton] = useState(false);
     const [location, setLocation] = useState(null);
     const [forwordId, setForwordID] = useState();
+    const [isCardHide, setIsCardHide] = useState(false);
     const [filteredContacts, setFilteredContacts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [token, setToken] = useState('');
@@ -114,12 +116,12 @@ const ChatInnerScreen = props => {
             'hardwareBackPress', closeModal,);
         return () => backHandler.remove();
     }, [visible]);
-    useEffect(() => {
-        if (selectedMSG.length > 0) {
-            const id = selectedMSG?.map((res) => res?.messageId);
-            setForwordID(id?.join(','))
-        }
-    }, [selectedMSG]);
+    // useEffect(() => {
+    //     if (selectedMSG.length > 0) {
+    //         const id = selectedMSG?.map((res) => res?.messageId);
+    //         setForwordID(id?.join(','))
+    //     }
+    // }, [selectedMSG]);
     const requestLocationPermission = async () => {
         try {
             const granted = await request(
@@ -314,6 +316,9 @@ const ChatInnerScreen = props => {
         Meeting_Onhandale_Accept(token, messageId, myid, type)
     }
     const ChatMessage = React.memo(({ message }) => {
+        if (message && message.sentBy == 'loginUser') {
+            setIsCardHide(true)
+        }
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -499,6 +504,7 @@ const ChatInnerScreen = props => {
                             <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: COLOR.white }} onPress={() => setTaskpopup('')}>
                                 <View style={styles.GiftedChat}>
                                     <ScrollView ref={scrollViewRef}>
+                                        {isCardHide || loding ? null : <AddContactCard userDetails={userDetails} />}
                                         {memoizedMessages}
                                     </ScrollView>
                                 </View >

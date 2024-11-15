@@ -162,7 +162,7 @@ const CreateSurvey = (props) => {
                                         <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.votes}</Text>
                                     </View>
                                 </View>
-                                <Progress.Bar unfilledColor={COLOR.lightgray} borderColor={COLOR.lightgray} color={COLOR.green} progress={calculatePercentage(item.votes)} width={WIDTH - 100} style={{ marginTop: 10 }} />
+                                <Progress.Bar unfilledColor={COLOR.lightgray} borderWidth={0} height={7} color={COLOR.green} progress={calculatePercentage(item.votes)} width={WIDTH - 100} style={{ marginTop: 10 }} />
 
                             </View>
                         )

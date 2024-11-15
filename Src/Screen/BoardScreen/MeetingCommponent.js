@@ -1,5 +1,3 @@
-
-
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getToken, MyID } from '../../Service/AsyncStorage';
@@ -7,7 +5,7 @@ import { Meeting_Onhandale_Accept, Meetings, Task_Meeting_Event_Unread } from '.
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
 
-const MeetingCommponent = () => {
+const MeetingCommponent = ({ onPress }) => {
     const [myid, setMyId] = useState('')
     const [meetingsData, setMeetingsData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -102,9 +100,11 @@ const MeetingCommponent = () => {
                     }
                 })
         }
-
+        const onNavigate = (e) => {
+            onPress(e)
+        }
         return (
-            <View style={styles.meetinglistContainer}>
+            <TouchableOpacity onPress={() => onNavigate(item)} style={styles.meetinglistContainer}>
                 <Text style={styles.meetingTxt}>Meeting</Text>
                 <View style={{ height: 1.5, backgroundColor: COLOR.lightgray, marginHorizontal: 15, marginTop: 5 }}></View>
                 <View style={styles.meetingDetailsView}>
@@ -171,7 +171,7 @@ const MeetingCommponent = () => {
 
                 </View>
 
-            </View>
+            </TouchableOpacity>
         )
     }
     const OnHandleRead = async () => {
