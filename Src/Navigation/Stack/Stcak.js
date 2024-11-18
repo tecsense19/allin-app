@@ -32,6 +32,7 @@ import ScanQR from '../../Screen/ScanQR/ScanQR';
 import ScanUserDetails from '../../Screen/ScanUserDetails/ScanUserDetails';
 import EventDetails from '../../Screen/EventDetails/EventDetails';
 import MeetingDetails from '../../Screen/MeetingDetails/MeetingDetails';
+import TaskDetails from '../../Screen/TaskDetails/TaskDetails';
 
 const Stack = createNativeStackNavigator();
 const StackScreen = () => {
@@ -70,6 +71,7 @@ const StackScreen = () => {
                 <Stack.Screen name="startchat" component={ScanUserDetails} />
                 <Stack.Screen name="eventdetails" component={EventDetails} />
                 <Stack.Screen name="meetingdetails" component={MeetingDetails} />
+                <Stack.Screen name="taskdetails" component={TaskDetails} />
                 {/* <Stack.Screen name="language" component={LanguageScreen} /> */}
             </Stack.Navigator>
         </NavigationContainer>

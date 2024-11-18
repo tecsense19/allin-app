@@ -5,7 +5,7 @@ import { Task_Meeting_Event_Unread, Task_User_List } from '../../Service/actions
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
 
-const TaskCommponent = () => {
+const TaskCommponent = ({ onPress }) => {
     const [isFocus, setIsFocus] = useState('Given')
     const [userData, setAllUserData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -13,9 +13,10 @@ const TaskCommponent = () => {
     const id = userData.map((item) => { return item.message_id });
     const commaS_id = id.join(',');
 
-
+    const onNavigate = (e) => {
+        onPress(e)
+    }
     const list = ({ item }) => {
-        console.log(item, '================================');
 
         const userName = item.name
         const date = new Date(item.date);    // Get day, month, and year
@@ -40,7 +41,7 @@ const TaskCommponent = () => {
 
 
         return (
-            <View style={styles.ListmainContainer}>
+            <TouchableOpacity onPress={onNavigate} style={styles.ListmainContainer}>
                 <View style={styles.secondContainer}>
                     <View style={styles.twoContainerDevide}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -61,7 +62,7 @@ const TaskCommponent = () => {
 
                 </View>
 
-            </View>
+            </TouchableOpacity>
         );
     };
     const getReceiveTask = async () => {

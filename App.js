@@ -15,7 +15,7 @@ const App = () => {
   //     console.log(D_token, '====================================');
   //   } catch (error) { console.error('Error getting FCM token:', error) }
   // }
- 
+
   return (
     <Provider store={store}>
       <View style={{ flex: 1 }}>
