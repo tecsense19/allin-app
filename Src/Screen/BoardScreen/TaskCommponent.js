@@ -41,7 +41,9 @@ const TaskCommponent = ({ onPress }) => {
 
 
         return (
-            <TouchableOpacity onPress={onNavigate} style={styles.ListmainContainer}>
+            <TouchableOpacity
+                // onPress={onNavigate} 
+                style={styles.ListmainContainer}>
                 <View style={styles.secondContainer}>
                     <View style={styles.twoContainerDevide}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>

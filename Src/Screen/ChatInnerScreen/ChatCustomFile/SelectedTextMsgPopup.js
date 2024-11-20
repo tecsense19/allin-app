@@ -6,6 +6,7 @@ const SelectedTextMsgPopup = ({ OnAddTask, onIgnore }) => {
     return (
         <View
             style={{
+                flex: 1,
                 height: 50,
                 flexDirection: "row",
                 alignItems: "center",
@@ -17,7 +18,7 @@ const SelectedTextMsgPopup = ({ OnAddTask, onIgnore }) => {
                 shadowOffset: { height: 2, width: 2 },
                 alignSelf: "center",
                 position: "absolute",
-                top: -30,
+                marginTop: 50,
                 justifyContent: "center",
             }} >
             <TouchableOpacity

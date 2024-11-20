@@ -50,27 +50,27 @@ const MsgTask = ({ data, ThreeDott }) => {
                                         <Text numberOfLines={1} style={{ color: COLOR.gray, fontWeight: '600', flex: 1 }}>{task.checkbox}</Text>
                                     </View>
                                     <View style={{}}>
-                                        <FlatList style={{}} horizontal data={imgData} renderItem={({ item, index }) => {
+                                        {/* <FlatList style={{}} horizontal data={imgData} renderItem={({ item, index }) => {
                                             return (
                                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                                     <Image source={{ uri: item.img }} style={{ height: 15, width: 15, borderRadius: 20, marginLeft: index == 0 ? 0 : - 5 }} />
                                                 </View>
                                             )
-                                        }} />
+                                        }} /> */}
                                     </View>
                                 </View>
-                                <FlatList style={{}} data={[{}, {}]} renderItem={({ item }) => {
+                                {/* <FlatList style={{}} data={[{}, {}]} renderItem={({ item }) => {
                                     return (
                                         <View style={{ height: 40, flexDirection: 'row', alignItems: 'center', backgroundColor: '#F7F8F8', marginLeft: '10%', marginTop: 5, borderRadius: 5, paddingHorizontal: 10, }}>
                                             <Image source={{ uri: 'https://cdn.pixabay.com/photo/2024/06/24/04/05/woman-8849047_1280.jpg' }} style={{ height: 20, width: 20, borderRadius: 20, marginRight: 5, }} />
                                             <Text style={{ flex: 1, color: COLOR.gray, fontSize: 10 }} numberOfLines={2}>Lorem Ipsum Dummy TextLorem Ipsum Dummy TextLorem Ipsum Dummy TextLorem Ipsum Dummy Text</Text>
                                         </View>
                                     )
-                                }} />
-                                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '10%', marginTop: 5 }}>
+                                }} /> */}
+                                {/* <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '10%', marginTop: 5 }}>
                                     <Image source={require('../../../Assets/Image/addcomment.png')} style={{ height: 12, width: 12, marginRight: 5 }} />
                                     <Text style={{ fontSize: 12, color: COLOR.gray, fontWeight: '500' }}>Add Comment</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                             </View>
                         )
                     })

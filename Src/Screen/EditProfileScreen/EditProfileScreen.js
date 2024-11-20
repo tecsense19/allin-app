@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, StatusBar, ImageBackground, Image, LogBox, ScrollView, Alert, Text, BackHandler, Modal, ActivityIndicator, KeyboardAvoidingView, } from 'react-native';
+import { View, TouchableOpacity, StatusBar, ImageBackground, Image, LogBox, ScrollView, Alert, Text, BackHandler, Modal, FlatList, KeyboardAvoidingView, TextInput, } from 'react-native';
 import { PERMISSIONS, openSettings, request } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -16,6 +16,8 @@ import ProfileModal from '../../Custom/Modal/ProfileModal';
 import SocialMedia from '../../Custom/Modal/SocialMedia';
 import styles from '../EditProfileScreen/EditProfileScreenStyle';
 import { Delete_Account, Edit_Profile } from '../../Service/actions';
+import MapView, { Circle, Marker } from 'react-native-maps';
+
 LogBox.ignoreAllLogs();
 const EditProfileScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -36,6 +38,14 @@ const EditProfileScreen = props => {
     const [twitterurl, setTwitterurl] = useState('');
     const [youtubeurl, setYoutubeurl] = useState('');
     const [linkedinurl, setLinkedinurl] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+    const [latlong, setLetTong] = useState('');
+    const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const [selectedPlace, setSelectedPlace] = useState(null);
+    const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
+    const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo';
+
     const AccountID = data?.data?.userDetails?.account_id
     const myData = data?.data?.userDetails
     const token = data?.data?.token
@@ -45,6 +55,7 @@ const EditProfileScreen = props => {
         return () => backHandler.remove();
     }, [coverImg, viewImage, visible]);
     useEffect(() => {
+
         getData();
         setFName(myData?.first_name)
         setLName(myData?.last_name)
@@ -147,7 +158,7 @@ const EditProfileScreen = props => {
                 return Alert.alert('Enter Valid Email')
             }
         }
-        const res = await Edit_Profile(token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg)
+        const res = await Edit_Profile(token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg, selectedPlace?.lng, selectedPlace?.lat)
         if (res?.status_code == 200) {
             const a = {
                 data: { token: token, expires_in: res?.data?.expires_in, token_type: res?.data?.token_type, userDetails: res?.data?.userData }
@@ -171,6 +182,60 @@ const EditProfileScreen = props => {
             } else (deleteAccount())
         })
     }
+    const fetchSuggestions = async (input) => {
+        try {
+            const response = await fetch(
+                `${PLACES_API_BASE_URL}/autocomplete/json?input=${input}&key=${apiKey}&types=geocode`
+            );
+            const json = await response.json();
+            setSuggestions(json.predictions);
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            setSuggestions([]);
+        }
+    };
+    const handleSelectSuggestion = async (place) => {
+        try {
+            const response = await fetch(
+                `${PLACES_API_BASE_URL}/details/json?placeid=${place.place_id}&key=${apiKey}`
+            );
+            const json = await response.json();
+            const placeDetails = json.result;
+
+            const country = placeDetails.address_components.find(
+                (component) => component.types.includes('country')
+            )?.long_name;
+            const state = placeDetails.address_components.find(
+                (component) => component.types.includes('administrative_area_level_1')
+            )?.long_name;
+            const city = placeDetails.address_components.find(
+                (component) => component.types.includes('locality')
+            )?.long_name;
+            const pincode = placeDetails.address_components.find(
+                (component) => component.types.includes('postal_code')
+            )?.long_name;
+            const address = placeDetails.formatted_address;
+            const { lat, lng } = placeDetails.geometry.location;
+
+            setSelectedPlace({
+                id: placeDetails.place_id,
+                description: placeDetails.formatted_address,
+                country: country || '',
+                state: state || '',
+                city: city || '',
+                pincode: pincode || '',
+                address: address || '',
+                lat: lat,
+                lng: lng,
+            });
+
+            setQuery(place.description);
+            setSuggestions([]);
+        } catch (error) {
+            console.error('Error fetching place details:', error);
+            setSelectedPlace(null);
+        }
+    };
     return (
         <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
             <View style={styles.container}>
@@ -207,6 +272,70 @@ const EditProfileScreen = props => {
                         <Textinput onPress={UpdateDataApiCalling} label={'Description'} marginTop={20} placeholder={'Enter description'} value={description} placeholderTextColor={COLOR.placeholder} onChangeText={txt => setDescription(txt)} />
                         <Textinput onPress={UpdateDataApiCalling} value={email} onChangeText={txt => setEmail(txt)} label={'Update Email'} marginTop={20} placeholderTextColor={COLOR.placeholder} placeholder={'Enter your email '} />
                         <Textinput onPress={UpdateDataApiCalling} keyboardType={'numeric'} value={phone} onChangeText={txt => setPhone(txt)} label={'Update Phone'} marginTop={20} maxLength={18} placeholderTextColor={COLOR.placeholder} placeholder={'Enter your phone number'} />
+
+                        <Text style={{ fontSize: 18, color: COLOR.titlecolor, fontWeight: 'bold', marginLeft: 10, marginTop: 25, }}>
+                            Address
+                        </Text>
+                        <TextInput
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                            placeholder="write a location"
+                            value={query}
+                            onChangeText={(text) => {
+                                setQuery(text);
+                                fetchSuggestions(text);
+                            }}
+                            placeholderTextColor={COLOR.placeholder}
+                            style={{
+                                backgroundColor: COLOR.white, borderWidth: 1,
+                                height: 45,
+                                borderRadius: 5,
+                                paddingLeft: 10,
+                                fontWeight: '500',
+                                fontSize: 16,
+                                color: COLOR.textcolor, marginTop: 5, marginHorizontal: 10
+                            }}
+                        />
+                        {suggestions.length > 0 && (
+                            <FlatList
+                                style={{ width: '100%', maxHeight: 300, marginHorizontal: 10 }}
+                                data={suggestions}
+                                keyExtractor={(item) => item.place_id}
+                                renderItem={({ item }) => (
+                                    <Text style={{ paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: '#ccc' }} onPress={() => handleSelectSuggestion(item)}>
+                                        {item.description}
+                                    </Text>
+                                )}
+                            />
+                        )}
+                        {selectedPlace && (
+                            <MapView
+                                style={{ height: 250, width: '93%', borderRadius: 10, marginTop: 10, marginHorizontal: 10 }}
+                                followsUserLocation={true}
+                                mapType="satellite"
+                                showsUserLocation={true}
+                                zoomEnabled={false}
+                                scrollEnabled={false}
+                                // onPress={handleMapPress}
+                                region={{
+                                    latitude: selectedPlace?.lat,
+                                    longitude: selectedPlace?.lng,
+                                    latitudeDelta: 0.01,
+                                    longitudeDelta: 0.01
+                                }}
+
+                            >
+                                <Marker coordinate={{ latitude: selectedPlace?.lat, longitude: selectedPlace?.lng }}>
+                                    <Image style={{ height: 25, width: 25, tintColor: 'red' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
+                                </Marker>
+                                <Circle
+                                    center={{ latitude: selectedPlace?.lat, longitude: selectedPlace?.lng }}
+                                    radius={200} // 1 km in meters
+                                    strokeColor={'rgba(1, 214, 201, 1)'} // Blue color with transparency
+                                    fillColor={'rgba(0, 239, 255, 0.1)'} // Blue color with transparency
+                                />
+                            </MapView>
+                        )}
                         <Text style={{ fontSize: 18, color: COLOR.titlecolor, fontWeight: 'bold', marginLeft: 10, marginTop: 25, }}>
                             Account ID
                         </Text>

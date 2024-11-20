@@ -105,7 +105,9 @@ const EventsCommponent = ({ onPress }) => {
             //         </View>
             //     </View>
             // </View>
-            <TouchableOpacity onPress={() => { onNavigate(item) }} style={{ height: 164, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', borderRadius: 15, flex: 1, padding: 10 }}>
+            <TouchableOpacity
+                // onPress={() => { onNavigate(item) }} 
+                style={{ height: 164, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', borderRadius: 15, flex: 1, padding: 10 }}>
                 <View style={{ flex: 1.15, }}>
                     <Image source={{ uri: item.event_image }} style={{ height: 92, width: 102, borderRadius: 15 }} />
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>

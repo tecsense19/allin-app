@@ -23,6 +23,8 @@ import MapView, { Marker } from 'react-native-maps';
 LogBox.ignoreAllLogs();
 const ChatProfileScreen = props => {
     const chatProfileData = props?.route?.params
+    console.log(chatProfileData.latitude, '================================================>');
+
 
     const socialMedia = [
         { id: 1, name: 'instagram', img: require('../../Assets/Image/instagram.png'), url: chatProfileData?.instagram_profile_url },
@@ -119,27 +121,28 @@ const ChatProfileScreen = props => {
 
                     <FlatList data={socialMedia} renderItem={list} horizontal style={{ alignSelf: 'center', marginTop: 20 }} bounces={false} />
                 </View>
-                <View style={{ paddingHorizontal: 30, marginTop: 35 }}>
-                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', }}>Address</Text>
-                    <View style={{ height: 200, marginTop: 10, borderRadius: 10, marginBottom: 30 }}>
-                        {<MapView
-                            scrollEnabled={true}
-                            zoomEnabled={true}
-                            showsUserLocation={false}
-                            followsUserLocation={true}
-                            style={{ height: 200, width: '100%', borderRadius: 10 }}
-                            initialRegion={{
-                                latitude: 23.0697,
-                                longitude: 72.5229,
-                                latitudeDelta: 0.02,
-                                longitudeDelta: 0.02
-                            }}>
-                            <Marker coordinate={{ latitude: 23.0697, longitude: 72.5229 }} >
-                                <Image style={{ height: 25, width: 25, tintColor: 'darkred' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
-                            </Marker>
-                        </MapView>}
-                    </View>
-                </View>
+                {chatProfileData?.latitude || chatProfileData?.longitude ?
+                    <View style={{ paddingHorizontal: 30, marginTop: 35 }}>
+                        <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', }}>Address</Text>
+                        <View style={{ height: 200, marginTop: 10, borderRadius: 10, marginBottom: 30 }}>
+                            <MapView
+                                scrollEnabled={false}
+                                followsUserLocation={true}
+                                zoomEnabled={false}
+                                zoomTapEnabled={false}
+                                style={{ height: 200, width: '100%', borderRadius: 10 }}
+                                initialRegion={{
+                                    latitude: chatProfileData?.latitude,
+                                    longitude: chatProfileData?.longitude,
+                                    latitudeDelta: 0.005,
+                                    longitudeDelta: 0.005
+                                }}>
+                                <Marker coordinate={{ latitude: chatProfileData?.latitude, longitude: chatProfileData?.longitude }} >
+                                    <Image style={{ height: 25, width: 25, tintColor: 'darkred' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
+                                </Marker>
+                            </MapView>
+                        </View>
+                    </View> : null}
 
             </View>
         </ScrollView>

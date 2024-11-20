@@ -36,7 +36,8 @@ const WorkHours = props => {
     const [userlist, setUserList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [location, setLocation] = useState('');
-
+    const [totalworkHour, setTotalWorkHour] = useState('');
+    let cleanedTime = totalworkHour.replace(/[hmi]/g, '').trim();
     const monthIndex = date.getMonth();
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const month = months[monthIndex] + '-' + date.getFullYear();
@@ -158,7 +159,8 @@ const WorkHours = props => {
             .then((res) => {
                 setWorkHourData(res.data.workHours);
                 setLoading(false)
-                // console.log(res.data);
+                setTotalWorkHour(res.data.TotalHours)
+                console.log(res.data.TotalHours);
                 // console.log(apiMonthyear);
             })
             .catch((e) => {
@@ -277,6 +279,8 @@ const WorkHours = props => {
                         reset={clear}
                     />
                     <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
+                    <Text style={{ textAlign: 'center', marginTop: 15, marginBottom: 5, color: COLOR.green, fontSize: 15, fontWeight: '600' }}>{cleanedTime + ' Hours'}</Text>
+
                     {show ?
                         <MonthPicker
                             onChange={onValueChange}

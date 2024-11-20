@@ -104,7 +104,9 @@ const MeetingCommponent = ({ onPress }) => {
             onPress(e)
         }
         return (
-            <TouchableOpacity onPress={() => onNavigate(item)} style={styles.meetinglistContainer}>
+            <TouchableOpacity
+                // onPress={() => onNavigate(item)} 
+                style={styles.meetinglistContainer}>
                 <Text style={styles.meetingTxt}>Meeting</Text>
                 <View style={{ height: 1.5, backgroundColor: COLOR.lightgray, marginHorizontal: 15, marginTop: 5 }}></View>
                 <View style={styles.meetingDetailsView}>
