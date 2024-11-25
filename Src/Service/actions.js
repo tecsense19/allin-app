@@ -13,9 +13,7 @@ export const User_List = async (timeZone, Token, Search) => {
         },
         body: JSON.stringify(timeZone)
     })
-    console.log(res);
     const response = await res.json()
-    console.log('response', response);
 
     return response
 }
@@ -277,12 +275,7 @@ export const Forword_Messages = async (token, msgId, userID) => {
         body: JSON.stringify({ message_id: msgId, user_id: userID })
     })
     const response = await res.json()
-    if (response?.status_code == 200) {
 
-    } else {
-        Alert.alert(data?.message);
-
-    }
     return response
 }
 
