@@ -69,8 +69,8 @@ const MyTabBar = ({ navigation }) => {
           setActive(5);
           handleSetTrue()
         }}>
-        <Image source={require('../../Assets/Image/bottomboard.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 5 ? COLOR.green : COLOR.black }} />
-        <Text style={[styles.txt, { color: active == 5 ? COLOR.green : COLOR.black }]}>Board</Text>
+        {/* <Image source={require('../../Assets/Image/bottomboard.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 5 ? COLOR.green : COLOR.black }} /> */}
+        <Text style={[styles.txt, { color: active == 5 ? COLOR.green : COLOR.black, }]}>Board</Text>
       </TouchableOpacity>
       <TouchableOpacity
         disabled={active !== 3 ? false : true}
@@ -93,7 +93,7 @@ const MyTabBar = ({ navigation }) => {
           setActive(4);
           handleSetTrue()
         }}>
-        <Image source={require('../../Assets/Image/bottomchat.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 4 ? COLOR.green : COLOR.black }} />
+        {/* <Image source={require('../../Assets/Image/bottomchat.png')} style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: active == 4 ? COLOR.green : COLOR.black }} /> */}
         <Text style={[styles.txt, { color: active == 4 ? COLOR.green : COLOR.black }]}>Chat</Text>
       </TouchableOpacity>
 
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   txt: {
     color: COLOR.black,
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: 'bold',
     marginTop: 5
   },
