@@ -279,15 +279,12 @@ const WorkHours = props => {
                         reset={clear}
                     />
                     <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
-                    <Text style={{ textAlign: 'center', marginTop: 15, marginBottom: 5, color: COLOR.green, fontSize: 15, fontWeight: '600' }}>{cleanedTime + ' Hours'}</Text>
-
+                    {cleanedTime && <Text style={{ textAlign: 'center', marginTop: 15, marginBottom: 5, color: COLOR.green, fontSize: 15, fontWeight: '600' }}>{cleanedTime + ' Hours'}</Text>}
                     {show ?
                         <MonthPicker
                             onChange={onValueChange}
                             value={date}
                             maximumDate={new Date()}
-
-
                         />
                         //  <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
                         //     <FlatList renderItem={({ item }) => (
