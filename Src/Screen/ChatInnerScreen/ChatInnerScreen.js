@@ -624,13 +624,13 @@
 
 
 import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { View, Alert, Vibration, Image, LogBox, BackHandler, Modal, Linking, TouchableOpacity, FlatList, Text, TextInput, SectionList, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, TouchableHighlight, Pressable } from 'react-native';
+import { View, Alert, Vibration, Image, LogBox, BackHandler, Modal, Linking, TouchableOpacity, FlatList, Text, TextInput, SectionList, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, TouchableHighlight, Pressable, Dimensions } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Contacts from 'react-native-contacts';
 import { PERMISSIONS, RESULTS, openSettings, request } from 'react-native-permissions';
 import Chatheader from './ChatInnerHeader';
-import { COLOR } from '../../Assets/AllFactors/AllFactors';
+import { COLOR, HEIGHT } from '../../Assets/AllFactors/AllFactors';
 import PlusModal from './ChatCustomFile/PlusModal';
 import CreateMsgMeeting from './ChatCustomFile/CreateMeeting';
 import { MsgMeeting } from './ChatCustomFile/MsgMeeting';
@@ -692,6 +692,7 @@ const ChatInnerScreen = props => {
         // setTouchPosition({ x: locationX, y: locationY });
         setTouchPosition({ x: pageX, y: pageY });
     };
+   
 
 
     const Userid = props?.route?.params
@@ -716,6 +717,10 @@ const ChatInnerScreen = props => {
     const scrollToBottom = () => {
         scrollViewRef.current.scrollToEnd({ animated: false });
     };
+    // console.log(touchPosition.y);
+    // console.log(Dimensions.get('screen').height);
+
+
     useEffect(() => {
         scrollToBottom()
     }, [messages]);
@@ -797,7 +802,7 @@ const ChatInnerScreen = props => {
         selectedMSG.forEach((res) => {
             Chat_Delete_Messages(token, res?.messageId)
         })
-        setSelectedMSG('')
+        setSelectedMSG([])
         getAllMessages()
     }
     const onhandaleSelected = msg => {
@@ -824,7 +829,7 @@ const ChatInnerScreen = props => {
     }
     const handleSend = (currentMsgData) => {
 
-        if (selectedMSG[0]?.messageId && inputText !== '') {
+        if (selectedMSG[0] == 'editText' && inputText !== '') {
             return EditTextMEssage()
         }
         if (inputText.trim() == '' && msgType == 'Text') {
@@ -1037,12 +1042,10 @@ const ChatInnerScreen = props => {
     const EditTextMEssage = async () => {
         const timezone = Timezone.getTimeZone()
         const token = await getToken()
-        Edit_Text_Message(token, selectedMSG[0].messageId, inputText, timezone)
+        Edit_Text_Message(token, selectedMSG[1], inputText, timezone)
             .then((res) => {
-                console.log(res);
                 setSelectedMSG([])
                 setInputText('')
-
             })
     }
     const copyMessages = async () => {
@@ -1054,7 +1057,6 @@ const ChatInnerScreen = props => {
         <View style={{ flex: 1, backgroundColor: COLOR.white }}>
 
             <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
-
 
                 {msgType == 'Location' ?
                     <View style={{ flex: 1 }}>
@@ -1097,8 +1099,6 @@ const ChatInnerScreen = props => {
                             </View> :
 
                             <View style={styles.chatMainsection}>
-
-
                                 <View style={styles.chatHeaderView}>
                                     {!isSelected ? <Chatheader
                                         onProfile={() => props.navigation.navigate('profile', userDetails)}
@@ -1119,7 +1119,6 @@ const ChatInnerScreen = props => {
                                             onedit={() => { setInputText(selectedMSG[0]?.messageDetails) }}
                                         />}
                                 </View>
-
                                 <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: COLOR.white }} onPress={() => setTaskpopup('')}>
                                     <View style={styles.GiftedChat}>
                                         <ScrollView ref={scrollViewRef}>
@@ -1127,7 +1126,6 @@ const ChatInnerScreen = props => {
                                         </ScrollView>
                                     </View >
                                 </TouchableWithoutFeedback>
-
                                 <PlusModal
                                     onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); setTaskpopup('') }}
                                     onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
@@ -1141,7 +1139,6 @@ const ChatInnerScreen = props => {
                                     onLocation={() => { requestLocationPermission(), setVisible(false), setMsgType('Location') }}
                                     // onContacts={() => { setVisible(false); }}
                                     onScan={() => { setVisible(false); props.navigation.navigate('scandoc', { id: Userid, isChat: true }) }}
-
                                 />
                                 <Modal visible={ReMeCkModal} animationType='fade'>
                                     <View style={styles.createItemModalView}>
@@ -1174,43 +1171,40 @@ const ChatInnerScreen = props => {
 
                     </View>
                 }
-
             </KeyboardAvoidingView>
-            {selectedMSG[0]?.messageType == 'Text' || selectedMSG[0]?.messageType == 'Task' ?
-                <BlurView
-
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                    }}
+            {selectedMSG[0]?.messageType == 'Text'
+                //  || selectedMSG[0]?.messageType == 'Task' 
+                ?
+                <BlurView style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, }}
                     blurType="light"
                     blurAmount={10} >
                     <Pressable style={{ flex: 1, }} onPress={() => { setSelectedMSG([]) }}>
+                        <View style={{ top: touchPosition.y > HEIGHT / 1.7 ? 0 : touchPosition.y, paddingHorizontal: 20, flex: touchPosition.y > HEIGHT / 1.7 ? 1 : 0, justifyContent: touchPosition.y > HEIGHT / 2 ? 'flex-end' : '', paddingBottom: 20 }}>
+                            {selectedMSG[0].messageType == 'Text' ?
+                                <View>
+                                    <View style={{ shadowOpacity: 0.5, shadowOffset: { height: 1, width: 1 }, shadowRadius: 5, marginTop: -20 }}>
+                                        <MsgText onBluerpopupComm={true} data={selectedMSG[0]} />
+                                        <SelectedTextMsgPopup msgType={selectedMSG[0].messageType} userType={selectedMSG[0]?.sentBy}
+                                            OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }}
+                                            onIgnore={() => { setSelectedMSG([]) }}
+                                            onForword={() => { props.navigation.navigate('forword', { forwordId }), setSelectedMSG([]) }}
+                                            onDeleteTask={selectedMsgDelete}
+                                            onEditTask={() => { setInputText(selectedMSG[0]?.messageDetails), setSelectedMSG(['editText', selectedMSG[0].messageId]) }}
+                                        />
 
-                        <View style={{ top: touchPosition.y, paddingHorizontal: 20 }}>
-                            {selectedMSG[0].messageType == 'Text' ? < View >
-                                <SelectedTextMsgPopup OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }} onIgnore={() => { setSelectedMSG([]) }} />
-                                <View style={{ shadowOpacity: 0.5, shadowOffset: { height: 1, width: 1 }, shadowRadius: 5, }}>
-                                    <MsgText data={selectedMSG[0]} />
-                                </View>
 
-                            </View> :
-                                selectedMSG[0].messageType == 'Task' ? < View style={{}}>
-                                    <SelectedTextMsgPopup OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }} onIgnore={() => { setSelectedMSG([]) }} />
+                                    </View>
+                                </View> :
+                                selectedMSG[0].messageType == 'Task' ? <View style={{}}>
                                     <TouchableWithoutFeedback>
                                         <View style={{ shadowOpacity: 0.3, shadowOffset: { height: 1, width: 1 }, shadowRadius: 8, }}>
                                             <MsgTask data={selectedMSG[0]} />
                                         </View>
+                                        <SelectedTextMsgPopup userType={selectedMSG[0]?.sentBy} OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }} onIgnore={() => { setSelectedMSG([]) }} />
                                     </TouchableWithoutFeedback>
-
                                 </View> : null}
-
                         </View>
                     </Pressable>
-
                 </BlurView> : null
             }
         </View >
