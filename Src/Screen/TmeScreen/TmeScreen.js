@@ -84,6 +84,18 @@ const TmeScreen = (props) => {
                 <GiftedChat
                     messages={messages}
                     onSend={message => onSend(message)}
+                    renderMessage={(currentMsg) => {
+                        console.log(currentMsg.renderDay());
+
+                        return (
+                            <View >
+                                <Image source={{ uri: currentMsg.currentMessage.user.avatar }} style={{ height: 100, width: 100 }} />
+                                <Text>
+                                    {currentMsg.currentMessage.text}
+                                </Text>
+                            </View>
+                        );
+                    }}
                     user={{
                         _id: 1,
                     }}
@@ -106,8 +118,7 @@ const TmeScreen = (props) => {
                             />
                         );
                     }}
-                    renderDay={props => {
-                        // console.log('--------->', props);
+                    renderDay={pr => {
                         return (
                             <Day
                                 {...props}
