@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors'
-const MsgText = ({ data, }) => {
+const MsgText = ({ data, onBluerpopupComm }) => {
     const texts = data.messageDetails
     const sendBy = data?.sentBy == 'loginUser'
     // console.log(data);
@@ -11,7 +11,7 @@ const MsgText = ({ data, }) => {
                 height: 35, width: 35, borderRadius: 35, marginRight: 5
             }} /> : null}
             <View style={{
-                backgroundColor: sendBy ? COLOR.lightgreen : COLOR.verylightgray,
+                backgroundColor: onBluerpopupComm ? COLOR.white : sendBy ? COLOR.lightgreen : COLOR.verylightgray,
                 padding: 5, paddingHorizontal: 10, width: data?.text?.length > 40 ? '90%' : 'auto',
                 borderRadius: 10,
 
