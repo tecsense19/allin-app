@@ -136,6 +136,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     checkboxContainer: {
-        marginTop: 20,
+        // marginTop: 20,
     },
 });
