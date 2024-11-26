@@ -280,6 +280,7 @@ const WorkHours = props => {
                     />
                     <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
                     {cleanedTime && <Text style={{ textAlign: 'center', marginTop: 15, marginBottom: 5, color: COLOR.green, fontSize: 15, fontWeight: '600' }}>{cleanedTime + ' Hours'}</Text>}
+                    <View style={{ borderBottomWidth: 1, borderColor: '#eeeeee', marginTop: 20, marginBottom: 10 }} />
                     {show ?
                         <MonthPicker
                             onChange={onValueChange}
@@ -387,7 +388,7 @@ const MonthDropDown = ({ Month, onPress, isshow }) => {
             shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, marginTop: -10
         }}>
             <View style={{ flexDirection: 'row', }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold', flex: 0.9, textAlign: 'center' }}>{Month}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', flex: 0.9, textAlign: 'center' }}>{Month}</Text>
                 <Image source={require('../../../Assets/Image/back.png')} style={{ height: 24, width: 24, transform: [{ rotate: isshow ? '-270deg' : '270deg' }] }} />
 
             </View>
