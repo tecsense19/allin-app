@@ -317,7 +317,7 @@ export const Scan_Document_List = async (token) => {
     return response
 }
 
-export const Edit_Profile = async (token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg, long, lat) => {
+export const Edit_Profile = async (token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg, long, lat, query) => {
 
     const formData = new FormData();
     formData.append('mobile', phone);
@@ -328,6 +328,7 @@ export const Edit_Profile = async (token, phone, fname, lname, title, descriptio
     formData.append('email', email);
     formData.append('longitude', long);
     formData.append('latitude', lat);
+    formData.append('address', query);
     formData.append('instagram_profile_url', instagramUrl);
     formData.append('facebook_profile_url', facebookurl);
     formData.append('twitter_profile_url', twitterurl);
