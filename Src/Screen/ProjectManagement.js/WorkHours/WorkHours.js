@@ -383,7 +383,7 @@ export default WorkHours;
 const MonthDropDown = ({ Month, onPress, isshow }) => {
     return (
         <TouchableOpacity onPress={onPress} style={{
-            backgroundColor: COLOR.white, marginHorizontal: 25, height: 45, borderRadius: 10, alignItems: 'center',
+            backgroundColor: COLOR.white, marginHorizontal: 42, height: 45, borderRadius: 10, alignItems: 'center',
             justifyContent: 'center',
             shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, marginTop: -10
         }}>
