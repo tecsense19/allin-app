@@ -12,7 +12,7 @@ const MsgText = ({ data, onBluerpopupComm }) => {
             }} /> : null}
             <View style={{
                 backgroundColor: onBluerpopupComm ? COLOR.white : sendBy ? COLOR.lightgreen : COLOR.verylightgray,
-                padding: 5, paddingHorizontal: 10, width: data?.text?.length > 40 ? '90%' : 'auto',
+                padding: 5, paddingHorizontal: 10, width: texts?.length > 40 ? '75%' : 'auto',
                 borderRadius: 10,
 
             }}>
