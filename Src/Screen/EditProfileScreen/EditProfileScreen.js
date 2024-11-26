@@ -54,17 +54,20 @@ const EditProfileScreen = props => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', closeModal,);
         return () => backHandler.remove();
     }, [coverImg, viewImage, visible]);
-    useEffect(() => {
+    console.log(myData?.address);
 
+    useEffect(() => {
         getData();
         setFName(myData?.first_name)
         setLName(myData?.last_name)
         setImg(myData?.profile)
+        setQuery(myData?.address)
         setBgImg(myData?.cover_image)
         setTitle(myData?.title == 'null' || myData?.title == 'undefined' ? '' : myData?.title)
         setDescription(myData?.description == 'null' || myData?.description == 'undefined' ? '' : myData?.description)
         setEmail(myData?.email == 'null' || myData?.email == 'undefined' ? '' : myData?.email)
         setPhone(myData?.mobile)
+        setSelectedPlace({ lat: myData?.latitude, lng: myData?.longitude })
         setInstagramUrl(myData?.instagram_profile_url == 'null' || myData?.instagram_profile_url == 'undefined' ? '' : myData?.instagram_profile_url)
         setFacebookurl(myData?.facebook_profile_url == 'null' || myData?.facebook_profile_url == 'undefined' ? '' : myData?.facebook_profile_url)
         setTwitterurl(myData?.twitter_profile_url == 'null' || myData?.twitter_profile_url == 'undefined' ? '' : myData?.twitter_profile_url)
@@ -158,7 +161,7 @@ const EditProfileScreen = props => {
                 return Alert.alert('Enter Valid Email')
             }
         }
-        const res = await Edit_Profile(token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg, selectedPlace?.lng, selectedPlace?.lat)
+        const res = await Edit_Profile(token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg, selectedPlace?.lng, selectedPlace?.lat, query)
         if (res?.status_code == 200) {
             const a = {
                 data: { token: token, expires_in: res?.data?.expires_in, token_type: res?.data?.token_type, userDetails: res?.data?.userData }
@@ -312,16 +315,15 @@ const EditProfileScreen = props => {
                             <MapView
                                 style={{ height: 250, width: '93%', borderRadius: 10, marginTop: 10, marginHorizontal: 10 }}
                                 followsUserLocation={true}
-                                mapType="satellite"
-                                showsUserLocation={true}
+                                // mapType="satellite"
                                 zoomEnabled={false}
                                 scrollEnabled={false}
                                 // onPress={handleMapPress}
                                 region={{
                                     latitude: selectedPlace?.lat,
                                     longitude: selectedPlace?.lng,
-                                    latitudeDelta: 0.01,
-                                    longitudeDelta: 0.01
+                                    latitudeDelta: 0.005,
+                                    longitudeDelta: 0.005
                                 }}
 
                             >
