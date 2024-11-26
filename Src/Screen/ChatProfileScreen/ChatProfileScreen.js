@@ -112,11 +112,11 @@ const ChatProfileScreen = props => {
                     {chatProfileData?.description == null || chatProfileData?.title == null ?
                         null :
                         <View style={{ marginHorizontal: 30, borderRadius: 15, padding: 15, marginTop: 20, }}>
-                            <Text style={{ textAlign: 'center', fontSize: 18, color: COLOR.gray, fontWeight: 'bold' }}>{chatProfileData?.title}</Text>
-                            <Text style={{ marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center' }}>
+                            <Text style={{ textAlign: 'center', fontSize: 18, color: '#959595', fontWeight: 'bold' }}>{chatProfileData?.title}</Text>
+                            <Text style={{ marginTop: 10, fontSize: 12, color: '#959595', fontWeight: '400', textAlign: 'center' }}>
                                 {chatProfileData?.description}
                             </Text>
-                            <Text style={{ marginTop: 10, fontSize: 15, color: COLOR.textcolor, fontWeight: '400', textAlign: 'center' }}>{chatProfileData.email}</Text>
+                            <Text style={{ marginTop: 10, fontSize: 16, color: '#959595', fontWeight: '600', textAlign: 'center' }}>{chatProfileData.email}</Text>
                         </View>}
 
                     <FlatList data={socialMedia} renderItem={list} horizontal style={{ alignSelf: 'center', marginTop: 20 }} bounces={false} />
@@ -124,8 +124,9 @@ const ChatProfileScreen = props => {
                 {chatProfileData?.latitude || chatProfileData?.longitude ?
                     <View style={{ paddingHorizontal: 30, marginTop: 35 }}>
                         <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', }}>Address</Text>
-                        <View style={{ height: 200, marginTop: 10, borderRadius: 10, marginBottom: 30 }}>
+                        <TouchableOpacity onPress={() => { Linking.openURL(`https://www.google.com/maps?q=${chatProfileData?.latitude},${chatProfileData?.longitude}`) }} style={{ height: 200, marginTop: 10, borderRadius: 10, marginBottom: 30 }}>
                             <MapView
+                                // mapType="satellite"
                                 scrollEnabled={false}
                                 followsUserLocation={true}
                                 zoomEnabled={false}
@@ -134,14 +135,14 @@ const ChatProfileScreen = props => {
                                 initialRegion={{
                                     latitude: chatProfileData?.latitude,
                                     longitude: chatProfileData?.longitude,
-                                    latitudeDelta: 0.005,
-                                    longitudeDelta: 0.005
+                                    latitudeDelta: 0.002,
+                                    longitudeDelta: 0.002
                                 }}>
                                 <Marker coordinate={{ latitude: chatProfileData?.latitude, longitude: chatProfileData?.longitude }} >
                                     <Image style={{ height: 25, width: 25, tintColor: 'darkred' }} source={{ uri: 'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-1024.png' }} />
                                 </Marker>
                             </MapView>
-                        </View>
+                        </TouchableOpacity>
                     </View> : null}
 
             </View>
