@@ -692,7 +692,7 @@ const ChatInnerScreen = props => {
         // setTouchPosition({ x: locationX, y: locationY });
         setTouchPosition({ x: pageX, y: pageY });
     };
-   
+
 
 
     const Userid = props?.route?.params
@@ -975,9 +975,10 @@ const ChatInnerScreen = props => {
                     return;
             }
         };
+        console.log(selectedMSG[0]?.sentBy == 'loginUser');
 
         return (
-            <View style={{ backgroundColor: selectedMSG?.includes(message) ? COLOR.green : COLOR.white, }}>
+            <View style={{ backgroundColor: selectedMSG[0]?.messageType == 'Text' ? COLOR.white : selectedMSG?.includes(message) ? COLOR.green : COLOR.white }}>
                 {/* <View style={{ marginVertical: 2 }}> */}
                 <TouchableOpacity style={{ marginHorizontal: 20, marginVertical: 2, }}
                     delayLongPress={300}
@@ -1119,13 +1120,13 @@ const ChatInnerScreen = props => {
                                             onedit={() => { setInputText(selectedMSG[0]?.messageDetails) }}
                                         />}
                                 </View>
-                                <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: COLOR.white }} onPress={() => setTaskpopup('')}>
+                                {/* <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: COLOR.white }} onPress={() => setTaskpopup('')}> */}
                                     <View style={styles.GiftedChat}>
                                         <ScrollView ref={scrollViewRef}>
                                             {memoizedMessages}
                                         </ScrollView>
                                     </View >
-                                </TouchableWithoutFeedback>
+                                {/* </TouchableWithoutFeedback> */}
                                 <PlusModal
                                     onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); setTaskpopup('') }}
                                     onMeeting={() => { setMsgType('Meeting'); setVisible(false); setReMeCkModal(true); }}
@@ -1181,9 +1182,13 @@ const ChatInnerScreen = props => {
                     <Pressable style={{ flex: 1, }} onPress={() => { setSelectedMSG([]) }}>
                         <View style={{ top: touchPosition.y > HEIGHT / 1.7 ? 0 : touchPosition.y, paddingHorizontal: 20, flex: touchPosition.y > HEIGHT / 1.7 ? 1 : 0, justifyContent: touchPosition.y > HEIGHT / 2 ? 'flex-end' : '', paddingBottom: 20 }}>
                             {selectedMSG[0].messageType == 'Text' ?
-                                <View>
-                                    <View style={{ shadowOpacity: 0.5, shadowOffset: { height: 1, width: 1 }, shadowRadius: 5, marginTop: -20 }}>
+                                <View style={{ backgroundColor: 'pink', alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-end' : 'flex-start' }}>
+                                    <View onLayout={(e) => console.log(e.nativeEvent.layout)
+                                    } style={{ shadowOpacity: 0.5, shadowOffset: { height: 1, width: 1 }, shadowRadius: 5, alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-end' : 'flex-start' }}>
                                         <MsgText onBluerpopupComm={true} data={selectedMSG[0]} />
+
+                                    </View>
+                                    <View style={{ alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-start' : 'flex-end', marginLeft: selectedMSG[0].sentBy == 'loginUser' ? -65 : 0, marginRight: selectedMSG[0].sentBy == 'loginUser' ? 0 : -65 }}>
                                         <SelectedTextMsgPopup msgType={selectedMSG[0].messageType} userType={selectedMSG[0]?.sentBy}
                                             OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }}
                                             onIgnore={() => { setSelectedMSG([]) }}
@@ -1191,8 +1196,6 @@ const ChatInnerScreen = props => {
                                             onDeleteTask={selectedMsgDelete}
                                             onEditTask={() => { setInputText(selectedMSG[0]?.messageDetails), setSelectedMSG(['editText', selectedMSG[0].messageId]) }}
                                         />
-
-
                                     </View>
                                 </View> :
                                 selectedMSG[0].messageType == 'Task' ? <View style={{}}>
