@@ -97,9 +97,7 @@ const ForwordScreen = (props) => {
                 </View>
             </View>
             <View style={styles.detailsview}>
-                <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20 }} />
-
-
+                <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 5, borderTopRightRadius: 20, borderTopLeftRadius: 20 }} />
             </View>
             <View style={{ backgroundColor: COLOR.white }}>
                 <Button title={'Send'} color={COLOR.white} bgColor={COLOR.green} marginHorizontal={20} marginBottom={40} onPress={ForwordMessage} />
