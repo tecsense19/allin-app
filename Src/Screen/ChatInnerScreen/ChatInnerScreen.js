@@ -1121,11 +1121,11 @@ const ChatInnerScreen = props => {
                                         />}
                                 </View>
                                 {/* <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: COLOR.white }} onPress={() => setTaskpopup('')}> */}
-                                    <View style={styles.GiftedChat}>
-                                        <ScrollView ref={scrollViewRef}>
-                                            {memoizedMessages}
-                                        </ScrollView>
-                                    </View >
+                                <View style={styles.GiftedChat}>
+                                    <ScrollView ref={scrollViewRef}>
+                                        {memoizedMessages}
+                                    </ScrollView>
+                                </View >
                                 {/* </TouchableWithoutFeedback> */}
                                 <PlusModal
                                     onCheckList={() => { setMsgType('Task'); setVisible(false); setReMeCkModal(true); setTaskpopup('') }}
@@ -1182,7 +1182,7 @@ const ChatInnerScreen = props => {
                     <Pressable style={{ flex: 1, }} onPress={() => { setSelectedMSG([]) }}>
                         <View style={{ top: touchPosition.y > HEIGHT / 1.7 ? 0 : touchPosition.y, paddingHorizontal: 20, flex: touchPosition.y > HEIGHT / 1.7 ? 1 : 0, justifyContent: touchPosition.y > HEIGHT / 2 ? 'flex-end' : '', paddingBottom: 20 }}>
                             {selectedMSG[0].messageType == 'Text' ?
-                                <View style={{ backgroundColor: 'pink', alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-end' : 'flex-start' }}>
+                                <View style={{ alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-end' : 'flex-start' }}>
                                     <View onLayout={(e) => console.log(e.nativeEvent.layout)
                                     } style={{ shadowOpacity: 0.5, shadowOffset: { height: 1, width: 1 }, shadowRadius: 5, alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-end' : 'flex-start' }}>
                                         <MsgText onBluerpopupComm={true} data={selectedMSG[0]} />
@@ -1193,8 +1193,8 @@ const ChatInnerScreen = props => {
                                             OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }}
                                             onIgnore={() => { setSelectedMSG([]) }}
                                             onForword={() => { props.navigation.navigate('forword', { forwordId }), setSelectedMSG([]) }}
-                                            onDeleteTask={selectedMsgDelete}
-                                            onEditTask={() => { setInputText(selectedMSG[0]?.messageDetails), setSelectedMSG(['editText', selectedMSG[0].messageId]) }}
+                                        // onDeleteTask={selectedMsgDelete}
+                                        // onEditTask={() => { setInputText(selectedMSG[0]?.messageDetails), setSelectedMSG(['editText', selectedMSG[0].messageId]) }}
                                         />
                                     </View>
                                 </View> :
