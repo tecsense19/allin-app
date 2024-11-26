@@ -78,18 +78,18 @@ const SelectedTextMsgPopup = ({ OnAddTask, onIgnore, onEditTask, onDeleteTask, o
                 <Text style={{ fontSize: 14, color: COLOR.black, fontWeight: '600' }}>{'Ignore'}</Text>
                 <Image source={require('../../../Assets/Image/ignore.png')} style={{ height: 17, width: 17, tintColor: COLOR.green, resizeMode: 'contain' }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={onEditTask} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 }}>
+            {/* <TouchableOpacity onPress={onEditTask} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 }}>
                 <Text style={{ fontSize: 14, color: COLOR.black, fontWeight: '600' }}>{'Edit Task'}</Text>
                 <Image source={require('../../../Assets/Image/groupediticon.png')} style={{ height: 15, width: 15, tintColor: COLOR.green, resizeMode: 'contain' }} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress={onForword} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 }}>
                 <Text style={{ fontSize: 14, color: COLOR.black, fontWeight: '600' }}>{'Forword'}</Text>
                 <Image source={require('../../../Assets/Image/forword.png')} style={{ height: 16, width: 16, tintColor: COLOR.green, resizeMode: 'contain' }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={onDeleteTask} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 }}>
+            {/* <TouchableOpacity onPress={onDeleteTask} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 }}>
                 <Text style={{ fontSize: 14, color: COLOR.black, fontWeight: '600' }}>{'Delete Task'}</Text>
                 <Image source={require('../../../Assets/Image/groupbinicon.png')} style={{ height: 15, width: 15, tintColor: COLOR.green, resizeMode: 'contain' }} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress={onReminder} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 }}>
                 <Text style={{ fontSize: 14, color: COLOR.black, fontWeight: '600' }}>{'Reminder'}</Text>
                 <Image source={require('../../../Assets/Image/taskreminder.png')} style={{ height: 15, width: 15, tintColor: COLOR.green, resizeMode: 'contain' }} />
