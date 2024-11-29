@@ -306,7 +306,7 @@ const ChatUserListScreen = props => {
             <StatusBar barStyle="light-content" />
             <View style={styles.headerView}>
                 <MainMenu
-                    QR={() => { Alert.alert('Website QR'), setVisible(false) }}
+                    ScanQR={() => { props.navigation.navigate('scanqr'), setVisible(false) }}
                     onRequestClose={closeModal}
                     title={'Summarize'}
                     visible={visible}

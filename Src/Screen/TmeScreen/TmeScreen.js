@@ -106,8 +106,7 @@ const TmeScreen = (props) => {
                             />
                         );
                     }}
-                    renderDay={props => {
-                        // console.log('--------->', props);
+                    renderDay={pr => {
                         return (
                             <Day
                                 {...props}

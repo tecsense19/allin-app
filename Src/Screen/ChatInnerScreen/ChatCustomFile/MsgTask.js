@@ -1,4 +1,4 @@
-import { View, Image, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet, Alert, FlatList } from 'react-native';
 import React from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 import { MyID } from '../../../Service/AsyncStorage';
@@ -10,9 +10,11 @@ const MsgTask = ({ data, ThreeDott }) => {
     const user = data.messageDetails.users
     // const users = task.task_checked_users.split(',').map(Number);
     // console.log(data);
-
-
-
+    const imgData = [
+        { img: 'https://cdn.pixabay.com/photo/2024/06/24/04/05/woman-8849047_1280.jpg' },
+        { img: 'https://cdn.pixabay.com/photo/2024/06/24/04/05/woman-8849047_1280.jpg' },
+        { img: 'https://cdn.pixabay.com/photo/2024/06/24/04/05/woman-8849047_1280.jpg' },
+    ]
     return (
         // <TouchableOpacity onPress={onPress} disabled={disabled} style={styles.container}>
         <View style={styles.container}>
@@ -36,18 +38,39 @@ const MsgTask = ({ data, ThreeDott }) => {
                 {
                     TaskData.map(async (task, index) => {
                         const users = task.task_checked_users.split(',').map(Number);
-                        console.log(users);
                         const myID = await MyID()
-                        console.log(users.includes(myID));
-
-
                         return (
                             <View key={index} style={styles.checkboxContainer}>
-                                <Image
-                                    source={users.includes(myID) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
-                                    style={[styles.checkImg, { tintColor: users.includes(myID) ? COLOR.green : COLOR.black }]}
-                                />
-                                <Text style={{ color: COLOR.gray, fontWeight: '600' }}>{task.checkbox}</Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '82%' }}>
+                                        <Image
+                                            source={users.includes(myID) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')}
+                                            style={[styles.checkImg, { tintColor: users.includes(myID) ? COLOR.green : COLOR.black }]}
+                                        />
+                                        <Text numberOfLines={1} style={{ color: COLOR.gray, fontWeight: '600', flex: 1 }}>{task.checkbox}</Text>
+                                    </View>
+                                    <View style={{}}>
+                                        {/* <FlatList style={{}} horizontal data={imgData} renderItem={({ item, index }) => {
+                                            return (
+                                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Image source={{ uri: item.img }} style={{ height: 15, width: 15, borderRadius: 20, marginLeft: index == 0 ? 0 : - 5 }} />
+                                                </View>
+                                            )
+                                        }} /> */}
+                                    </View>
+                                </View>
+                                {/* <FlatList style={{}} data={[{}, {}]} renderItem={({ item }) => {
+                                    return (
+                                        <View style={{ height: 40, flexDirection: 'row', alignItems: 'center', backgroundColor: '#F7F8F8', marginLeft: '10%', marginTop: 5, borderRadius: 5, paddingHorizontal: 10, }}>
+                                            <Image source={{ uri: 'https://cdn.pixabay.com/photo/2024/06/24/04/05/woman-8849047_1280.jpg' }} style={{ height: 20, width: 20, borderRadius: 20, marginRight: 5, }} />
+                                            <Text style={{ flex: 1, color: COLOR.gray, fontSize: 10 }} numberOfLines={2}>Lorem Ipsum Dummy TextLorem Ipsum Dummy TextLorem Ipsum Dummy TextLorem Ipsum Dummy Text</Text>
+                                        </View>
+                                    )
+                                }} /> */}
+                                {/* <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '10%', marginTop: 5 }}>
+                                    <Image source={require('../../../Assets/Image/addcomment.png')} style={{ height: 12, width: 12, marginRight: 5 }} />
+                                    <Text style={{ fontSize: 12, color: COLOR.gray, fontWeight: '500' }}>Add Comment</Text>
+                                </TouchableOpacity> */}
                             </View>
                         )
                     })
@@ -83,8 +106,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     checkImg: {
-        height: 20,
-        width: 20,
+        height: 22,
+        width: 22,
         marginRight: 10,
     },
     taskTitle: {
@@ -113,8 +136,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     checkboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 5,
+        // marginTop: 20,
     },
 });

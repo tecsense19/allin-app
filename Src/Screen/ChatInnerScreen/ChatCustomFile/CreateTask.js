@@ -36,6 +36,9 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const [taskTime, setTaskTime] = useState(new Date());
     const [openTime, setOpenTime] = useState(false);
     const [openDate, setOpenDate] = useState(false);
+    const [datetime, setdatetime] = useState({ date: false, time: false })
+    console.log(datetime);
+
 
     useEffect(() => {
         myid()
@@ -346,8 +349,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
 
             <View style={{ alignSelf: 'center', marginTop: 20, alignItems: 'center', flexDirection: 'row' }}>
                 {/* <PickerButton title={'Remind'} onPress={() => setVisible(true)} /> */}
-                <PickerButton source={require('../../../Assets/Image/date.png')} title={'Date'} onPress={() => setOpenDate(true)} />
-                <PickerButton source={require('../../../Assets/Image/time.png')} title={'Time'} onPress={() => setOpenTime(true)} />
+                <PickerButton source={require('../../../Assets/Image/date.png')} title={datetime?.date == true ? TaskDate : 'Date'} onPress={() => setOpenDate(true)} />
+                <PickerButton source={require('../../../Assets/Image/time.png')} title={datetime?.time == true ? meetingDesplayTime : 'Time'} onPress={() => setOpenTime(true)} />
             </View>
             {filteredUserData ? <View style={{
                 width: filteredUserData?.length < 2 ? 85
@@ -412,6 +415,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                 onConfirm={(date) => {
                     setOpenDate(false)
                     setTaskDate(date)
+                    setdatetime(prevState => ({ ...prevState, date: true }));
                 }}
                 onCancel={() => {
                     setOpenDate(false)
@@ -425,6 +429,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                 onConfirm={(time) => {
                     setOpenTime(false)
                     setTaskTime(time)
+                    setdatetime(prevState => ({ ...prevState, time: true }));
                 }}
                 onCancel={() => {
                     setOpenTime(false)

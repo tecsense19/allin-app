@@ -8,7 +8,7 @@ import TaskCommponent from './TaskCommponent';
 import { getToken } from '../../Service/AsyncStorage';
 import { Task_Meeting_Event_Count } from '../../Service/actions';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-const BoardScreen = () => {
+const BoardScreen = (props) => {
     const [isAcctive, setIsAcctive] = useState('Calender');
     const [taskCount, setTaskCount] = useState('');
     const [meetingCount, seetMeetingCount] = useState('');
@@ -62,9 +62,12 @@ const BoardScreen = () => {
                     </TouchableOpacity>
                 </View>
                 {isAcctive == 'Task' ? <TaskCommponent /> :
+                    // {isAcctive == 'Task' ? <TaskCommponent onPress={(res) => { props.navigation.navigate('taskdetails', res) }} /> :
                     isAcctive == 'Calender' ? <CalenderComponent /> :
                         isAcctive == 'Meetings' ? <MeetingCommponent /> :
                             isAcctive == 'Events' ? <EventsCommponent /> : null
+                    // isAcctive == 'Meetings' ? <MeetingCommponent onPress={(res) => { props.navigation.navigate('meetingdetails', res) }} /> :
+                    //     isAcctive == 'Events' ? <EventsCommponent onPress={(res) => { props.navigation.navigate('eventdetails', res) }} /> : null
                 }
             </ScrollView>
         </View>

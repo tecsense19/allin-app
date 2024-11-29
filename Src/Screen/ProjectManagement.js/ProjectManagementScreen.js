@@ -62,7 +62,8 @@ const ProjectManagementScreen = props => {
             id: 3,
             listname: 'Create Survey',
             img: require('../../Assets/Image/survey.png'),
-            navigation: 'createsurvey',
+            navigation: 'createsurveyyy',
+            // navigation: 'createsurvey',
         },
         {
             id: 4,

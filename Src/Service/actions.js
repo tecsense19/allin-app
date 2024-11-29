@@ -13,10 +13,7 @@ export const User_List = async (timeZone, Token) => {
         },
         body: JSON.stringify(timeZone)
     })
-    console.log(res);
-
     const response = await res.json()
-    console.log('response', response);
 
     return response
 }
@@ -278,12 +275,7 @@ export const Forword_Messages = async (token, msgId, userID) => {
         body: JSON.stringify({ message_id: msgId, user_id: userID })
     })
     const response = await res.json()
-    if (response?.status_code == 200) {
 
-    } else {
-        Alert.alert(data?.message);
-
-    }
     return response
 }
 
@@ -325,7 +317,7 @@ export const Scan_Document_List = async (token) => {
     return response
 }
 
-export const Edit_Profile = async (token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg) => {
+export const Edit_Profile = async (token, phone, fname, lname, title, description, email, instagramUrl, facebookurl, twitterurl, youtubeurl, linkedinurl, img, bgimg, long, lat, query) => {
 
     const formData = new FormData();
     formData.append('mobile', phone);
@@ -334,6 +326,9 @@ export const Edit_Profile = async (token, phone, fname, lname, title, descriptio
     formData.append('title', title);
     formData.append('description', description);
     formData.append('email', email);
+    formData.append('longitude', long);
+    formData.append('latitude', lat);
+    formData.append('address', query);
     formData.append('instagram_profile_url', instagramUrl);
     formData.append('facebook_profile_url', facebookurl);
     formData.append('twitter_profile_url', twitterurl);

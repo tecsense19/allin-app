@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image, Alert } from 'react-native'
+import { View, Text, FlatList, Image, Alert, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLOR } from '../../Assets/AllFactors/AllFactors'
 import { Event_List, Task_Meeting_Event_Unread } from '../../Service/actions'
@@ -6,7 +6,7 @@ import { getToken, MyID } from '../../Service/AsyncStorage'
 import Timezone from 'react-native-timezone'
 import Loader from '../../Custom/Loader/loader'
 
-const EventsCommponent = () => {
+const EventsCommponent = ({ onPress }) => {
     const [EventData, setEventData] = useState([])
     const [loading, setLoading] = useState(false)
 
@@ -58,7 +58,6 @@ const EventsCommponent = () => {
         </View>
     );
     const list = ({ item }) => {
-        console.log(item);
 
         const formatDate = () => {
             const options = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -66,7 +65,9 @@ const EventsCommponent = () => {
             return date.toLocaleDateString('en-GB', options).replace(',', '');
         };
 
-
+        const onNavigate = (i) => {
+            onPress(i)
+        }
         return (
             // <View style={{ height: 164, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', alignItems: 'center', borderRadius: 15 }}>
             //     <Image source={{ uri: item.event_image }} style={{ height: 144, width: 130, marginLeft: 10, borderRadius: 15 }} />
@@ -104,7 +105,9 @@ const EventsCommponent = () => {
             //         </View>
             //     </View>
             // </View>
-            <View style={{ height: 164, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', borderRadius: 15, flex: 1, padding: 10 }}>
+            <TouchableOpacity
+                // onPress={() => { onNavigate(item) }} 
+                style={{ height: 164, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', borderRadius: 15, flex: 1, padding: 10 }}>
                 <View style={{ flex: 1.15, }}>
                     <Image source={{ uri: item.event_image }} style={{ height: 92, width: 102, borderRadius: 15 }} />
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -135,7 +138,7 @@ const EventsCommponent = () => {
                         <Text style={{ fontSize: 11, fontWeight: 'bold', color: COLOR.green }}>{item?.usersArr?.length - 3 <= 0 ? '' : ' +' + (item?.usersArr?.length - 3)}</Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
