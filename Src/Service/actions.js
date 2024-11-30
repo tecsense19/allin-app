@@ -2,6 +2,7 @@ import { Alert } from "react-native";
 import { ACTIONS } from "./API"
 import { useDispatch } from "react-redux";
 import { ExpireToken } from "./Redux/Actions";
+import { getToken } from "./AsyncStorage";
 
 export const User_List = async (timeZone, Token, Search) => {
     // console.log('request', token);
@@ -997,4 +998,46 @@ export const Refresh_Token = async (token) => {
         console.error('Error refreshing token:', error);
     }
 };
+
+export const Event_AttentOrNot = async (eventid, usrid, Type,) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.EVENT_DONE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ event_id: eventid, user_id: usrid, type: Type })
+    })
+    const response = await res.json()
+    return response
+}
+
+export const Event_Details = async (eventid) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.GET_EVENT_DETAILS + eventid, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+
+    const response = await res.json()
+    return response
+}
+
+export const Meeting_Details = async (meetingid, filter) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.GET_MEETING_DETAILS, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: meetingid, filter: filter })
+    })
+    const response = await res.json()
+    return response
+}
 
