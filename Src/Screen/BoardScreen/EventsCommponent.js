@@ -1,7 +1,7 @@
 import { View, Text, FlatList, Image, Alert, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLOR } from '../../Assets/AllFactors/AllFactors'
-import { Event_List, Task_Meeting_Event_Unread } from '../../Service/actions'
+import { Event_AttentOrNot, Event_List, Task_Meeting_Event_Unread } from '../../Service/actions'
 import { getToken, MyID } from '../../Service/AsyncStorage'
 import Timezone from 'react-native-timezone'
 import Loader from '../../Custom/Loader/loader'
@@ -47,8 +47,6 @@ const EventsCommponent = ({ onPress }) => {
         OnHandleRead()
     }, [commaS_id])
 
-
-
     const renderUserImage = ({ item, index }) => (
         <View>
             {index < 3 ? <Image source={{ uri: item.profile }} style={{
@@ -58,7 +56,6 @@ const EventsCommponent = ({ onPress }) => {
         </View>
     );
     const list = ({ item }) => {
-
         const formatDate = () => {
             const options = { day: '2-digit', month: 'short', year: 'numeric' };
             const date = new Date(item.event_date);
@@ -68,6 +65,8 @@ const EventsCommponent = ({ onPress }) => {
         const onNavigate = (i) => {
             onPress(i)
         }
+        console.log(item);
+
         return (
             // <View style={{ height: 164, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', alignItems: 'center', borderRadius: 15 }}>
             //     <Image source={{ uri: item.event_image }} style={{ height: 144, width: 130, marginLeft: 10, borderRadius: 15 }} />
@@ -106,8 +105,8 @@ const EventsCommponent = ({ onPress }) => {
             //     </View>
             // </View>
             <TouchableOpacity
-                // onPress={() => { onNavigate(item) }} 
-                style={{ height: 164, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', borderRadius: 15, flex: 1, padding: 10 }}>
+                onPress={() => { onNavigate(item) }}
+                style={{ height: 194, shadowOpacity: 0.3, shadowRadius: 4, shadowOffset: { height: 1, width: 1 }, backgroundColor: COLOR.white, marginTop: 12, flexDirection: 'row', borderRadius: 15, flex: 1, padding: 10 }}>
                 <View style={{ flex: 1.15, }}>
                     <Image source={{ uri: item.event_image }} style={{ height: 92, width: 102, borderRadius: 15 }} />
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -138,10 +137,31 @@ const EventsCommponent = ({ onPress }) => {
                         <Text style={{ fontSize: 11, fontWeight: 'bold', color: COLOR.green }}>{item?.usersArr?.length - 3 <= 0 ? '' : ' +' + (item?.usersArr?.length - 3)}</Text>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: 15, marginHorizontal: 10, position: 'absolute', right: 0, bottom: 0, width: '65%' }}>
+                    <TouchableOpacity onPress={() => onHandalEvent(item, 'attend')} style={{ backgroundColor: COLOR.green, height: 30, borderRadius: 30, width: '41%', justifyContent: 'space-around', alignItems: 'center', flexDirection: 'row', paddingHorizontal: 10, marginVertical: 10 }}>
+                        <Text style={{ color: COLOR.white, fontWeight: '600', fontSize: 14 }}>Attend</Text>
+                        <Image source={require('../../Assets/Image/accept.png')} style={{ height: 18, width: 18, resizeMode: 'contain', marginLeft: -2, tintColor: COLOR.white, marginLeft: 5 }} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => onHandalEvent(item, 'notattend')} style={{ borderWidth: 1, borderColor: COLOR.green, height: 30, borderRadius: 30, width: '53%', flexDirection: 'row', paddingHorizontal: 10, justifyContent: 'space-around', alignItems: 'center' }}>
+                        <Text style={{ color: COLOR.green, fontSize: 14, fontWeight: '600' }}>Not Attend</Text>
+                        <Image source={require('../../Assets/Image/x.png')} style={{ height: 12, width: 12, resizeMode: 'contain', tintColor: COLOR.green, marginLeft: 5 }} />
+                    </TouchableOpacity>
+                </View>
+
             </TouchableOpacity>
         )
     }
-
+    const onHandalEvent = async (msg, type) => {
+        const myid = await MyID()
+        const id = msg?.id;
+        Event_AttentOrNot(id, myid, type)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    getEventData()
+                }
+            })
+    }
     return (
         <View style={{ backgroundColor: COLOR.white, flex: 1 }}>
             <FlatList bounces={false} data={EventData} renderItem={list} style={{ paddingHorizontal: 20, paddingBottom: 120 }} />
