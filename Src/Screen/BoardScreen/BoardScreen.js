@@ -64,9 +64,7 @@ const BoardScreen = (props) => {
                 {isAcctive == 'Task' ? <TaskCommponent /> :
                     // {isAcctive == 'Task' ? <TaskCommponent onPress={(res) => { props.navigation.navigate('taskdetails', res) }} /> :
                     isAcctive == 'Calender' ? <CalenderComponent /> :
-                        isAcctive == 'Meetings' ? <MeetingCommponent /> :
-                            // isAcctive == 'Events' ? <EventsCommponent /> : null
-                            // isAcctive == 'Meetings' ? <MeetingCommponent onPress={(res) => { props.navigation.navigate('meetingdetails', res) }} /> :
+                        isAcctive == 'Meetings' ? <MeetingCommponent onPress={(res) => { props.navigation.navigate('meetingdetails', res) }} /> :
                             isAcctive == 'Events' ? <EventsCommponent onPress={(res) => { props.navigation.navigate('eventdetails', res) }} /> : null
                 }
             </ScrollView>
