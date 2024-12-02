@@ -63,7 +63,7 @@ const ProjectManagementScreen = props => {
             listname: 'Create Survey',
             img: require('../../Assets/Image/survey.png'),
             navigation: 'createsurveyyy',
-            // navigation: 'createsurvey',
+            navigation: 'createsurvey',
         },
         {
             id: 4,
@@ -140,7 +140,7 @@ const ProjectManagementScreen = props => {
                         const minutes = date.getMinutes().toString().padStart(2, '0');
                         const AmPm = hh >= 12 ? 'pm' : 'am';
                         const hours = hh > 12 ? hh - 12 : hh === 0 ? 12 : hh;
-                        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${AmPm}`;//:${seconds}
+                        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes} ${AmPm}`;//:${seconds}
                         return (
                             <TouchableOpacity style={styles.notelistview}
                                 onPress={() => { setVisible(true); setViewNote(item); }}>
