@@ -428,9 +428,6 @@ export const Meeting_Messages = async (token, taskData) => {
     const remindId = taskData?.remind
     var stringArray = remindId?.map(String);
     var id = stringArray?.join(',');
-    // console.log(taskData.latitude);
-    // console.log(taskData.longitude);
-    // console.log(taskData.address);
     const res = await fetch(ACTIONS.MESSAGE_MEETING, {
         method: "POST",
         headers: {
@@ -439,13 +436,14 @@ export const Meeting_Messages = async (token, taskData) => {
         },
         body: JSON.stringify({
             message_type: 'Meeting',
-            receiver_id: id, mode: 'Offline',
+            receiver_id: id,
+            mode: taskData.mode,
             title: taskData.meetingtitle,
             description: taskData.meetingdescription,
             date: taskData.meetingdate,
             start_time: taskData.meetingtime,
             end_time: taskData.meetingtime,
-            meeting_url: '',
+            meeting_url: taskData.meeting_url,
             latitude: taskData.latitude,
             longitude: taskData.longitude,
             location: taskData.address,
@@ -453,7 +451,6 @@ export const Meeting_Messages = async (token, taskData) => {
         })
     })
     const response = await res.json()
-    // console.log(response);
     return response
 }
 
@@ -867,11 +864,7 @@ export const Get_Group_Details = async (token, id, zone) => {
         },
         body: JSON.stringify({ group_id: id, start: 0, timezone: zone })
     })
-
-
     const response = await res.json()
-    console.log(response);
-
     return response
 }
 export const Send_Group_Text_Message = async (token, msg, id) => {
@@ -1027,17 +1020,50 @@ export const Event_Details = async (eventid) => {
     return response
 }
 
-export const Meeting_Details = async (meetingid, filter) => {
+export const Meeting_Details = async (meetingid) => {
     const token = await getToken()
-    const res = await fetch(ACTIONS.GET_MEETING_DETAILS, {
+    const res = await fetch(ACTIONS.GET_MEETING_DETAILS + meetingid, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ id: meetingid, filter: filter })
     })
     const response = await res.json()
+    return response
+}
+export const Create_Survey = async (msg, gId, option) => {
+    const formData = new FormData();
+    formData.append('message_type', 'Options');
+    formData.append('message', msg);
+    formData.append('group_id', gId);
+    formData.append('options[]', option);
+    const token = await getToken()
+
+    const res = await fetch(ACTIONS.CREATE_SURVEY, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData
+    })
+    const response = await res.json()
+    return response
+}
+export const Set_Vote = async (id, vote) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.SET_VOTE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ option_id: id, selected: vote })
+    })
+    const response = await res.json()
+    console.log(response);
+
     return response
 }
 
