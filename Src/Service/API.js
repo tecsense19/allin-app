@@ -69,6 +69,8 @@ export const ACTIONS = {
     EVENT_DONE: BASE_PATH + '/sent-event-done',
     GET_EVENT_DETAILS: BASE_PATH + '/event/',
     GET_MEETING_DETAILS: BASE_PATH + '/meetings/',
+    CREATE_SURVEY: BASE_PATH + '/group/question-with-options',
+    SET_VOTE: BASE_PATH + '/group/select-option',
 
 
 }
