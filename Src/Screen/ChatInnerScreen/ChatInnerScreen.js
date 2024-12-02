@@ -658,8 +658,6 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import SelectedTextMsgPopup from './ChatCustomFile/SelectedTextMsgPopup';
 import { BlurView } from '@react-native-community/blur';
 
-
-
 const ChatInnerScreen = props => {
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
@@ -687,13 +685,9 @@ const ChatInnerScreen = props => {
     const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 });
 
     const handleTouch = (e) => {
-        // const { locationX, locationY } = e.nativeEvent;
         const { pageY, pageX } = e.nativeEvent;
-        // setTouchPosition({ x: locationX, y: locationY });
         setTouchPosition({ x: pageX, y: pageY });
     };
-
-
 
     const Userid = props?.route?.params
     const userName = userDetails.first_name == undefined && userDetails.last_name == undefined ? '' : userDetails.first_name + ' ' + userDetails.last_name
@@ -717,9 +711,6 @@ const ChatInnerScreen = props => {
     const scrollToBottom = () => {
         scrollViewRef.current.scrollToEnd({ animated: false });
     };
-    // console.log(touchPosition.y);
-    // console.log(Dimensions.get('screen').height);
-
 
     useEffect(() => {
         scrollToBottom()
@@ -984,7 +975,7 @@ const ChatInnerScreen = props => {
                     delayLongPress={300}
                     onLongPress={(e) => { setIsSelected(true), onhandaleSelected(message), handleTouch(e) }}
                     onPress={() => {
-                        message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : '',
+                        message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : message.messageType == 'Meeting' ? props.navigation.navigate('meetingdetails', message) : null,
                             setTaskpopup('')
                     }}>
                     {renderMessage()}
@@ -1109,7 +1100,7 @@ const ChatInnerScreen = props => {
                                         source={{ uri: userDetails.profile }}
                                         title={userName?.length >= 20 ? userName?.slice(0, 15) + ' . . . ' : userName}
                                         onSearch={() => Alert.alert('search')}
-                                        onBack={() => props.navigation.goBack()}
+                                        onBack={() => props.navigation.popToTop()}
                                     /> :
                                         <DeleteChatHeader
                                             edithide={selectedMSG?.length < 2 && selectedMSG[0]?.messageType == 'Text' ? true : false}
