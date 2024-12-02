@@ -6,30 +6,19 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import Button from '../../Custom/Button/Button';
 import * as Progress from 'react-native-progress';
+import { Create_Survey } from '../../Service/actions';
+import uuid from 'react-native-uuid'
 
 const CreateSurvey = (props) => {
     const [pollQuestion, setPollQuestion] = useState('');
-    const [data, setData] = useState('');
-    const [openmodal, setOpenModal] = useState(false);
-    const [options, setOptions] = useState([
-        { id: Date.now().toString(), text: 'new Option', votes: 2 },
-        { id: Date.now().toString(), text: 'new Option', votes: 8 },
-        { id: Date.now().toString(), text: 'new Option', votes: 12 },
-        { id: Date.now().toString(), text: 'new Option', votes: 13 },
 
+    const [options, setOptions] = useState([
+        { id: uuid.v4(), text: 'new Option', votes: 2 },
+        { id: uuid.v4(), text: 'new Option', votes: 8 },
+        { id: uuid.v4(), text: 'new Option', votes: 12 },
+        { id: uuid.v4(), text: 'new Option', votes: 13 },
     ]);
-    const img = [
-        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
-        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
-        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
-    ]
-    const totalVotes = 13
-    const calculatePercentage = (votes) => {
-        if (totalVotes === 0) return 0;
-        return (votes / totalVotes).toFixed(2);
-    };
-    const HIGHT = Dimensions.get('screen').height
-    const WIDTH = Dimensions.get('screen').width
+
     const handleDragEnd = ({ data }) => {
         setOptions(data);
     };
@@ -56,9 +45,19 @@ const CreateSurvey = (props) => {
             Alert.alert('Alert', 'Question is required');
             return;
         }
+        const commaSeparateOption = options.map(option => '"' + option.text.toString() + '"').join(',');
+        Create_Survey(pollQuestion, 35, commaSeparateOption)
+            .then((res) => {
+                // if (res.status_code == 200) {
+                //     console.log('res------------------>>>>>>>', res);
+                // }
+                // console.log('res------------------>>>>>>>', res);
 
-        setData({ pollQuestion, options })
-        setOpenModal(true)
+            }).catch((e) => {
+                console.log(e);
+
+            })
+
     }
 
     return (
@@ -98,7 +97,7 @@ const CreateSurvey = (props) => {
                                         value={item.text}
                                         onChangeText={(txt) => handleTextChange(item.id, txt)}
                                     />
-                                    <TouchableOpacity style={{ padding: 5, }} onPress={() => { handleRemoveOption(item.id) }}>
+                                    <TouchableOpacity style={{ padding: 5 }} onPress={() => { handleRemoveOption(item.id) }}>
                                         <Image source={require('../../Assets/Image/bin.png')} style={{ height: 15, width: 15, tintColor: COLOR.black }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity style={{ paddingLeft: 15, paddingVertical: 10 }} onLongPress={drag}>
@@ -134,48 +133,7 @@ const CreateSurvey = (props) => {
                     </View>
                 </View>
             </View>
-            <Modal visible={openmodal} animationType='slide'>
-                <View style={{ alignSelf: 'flex-start', width: '85%', backgroundColor: COLOR.lightgreen, marginTop: 50, borderRadius: 10, marginLeft: 10 }}>
-                    <Text style={{ color: COLOR.black, fontSize: 16, fontWeight: 'bold', marginTop: 20, paddingHorizontal: 20 }}>{data.pollQuestion}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingHorizontal: 20 }}>
-                        <Image source={require('../../Assets/Image/pollmoreoptionicon.png')} style={{ height: 15, width: 30, resizeMode: 'contain' }} />
-                        <Text>{'Selecte one or more'}</Text>
-                    </View>
-                    <FlatList style={{ marginTop: 20, paddingHorizontal: 20 }} data={data.options} renderItem={({ item }) => {
-                        return (
-                            <View style={{ marginTop: 15 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                                        <TouchableOpacity>
-                                            <Image source={require('../../Assets/Image/pollunselect.png')} style={{ height: 18, width: 18 }} />
-                                        </TouchableOpacity>
-                                        <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.text}</Text>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <View>
-                                            <FlatList horizontal data={img} renderItem={({ item, index }) => {
-                                                return (
-                                                    <Image source={{ uri: item.uri }} style={{ height: 20, width: 20, borderRadius: 20, marginLeft: index == '0' ? 0 : -10 }} />
-                                                )
-                                            }} />
-                                        </View>
-                                        <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.votes}</Text>
-                                    </View>
-                                </View>
-                                <Progress.Bar unfilledColor={COLOR.lightgray} borderWidth={0} height={7} color={COLOR.green} progress={calculatePercentage(item.votes)} width={WIDTH - 100} style={{ marginTop: 10 }} />
 
-                            </View>
-                        )
-                    }} />
-                    <Text style={{ textAlign: 'right', color: COLOR.gray, fontSize: 13, marginVertical: 10, paddingHorizontal: 20 }}>{'10:12 pm'}</Text>
-                    <View style={{ borderBottomWidth: 1, borderColor: COLOR.lightgray, marginTop: 10 }} />
-                    <TouchableOpacity style={{}}>
-                        <Text style={{ fontSize: 16, textAlign: 'center', padding: 15, color: COLOR.green, fontWeight: 'bold' }}>
-                            View Votes
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
         </GestureHandlerRootView>
     );
 };
