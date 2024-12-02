@@ -121,7 +121,7 @@ const ChatUserListScreen = props => {
         };
         const userName = item?.first_name + ' ' + item.last_name
         const groupName = item.name
-        console.log(item);
+
 
         const swipeRightSide = () => {
             return (
@@ -316,9 +316,8 @@ const ChatUserListScreen = props => {
                     setting={() => { props.navigation.navigate('edit'); setVisible(false); }}
                     onPress={() => { props.navigation.navigate('summarize'), setVisible(false) }}
                     onGroup={() => { props.navigation.navigate('creategroup'), setVisible(false) }}
-
-
                 />
+
                 {!showSearch ? <ChatHeader
                     ProfileImage={profileData?.data?.userDetails?.profile}
                     onProfile={() => { props.navigation.navigate('edit') }}
