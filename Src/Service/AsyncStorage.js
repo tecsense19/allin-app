@@ -18,3 +18,9 @@ export const AccountId = async () => {
     const Accountid = userData.data.userDetails.account_id
     return Accountid
 };
+export const MyData = async () => {
+    const jsonValue = await AsyncStorage.getItem('myData');
+    const userData = JSON.parse(jsonValue);
+    const data = userData.data
+    return data
+};
