@@ -5,15 +5,36 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { RNCamera } from 'react-native-camera';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import Button from '../../Custom/Button/Button';
+import { Get_All_Messages } from '../../Service/actions';
+import { getToken } from '../../Service/AsyncStorage';
+import Timezone from 'react-native-timezone'
+import Loader from '../../Custom/Loader/loader';
+import { userData } from '../../StaticOBJ/OBJ';
 
 const ScanUserDetails = (props) => {
     const [hideScanner, setHideScanner] = useState(false);
+    const [UserData, setUserData] = useState('')
+    const [loading, setLoding] = useState(false);
+    console.log('UserDataaaaaaaaaaa======>', UserData);
 
-    const onSuccess = e => {
-        console.log(e);
+
+    const onSuccess = async (e) => {
         if (e.data) {
-            setHideScanner(true)
-            console.log(e.data);
+            setLoding(true)
+            const id = e.data
+            const numbersOnly = id.replace(/\D/g, '');
+            const ConvertNumbers = parseInt(numbersOnly)
+
+            const Token = await getToken()
+            const bodyData = { id: ConvertNumbers, start: 0, limit: 1000, timezone: Timezone.getTimeZone(), filter: 'filter', startchat: 'Yes' }
+            const data = await Get_All_Messages(bodyData, Token)
+
+            if (data?.status_code == 200) {
+                setUserData(data.data.userData)
+                setLoding(false);
+                setHideScanner(true)
+            }
+
 
         }
     };
@@ -36,14 +57,14 @@ const ScanUserDetails = (props) => {
 
                         <Image
                             style={{ height: 63, width: 63, resizeMode: 'contain', borderRadius: 40, alignSelf: 'center', }}
-                            source={{ uri: 'https://preview.keenthemes.com/metronic-v4/theme_rtl/assets/pages/media/profile/profile_user.jpg' }} />
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, textAlign: 'center', color: COLOR.black }}>Nitin Kanazariya</Text>
-                        <Text style={{ fontSize: 14, fontWeight: '500', marginTop: 10, textAlign: 'center', color: COLOR.gray }}>Founder</Text>
-                        <Text style={{ paddingHorizontal: 20, fontSize: 14, fontWeight: '500', marginTop: 10, textAlign: 'center', color: COLOR.gray }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text>
+                            source={{ uri: UserData.profile }} />
+                        <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, textAlign: 'center', color: COLOR.black, marginHorizontal: 20 }}>{UserData.first_name + ' ' + UserData.last_name}</Text>
+                        <Text style={{ fontSize: 14, fontWeight: '500', marginTop: 10, textAlign: 'center', color: COLOR.gray }}>{UserData.title}</Text>
+                        <Text numberOfLines={3} style={{ paddingHorizontal: 20, fontSize: 14, fontWeight: '500', marginTop: 10, textAlign: 'center', color: COLOR.gray }}>{UserData.description} </Text>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 20 }}>
                             <View style={{ flex: 1, marginRight: 10 }}>
-                                <Button bgColor={COLOR.green} color={COLOR.white} title={'Start Chat'} />
+                                <Button onPress={() => { props.navigation.navigate('chatinner', UserData.id) }} bgColor={COLOR.green} color={COLOR.white} title={'Start Chat'} />
                             </View>
                             <View style={{ flex: 1, marginLeft: 10 }}>
                                 <Button onPress={() => { setHideScanner(false) }} borderWidth={1} color={COLOR.black} title={'Decline'} />
@@ -60,13 +81,10 @@ const ScanUserDetails = (props) => {
                         showMarker={true}
                         onRead={onSuccess}
                         flashMode={RNCamera.Constants.FlashMode}
-                    // topContent={
-                    //     <Text style={{ fontSize: 0, textAlign: 'center' }}>
-                    //         your computer and scan the QR code.
-                    //     </Text>
-                    // }
+
                     />}
             </View>
+            <Loader visible={loading} Retry={() => setHideScanner(false)} />
         </View>
     );
 };
