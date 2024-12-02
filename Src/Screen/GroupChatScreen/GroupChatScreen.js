@@ -1,7 +1,7 @@
 import { View, Text, Alert, StyleSheet, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Get_Group_Details, Read_Unread_Messages, Send_Group_Text_Message, User_List_For_Group } from '../../Service/actions';
-import { getToken } from '../../Service/AsyncStorage';
+import { getToken, MyID } from '../../Service/AsyncStorage';
 import Loader from '../../Custom/Loader/loader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Chatheader from '../ChatInnerScreen/ChatInnerHeader';
@@ -10,10 +10,13 @@ import GroupChatheader from './GroupChatHeader';
 import GroupMsgText from './GroupTextMsg';
 import Timezone from 'react-native-timezone'
 import { useFocusEffect } from '@react-navigation/native';
+import GroupSurveyMsg from './GroupSurveyMsg';
+import { userData } from '../../StaticOBJ/OBJ';
+import { scrollTo } from 'react-native-reanimated';
 
 const GroupChatScreen = (props) => {
     const groupId = props.route.params
-
+    const ScrollRef = useRef()
 
     const [messages, setMessages] = useState([])
     const [groupData, setGroupData] = useState()
@@ -22,29 +25,24 @@ const GroupChatScreen = (props) => {
     const [inputText, setInputText] = useState('')
     const [visible, setVisible] = useState(false)
     const [messageIds, setMessageIds] = useState('')
+    const [myid, setMyId] = useState('')
+    const totalGroupVotes = groupData?.members_count
+
+    console.log('-------------------------------->myid', myid);
 
     const handleSend = async () => {
         const token = await getToken()
         if (inputText.trim() == '') {
             return null
         }
-
         Send_Group_Text_Message(token, inputText, groupId); setInputText('')
-
-        // setMsgType('Text')
-        // switch (msgType) {
-        //     case 'Text':
-        //         Chat_Text_Messages(token, msgType, inputText, Userid); setInputText('')
-        //         break;
-
-        //     default:
-        //         console.warn(`Unhandled message type: ${msgType}`);
-        // }
-
     }
     useEffect(() => {
         const fetchData = async () => {
             const token = await getToken()
+            const myid = await MyID()
+            setMyId(myid)
+
             if (messageIds) {
                 await Read_Unread_Messages(token, messageIds);
             }
@@ -52,10 +50,9 @@ const GroupChatScreen = (props) => {
         fetchData();
     }, [messageIds]);
     useEffect(() => {
+        ScrollRef.current.scrollToEnd({ animated: false });
         const extractMessageIds = () => {
             const ids = [];
-            console.log(ids);
-
             Object.keys(messages).forEach(date => {
                 messages[date].forEach(message => {
                     // if (message.sentBy === "User") {
@@ -68,14 +65,14 @@ const GroupChatScreen = (props) => {
         };
         extractMessageIds();
 
-    }, [messageIds, messages]);
+    }, [messageIds, messages,]);
     useFocusEffect(React.useCallback(() => {
         getMEssage()
     }, []))
-
     const getMEssage = async () => {
         setLoading(true)
         const timezone = Timezone.getTimeZone()
+
         const token = await getToken()
         Get_Group_Details(token, groupId, timezone)
             .then((res) => {
@@ -83,39 +80,40 @@ const GroupChatScreen = (props) => {
                     setMessages(res.data.groupChat)
                     setGroupData(res.data.groupData)
                     setLoading(false)
-                    console.log(res.data.groupData);
-
                 }
             })
+
     }
     useEffect(() => {
         getMEssage()
     }, [])
+
     const ChatMessage = React.memo(({ message }) => {
+
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
                     return <GroupMsgText data={message} />
+                case 'Options':
+                    return <GroupSurveyMsg message={message} totalVotes={totalGroupVotes ? totalGroupVotes : 0} myid={myid} />
                 default:
-                    return;
+                    return
             }
         };
         return (
-            <View style={{ marginHorizontal: 15, marginVertical: 2, }}>
+            <View style={{ marginHorizontal: 15, marginVertical: 5, }}>
                 {renderMessage()}
+
             </View>
         );
     });
 
     const memoizedMessages = useMemo(() => {
         return Object.keys(messages).map(date => {
-            console.log();
-
             return (
                 <View key={date}>
                     {messages[date].length == 0 ? null : <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.textcolor, textAlign: 'center', marginVertical: 30 }}>{date}</Text>}
                     {messages[date]?.map(message => {
-
                         return <ChatMessage key={message?.messageId} message={message} />;
                     })}
                 </View>
@@ -139,7 +137,7 @@ const GroupChatScreen = (props) => {
                 </View>
 
                 <View style={{ flex: 1, backgroundColor: COLOR.white, borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                    <ScrollView>
+                    <ScrollView ref={ScrollRef} >
                         {memoizedMessages}
                     </ScrollView>
                     <View style={{ marginBottom: isFocused ? 5 : 25 }}>
@@ -160,3 +158,7 @@ export default GroupChatScreen
 const Styles = StyleSheet.create({
     chatHeaderView: { backgroundColor: COLOR.black, flex: 1 },
 })
+
+
+
+
