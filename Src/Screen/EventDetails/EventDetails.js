@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native'
+import { View, Text, Image, TouchableOpacity, FlatList, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
@@ -7,10 +7,9 @@ import Loader from '../../Custom/Loader/loader';
 
 const EventDetails = (props) => {
     const [isFocuse, setIsFocuse] = useState('Attend')
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [data, setData] = useState('')
     const id = props?.route?.params.id
-    console.log(data?.event?.attend_users, 'if my id check image another not check');
 
     let date = new Date(data?.event?.event_date);
     let options = {
@@ -24,7 +23,6 @@ const EventDetails = (props) => {
         minute: '2-digit',
         hour12: true
     })
-    // console.log(typeof (data.users.attend_users ? 'true' : 'ddd'));
 
     const list = ({ item }) => {
         return (
@@ -38,7 +36,6 @@ const EventDetails = (props) => {
         )
     }
     const getDetails = async () => {
-        setLoading(true)
         await Event_Details(id)
             .then((res) => {
                 if (res.status_code == 200) {
@@ -59,44 +56,46 @@ const EventDetails = (props) => {
             <View style={{ paddingHorizontal: 30 }} >
                 <NavigateHeader onPress={() => { props.navigation.goBack() }} />
             </View>
-            <View style={{ marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, flex: 1, backgroundColor: COLOR.white, paddingHorizontal: 30 }}>
+            <View style={{ marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, flex: 1, backgroundColor: COLOR.white, }}>
                 {/*card view */}
-                <View style={{ backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 7, marginTop: 30, borderRadius: 5, shadowOffset: { height: 1, width: 1 }, padding: 30 }}>
-                    <Text style={{ fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Event</Text>
-                    <View style={{ borderBottomWidth: 1, marginTop: 15, borderColor: COLOR.lightgray }} />
-                    <Text style={{ fontSize: 18, color: COLOR.black, fontWeight: 'bold', marginTop: 15 }}>{data?.event?.event_title}</Text>
-                    <Text style={{ fontSize: 13, color: COLOR.gray, marginTop: 10 }}>{data?.event?.event_description}</Text>
-                    <View style={{ borderBottomWidth: 1, marginTop: 15, borderColor: COLOR.lightgray }} />
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
-                        <Image source={require('../../Assets/Image/clock.png')} style={{ height: 20, width: 20 }} />
-                        <Text style={{ fontSize: 13, color: COLOR.gray, marginLeft: 8, marginRight: 8 }}>{formattedDate}</Text>
-                        <View style={{ height: 3, width: 3, backgroundColor: COLOR.gray, borderRadius: 5 }} />
-                        <Text style={{ fontSize: 13, color: COLOR.gray, marginLeft: 8 }}>{formattedTime}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 15 }}>
-                        <Image source={require('../../Assets/Image/location.png')} style={{ height: 20, width: 20 }} />
-                        <Text style={{ fontSize: 13, color: COLOR.gray, marginLeft: 8 }}>{data?.event?.location}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', height: 40, marginTop: 15 }}>
-                        <TouchableOpacity onPress={() => { setIsFocuse('Attend') }}
-                            style={{ flex: 1, height: 40, borderBottomWidth: 1, borderColor: isFocuse == 'Attend' ? COLOR.green : COLOR.lightgray, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ color: isFocuse == 'Attend' ? COLOR.green : COLOR.gray, fontSize: 15, fontWeight: '500' }}>Attend</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setIsFocuse('NotAttend') }}
-                            style={{ flex: 1, borderBottomWidth: 1, borderColor: isFocuse == 'NotAttend' ? COLOR.green : COLOR.lightgray, height: 40, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ color: isFocuse == 'NotAttend' ? COLOR.green : COLOR.gray, fontSize: 15, fontWeight: '500' }}>Not Attend</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <FlatList ListEmptyComponent={(() => {
-                        return (
-                            <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
-                                    Not Found User
-                                </Text>
-                            </View>
-                        )
-                    })} data={isFocuse == 'Attend' ? data?.users?.attend_users : data?.users?.notattend_users} renderItem={list} />
-                </View>
+                <ScrollView style={{ flex: 1, paddingHorizontal: 30 }}>
+                    {!loading&&<View style={{ backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 7, marginTop: 30, borderRadius: 5, shadowOffset: { height: 1, width: 1 }, padding: 30 }}>
+                        <Text style={{ fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Event</Text>
+                        <View style={{ borderBottomWidth: 1, marginTop: 15, borderColor: COLOR.lightgray }} />
+                        <Text style={{ fontSize: 18, color: COLOR.black, fontWeight: 'bold', marginTop: 15 }}>{data?.event?.event_title}</Text>
+                        <Text style={{ fontSize: 13, color: COLOR.gray, marginTop: 10 }}>{data?.event?.event_description}</Text>
+                        <View style={{ borderBottomWidth: 1, marginTop: 15, borderColor: COLOR.lightgray }} />
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
+                            <Image source={require('../../Assets/Image/clock.png')} style={{ height: 20, width: 20 }} />
+                            <Text style={{ fontSize: 13, color: COLOR.gray, marginLeft: 8, marginRight: 8 }}>{formattedDate}</Text>
+                            <View style={{ height: 3, width: 3, backgroundColor: COLOR.gray, borderRadius: 5 }} />
+                            <Text style={{ fontSize: 13, color: COLOR.gray, marginLeft: 8 }}>{formattedTime}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 15 }}>
+                            <Image source={require('../../Assets/Image/location.png')} style={{ height: 20, width: 20 }} />
+                            <Text style={{ fontSize: 13, color: COLOR.gray, marginLeft: 8 }}>{data?.event?.location}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', height: 40, marginTop: 15 }}>
+                            <TouchableOpacity onPress={() => { setIsFocuse('Attend') }}
+                                style={{ flex: 1, height: 40, borderBottomWidth: 1, borderColor: isFocuse == 'Attend' ? COLOR.green : COLOR.lightgray, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ color: isFocuse == 'Attend' ? COLOR.green : COLOR.gray, fontSize: 15, fontWeight: '500' }}>Attend</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { setIsFocuse('NotAttend') }}
+                                style={{ flex: 1, borderBottomWidth: 1, borderColor: isFocuse == 'NotAttend' ? COLOR.green : COLOR.lightgray, height: 40, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ color: isFocuse == 'NotAttend' ? COLOR.green : COLOR.gray, fontSize: 15, fontWeight: '500' }}>Not Attend</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <FlatList bounces={false} ListEmptyComponent={(() => {
+                            return (
+                                <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
+                                        Not Found User
+                                    </Text>
+                                </View>
+                            )
+                        })} data={isFocuse == 'Attend' ? data?.users?.attend_users : data?.users?.notattend_users} renderItem={list} />
+                    </View>}
+                </ScrollView>
             </View>
             <Loader Retry={getDetails} visible={loading} />
         </View >
