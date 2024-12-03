@@ -1066,4 +1066,33 @@ export const Set_Vote = async (id, vote) => {
 
     return response
 }
+export const TaskComplete_or_Incomplete = async (id, type) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.TASK_COMPLETE_INCOMPLETE + '?message_id=' + id + '&select=' + type, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+
+    })
+    const response = await res.json()
+    return response
+}
+export const Add_Task_Comment = async (comment, taskId, msgId) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.ADD_TASK_COMMENT, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ comment: comment, task_chat_id: taskId, message_id: msgId })
+
+    })
+    const response = await res.json()
+    console.log('addComment----------------->>>>>>', response);
+
+    return response
+}
 
