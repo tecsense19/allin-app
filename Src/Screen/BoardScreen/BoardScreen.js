@@ -61,8 +61,8 @@ const BoardScreen = (props) => {
                             : ''}
                     </TouchableOpacity>
                 </View>
-                {isAcctive == 'Task' ? <TaskCommponent /> :
-                    // {isAcctive == 'Task' ? <TaskCommponent onPress={(res) => { props.navigation.navigate('taskdetails', res) }} /> :
+                {/* {isAcctive == 'Task' ? <TaskCommponent /> : */}
+                {isAcctive == 'Task' ? <TaskCommponent onPress={(res) => { props.navigation.navigate('taskdetails', res) }} /> :
                     isAcctive == 'Calender' ? <CalenderComponent /> :
                         isAcctive == 'Meetings' ? <MeetingCommponent onPress={(res) => { props.navigation.navigate('meetingdetails', res) }} /> :
                             isAcctive == 'Events' ? <EventsCommponent onPress={(res) => { props.navigation.navigate('eventdetails', res) }} /> : null
