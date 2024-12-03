@@ -128,6 +128,7 @@ const ProjectManagementScreen = props => {
                     </TouchableOpacity>
                 </View>
                 <FlatList
+                    scrollEnabled={false}
                     style={{ paddingBottom: 100 }}
                     data={data}
                     keyExtractor={(item, index) => index.toString()}
