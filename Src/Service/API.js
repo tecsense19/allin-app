@@ -71,6 +71,8 @@ export const ACTIONS = {
     GET_MEETING_DETAILS: BASE_PATH + '/meetings/',
     CREATE_SURVEY: BASE_PATH + '/group/question-with-options',
     SET_VOTE: BASE_PATH + '/group/select-option',
+    TASK_COMPLETE_INCOMPLETE: BASE_PATH + '/task-complete-incomplete',
+    ADD_TASK_COMMENT: BASE_PATH + '/tasks/comments',
 
 
 }
