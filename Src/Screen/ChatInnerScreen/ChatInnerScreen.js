@@ -657,6 +657,7 @@ import { getToken, MyID } from '../../Service/AsyncStorage';
 import Clipboard from '@react-native-clipboard/clipboard';
 import SelectedTextMsgPopup from './ChatCustomFile/SelectedTextMsgPopup';
 import { BlurView } from '@react-native-community/blur';
+import AddContactCard from './ChatCustomFile/AddContactCard';
 
 const ChatInnerScreen = props => {
     const [messages, setMessages] = useState([]);
@@ -683,6 +684,7 @@ const ChatInnerScreen = props => {
     const [token, setToken] = useState('');
     const [taskpopup, setTaskpopup] = useState('');
     const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 });
+    const [isCardHide, setIsCardHide] = useState(false);
 
     const handleTouch = (e) => {
         const { pageY, pageX } = e.nativeEvent;
@@ -828,7 +830,6 @@ const ChatInnerScreen = props => {
         }
 
         setMsgType('Text')
-
         switch (msgType) {
             case 'Text':
                 Chat_Text_Messages(token, msgType, inputText, Userid); setInputText('')
@@ -946,6 +947,9 @@ const ChatInnerScreen = props => {
         Meeting_Onhandale_Accept(token, messageId, myid, type)
     }
     const ChatMessage = React.memo(({ message }) => {
+        if (message && message.sentBy == 'loginUser') {
+            setIsCardHide(true)
+        }
         const renderMessage = () => {
             switch (message?.messageType) {
                 case 'Text':
@@ -966,7 +970,7 @@ const ChatInnerScreen = props => {
                     return;
             }
         };
-        console.log(selectedMSG[0]?.sentBy == 'loginUser');
+
 
         return (
             <View style={{ backgroundColor: selectedMSG[0]?.messageType == 'Text' ? COLOR.white : selectedMSG?.includes(message) ? COLOR.green : COLOR.white }}>
@@ -1114,6 +1118,7 @@ const ChatInnerScreen = props => {
                                 {/* <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: COLOR.white }} onPress={() => setTaskpopup('')}> */}
                                 <View style={styles.GiftedChat}>
                                     <ScrollView ref={scrollViewRef}>
+                                        {isCardHide || loding ? null : <AddContactCard userDetails={userDetails} />}
                                         {memoizedMessages}
                                     </ScrollView>
                                 </View >
@@ -1177,7 +1182,6 @@ const ChatInnerScreen = props => {
                                     <View onLayout={(e) => console.log(e.nativeEvent.layout)
                                     } style={{ shadowOpacity: 0.5, shadowOffset: { height: 1, width: 1 }, shadowRadius: 5, alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-end' : 'flex-start' }}>
                                         <MsgText onBluerpopupComm={true} data={selectedMSG[0]} />
-
                                     </View>
                                     <View style={{ alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-start' : 'flex-end', marginLeft: selectedMSG[0].sentBy == 'loginUser' ? -65 : 0, marginRight: selectedMSG[0].sentBy == 'loginUser' ? 0 : -65 }}>
                                         <SelectedTextMsgPopup msgType={selectedMSG[0].messageType} userType={selectedMSG[0]?.sentBy}
