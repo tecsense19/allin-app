@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Alert, TextInput, TouchableOpacity, Image, Modal, FlatList, ScrollView, Dimensions } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import Button from '../../Custom/Button/Button';
-import * as Progress from 'react-native-progress';
-import { Create_Survey } from '../../Service/actions';
+import { Create_Survey, Get_Group_List } from '../../Service/actions';
 import uuid from 'react-native-uuid'
+import Loader from '../../Custom/Loader/loader';
 
 const CreateSurvey = (props) => {
     const [pollQuestion, setPollQuestion] = useState('');
+    const [groupdata, setGroupData] = useState('');
+    const [selectitem, setselectitem] = useState('');
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [options, setOptions] = useState([
-        { id: uuid.v4(), text: 'new Option', votes: 2 },
-        { id: uuid.v4(), text: 'new Option', votes: 8 },
-        { id: uuid.v4(), text: 'new Option', votes: 12 },
-        { id: uuid.v4(), text: 'new Option', votes: 13 },
+        { id: uuid.v4(), text: 'new Option 1', votes: 2 },
+        { id: uuid.v4(), text: 'new Option 2', votes: 8 },
+        { id: uuid.v4(), text: 'new Option 3', votes: 12 },
+        { id: uuid.v4(), text: 'new Option 4', votes: 13 },
     ]);
-
     const handleDragEnd = ({ data }) => {
         setOptions(data);
     };
@@ -41,23 +44,51 @@ const CreateSurvey = (props) => {
         );
     };
     const onHandaleCreate = () => {
-        if (pollQuestion === '') {
-            Alert.alert('Alert', 'Question is required');
+        if (selectitem == '') {
+            Alert.alert('Please select group');
             return;
         }
+        setVisible(false)
+        setLoading(true)
+
         const commaSeparateOption = options.map(option => '"' + option.text.toString() + '"').join(',');
-        Create_Survey(pollQuestion, 35, commaSeparateOption)
+        Create_Survey(pollQuestion, selectitem?.id, commaSeparateOption)
             .then((res) => {
-                // if (res.status_code == 200) {
-                //     console.log('res------------------>>>>>>>', res);
-                // }
-                // console.log('res------------------>>>>>>>', res);
-
-            }).catch((e) => {
-                console.log(e);
-
+                if (res.status_code == 200) {
+                    setLoading(false)
+                    props.navigation.goBack()
+                }
             })
-
+    }
+    const getGroupList = () => {
+        Get_Group_List().then((res) => {
+            if (res?.status_code == 200) {
+                setGroupData(res?.data)
+            }
+        })
+    }
+    useEffect(() => {
+        getGroupList()
+    }, [])
+    const list = ({ item }) => {
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLOR.white, borderRadius: 5, flex: 1, marginVertical: 10, justifyContent: 'space-between' }}>
+                <View style={{ padding: 5, flexDirection: 'row', alignItems: 'center' }} >
+                    <Image source={{ uri: item.profile_pic }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', marginLeft: 5 }}>{item.name}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setselectitem(item)}>
+                    <Image style={{ height: 25, width: 25, tintColor: selectitem.id == item.id ? COLOR.green : COLOR.gray }}
+                        source={selectitem.id == item.id ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} />
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    const onhandleselect = () => {
+        if (pollQuestion.trim() === '') {
+            return Alert.alert('Please enter your question')
+        }
+        setVisible(true)
     }
 
     return (
@@ -129,10 +160,24 @@ const CreateSurvey = (props) => {
                     <View style={{ position: 'absolute', bottom: 30, paddingHorizontal: 30, right: 0, left: 0 }}>
 
 
-                        <Button onPress={() => { onHandaleCreate() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
+                        <Button onPress={() => { onhandleselect() }} title={'Select'} bgColor={COLOR.green} color={COLOR.white} />
                     </View>
                 </View>
             </View>
+            <Loader visible={loading} Retry={onHandaleCreate} />
+            <Modal visible={visible}>
+                <View style={{ flex: 1, backgroundColor: COLOR.black, }}>
+                    <View style={{ paddingHorizontal: 30 }}>
+                        <NavigateHeader onPress={() => { setVisible(false) }} title={'Select Group'} color={COLOR.white} />
+                    </View>
+                    <View style={{ flex: 1, backgroundColor: COLOR.white, marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, paddingBottom: 70 }}>
+                        <FlatList showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 20, }} data={groupdata} renderItem={list} />
+                        <View style={{ position: 'absolute', bottom: 20, paddingHorizontal: 30, right: 0, left: 0 }}>
+                            <Button onPress={() => { onHandaleCreate() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
 
         </GestureHandlerRootView>
     );
