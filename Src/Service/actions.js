@@ -1095,4 +1095,18 @@ export const Add_Task_Comment = async (comment, taskId, msgId) => {
 
     return response
 }
+export const Get_Group_List = async () => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.GROUP_LIST, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+
+    })
+    const response = await res.json()
+
+    return response
+}
 
