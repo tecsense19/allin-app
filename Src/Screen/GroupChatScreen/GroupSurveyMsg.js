@@ -2,14 +2,12 @@ import { View, Text, FlatList, TouchableOpacity, Image, Dimensions } from 'react
 import React, { useEffect, useState } from 'react'
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import * as Progress from 'react-native-progress';
-import { MyID } from '../../Service/AsyncStorage';
 import { Set_Vote } from '../../Service/actions';
 
 const GroupSurveyMsg = ({ message, totalVotes, myid }) => {
     const IsSender = message.sentBy == "loginUser"
     const WIDTH = Dimensions.get('screen').width
 
-    // console.log('----------------->>>>>>', message);
     return (
         <View style={{ flexDirection: 'row', alignSelf: IsSender ? 'flex-end' : 'flex-start', alignItems: 'flex-end' }}>
             {IsSender ? null :
@@ -17,16 +15,14 @@ const GroupSurveyMsg = ({ message, totalVotes, myid }) => {
                     style={{
                         height: 35, width: 35, borderRadius: 35, marginRight: 5
                     }} />}
-            {/* <Image source={{ uri: message?.senderProfile }} style={{ height: 50, width: 50 }} /> */}
             <View style={{ width: '85%', backgroundColor: IsSender ? COLOR.lightgreen : COLOR.verylightgray, borderRadius: 10, }}>
                 <Text style={{ color: COLOR.black, fontSize: 16, fontWeight: 'bold', marginTop: 20, paddingHorizontal: 20 }}>{message?.message}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingHorizontal: 20 }}>
                     <Image source={require('../../Assets/Image/pollmoreoptionicon.png')} style={{ height: 15, width: 30, resizeMode: 'contain' }} />
                     <Text>{'Selecte one or more'}</Text>
                 </View>
-                <FlatList style={{ marginTop: 20, paddingHorizontal: 20 }} data={message?.messageDetails} renderItem={({ item }) => {
+                <FlatList scrollEnabled={false} style={{ marginTop: 20, paddingHorizontal: 20 }} data={message?.messageDetails} renderItem={({ item }) => {
                     const count = item?.user_data?.length
-                    // console.log('item========>>>>>', item);
 
                     const calculatePercentage = () => {
                         if (totalVotes === 0) return 0;
