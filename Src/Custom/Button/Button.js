@@ -12,7 +12,7 @@ const Button = ({
     disabled,
     title,
     onPress,
-    marginHorizontal,
+    marginHorizontal, fontSize
 }) => {
     return (
         <TouchableOpacity
@@ -30,7 +30,7 @@ const Button = ({
                 justifyContent: 'center',
                 height: 45,
             }}>
-            <Text style={[styles.title, { color: color }]}>{title}</Text>
+            <Text style={[styles.title, { color: color, fontSize: fontSize ? fontSize : 18 }]}>{title}</Text>
         </TouchableOpacity>
     );
 };

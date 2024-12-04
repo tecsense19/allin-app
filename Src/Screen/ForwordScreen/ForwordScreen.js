@@ -11,20 +11,17 @@ import Button from '../../Custom/Button/Button';
 const ForwordScreen = (props) => {
     const [allUserData, setAllUserData] = useState([]);
     const [search, setSearch] = useState('');
-    const [token, setToken] = useState('');
     const [loading, setLoading] = useState(true);
-    const [selectedUserIds, setSelectedUserIds] = useState([]); // State to keep track of selected user IDs
-    const [messageid, setMessageID] = useState(''); // State to keep track of selected user IDs
+    const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const id = props.route.params.forwordId
+
 
     useEffect(() => {
         getuser();
-        setMessageID(props.route.params)
-    }, [token]);
-    console.log(token);
+    }, []);
 
     const getuser = async () => {
         const Token = await getToken();
-        setToken(Token);
         const bodydata = { timezone: TimeZone.getTimeZone(), search: search };
 
         await User_List(bodydata, Token)
@@ -41,10 +38,8 @@ const ForwordScreen = (props) => {
     const memoizedUsers = useMemo(() => allUserData, [allUserData]);
     const toggleUserSelection = (userId) => {
         if (selectedUserIds.includes(userId)) {
-            // If the user ID is already selected, remove it
             setSelectedUserIds(selectedUserIds.filter(id => id !== userId));
         } else {
-            // If the user ID is not selected, add it
             setSelectedUserIds([...selectedUserIds, userId]);
         }
     };
@@ -75,9 +70,15 @@ const ForwordScreen = (props) => {
         );
     };
     const AllUserIDs = selectedUserIds.join(',');
+    console.log(AllUserIDs);
+
     const ForwordMessage = async () => {
-        await Forword_Messages(token, messageid, AllUserIDs)
+        const Token = await getToken()
+
+        await Forword_Messages(Token, id, AllUserIDs)
             .then((res) => {
+                console.log(res);
+
                 if (res.status_code === 200) {
                     props.navigation.goBack()
                 }
@@ -96,9 +97,7 @@ const ForwordScreen = (props) => {
                 </View>
             </View>
             <View style={styles.detailsview}>
-                <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 85, borderTopRightRadius: 20, borderTopLeftRadius: 20 }} />
-
-
+                <FlatList data={memoizedUsers} renderItem={list} bounces={false} style={{ marginBottom: 5, borderTopRightRadius: 20, borderTopLeftRadius: 20 }} />
             </View>
             <View style={{ backgroundColor: COLOR.white }}>
                 <Button title={'Send'} color={COLOR.white} bgColor={COLOR.green} marginHorizontal={20} marginBottom={40} onPress={ForwordMessage} />

@@ -9,13 +9,13 @@ const MsgMapImage = ({ data }) => {
 
     // console.log(data);
     return (
-        <View style={{ alignSelf: data.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', padding: 5, backgroundColor: data.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray, borderRadius: 10 }}>
+        <View style={{ alignSelf: data.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', padding: 5, backgroundColor: data.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray, borderRadius: 10, width: '100%' }}>
             <MapView
                 scrollEnabled={false}
                 zoomEnabled={false}
                 // showsUserLocation={true}
                 followsUserLocation={true}
-                style={{ height: 250, width: 250, borderRadius: 10 }}
+                style={{ height: 280, width: '100%', borderRadius: 10 }}
                 initialRegion={{
                     latitude: latitude,
                     longitude: longitude,

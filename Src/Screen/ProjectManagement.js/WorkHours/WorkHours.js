@@ -36,7 +36,8 @@ const WorkHours = props => {
     const [userlist, setUserList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [location, setLocation] = useState('');
-
+    const [totalworkHour, setTotalWorkHour] = useState('');
+    let cleanedTime = totalworkHour.replace(/[hmi]/g, '').trim();
     const monthIndex = date.getMonth();
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const month = months[monthIndex] + '-' + date.getFullYear();
@@ -158,7 +159,8 @@ const WorkHours = props => {
             .then((res) => {
                 setWorkHourData(res.data.workHours);
                 setLoading(false)
-                // console.log(res.data);
+                setTotalWorkHour(res.data.TotalHours)
+                console.log(res.data.TotalHours);
                 // console.log(apiMonthyear);
             })
             .catch((e) => {
@@ -277,13 +279,13 @@ const WorkHours = props => {
                         reset={clear}
                     />
                     <MonthDropDown onPress={() => setShow(!show)} Month={selectedMonth || month} isshow={show} />
+                    {cleanedTime && <Text style={{ textAlign: 'center', marginTop: 15, marginBottom: 5, color: COLOR.green, fontSize: 15, fontWeight: '600' }}>{cleanedTime + ' Hours'}</Text>}
+                    <View style={{ borderBottomWidth: 1, borderColor: '#eeeeee', marginTop: 20, marginBottom: 10 }} />
                     {show ?
                         <MonthPicker
                             onChange={onValueChange}
                             value={date}
                             maximumDate={new Date()}
-
-
                         />
                         //  <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
                         //     <FlatList renderItem={({ item }) => (
@@ -381,12 +383,12 @@ export default WorkHours;
 const MonthDropDown = ({ Month, onPress, isshow }) => {
     return (
         <TouchableOpacity onPress={onPress} style={{
-            backgroundColor: COLOR.white, marginHorizontal: 25, height: 45, borderRadius: 10, alignItems: 'center',
+            backgroundColor: COLOR.white, marginHorizontal: 42, height: 45, borderRadius: 10, alignItems: 'center',
             justifyContent: 'center',
             shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, marginTop: -10
         }}>
             <View style={{ flexDirection: 'row', }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold', flex: 0.9, textAlign: 'center' }}>{Month}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', flex: 0.9, textAlign: 'center' }}>{Month}</Text>
                 <Image source={require('../../../Assets/Image/back.png')} style={{ height: 24, width: 24, transform: [{ rotate: isshow ? '-270deg' : '270deg' }] }} />
 
             </View>

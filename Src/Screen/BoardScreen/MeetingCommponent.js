@@ -1,13 +1,11 @@
-
-
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert, Linking } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getToken, MyID } from '../../Service/AsyncStorage';
 import { Meeting_Onhandale_Accept, Meetings, Task_Meeting_Event_Unread } from '../../Service/actions';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
 
-const MeetingCommponent = () => {
+const MeetingCommponent = ({ onPress }) => {
     const [myid, setMyId] = useState('')
     const [meetingsData, setMeetingsData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -46,15 +44,10 @@ const MeetingCommponent = () => {
                 if (res.status_code == 200) {
                     setLoading(false)
                     setMeetingsData(res.data)
-                } else {
-                    setLoading(false)
-                    Alert.alert(res.message)
                 }
             })
     }
     const meetingList = ({ item }) => {
-        // console.log();
-
         const acceptMeetingid = [item?.accepted_users]
         const declineMeetingid = [item?.decline_users]
         const acceptresult = acceptMeetingid[0]?.split(',')?.map(Number)?.includes(myid);
@@ -102,9 +95,13 @@ const MeetingCommponent = () => {
                     }
                 })
         }
-
+        const onNavigate = (e) => {
+            onPress(e)
+        }
         return (
-            <View style={styles.meetinglistContainer}>
+            <TouchableOpacity
+                onPress={() => onNavigate(item)}
+                style={styles.meetinglistContainer}>
                 <Text style={styles.meetingTxt}>Meeting</Text>
                 <View style={{ height: 1.5, backgroundColor: COLOR.lightgray, marginHorizontal: 15, marginTop: 5 }}></View>
                 <View style={styles.meetingDetailsView}>
@@ -121,11 +118,16 @@ const MeetingCommponent = () => {
 
                     </View>
 
-                    <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
-                        <Image source={require('../../Assets/Image/location.png')} style={{ height: 20, width: 20, resizeMode: 'contain', marginLeft: -2 }} />
-                        < Text style={{ fontSize: 13, color: COLOR.gray, fontWeight: '600', marginRight: 15, marginLeft: 3 }}>{item.location ? item.location : 'Empty'}</Text>
 
-                    </View>
+                    {item?.mode == 'Online' ?
+                        <TouchableOpacity onPress={() => Linking.openURL(item?.meeting_url)} style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 10 }}>
+                            <Image source={require('../../Assets/Image/help.png')} style={{ height: 20, width: 20, tintColor: COLOR.gray }} />
+                            <Text style={{ fontSize: 13, color: COLOR.slateblue, fontWeight: '600', marginLeft: 10 }}>{item?.meeting_url}</Text>
+                        </TouchableOpacity>
+                        : <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 10 }}>
+                            <Image source={require('../../Assets/Image/location.png')} style={{ height: 20, width: 20 }} />
+                            <Text style={{ fontSize: 13, color: COLOR.gray, fontWeight: '600', marginLeft: 10 }}>{item?.location}</Text>
+                        </View>}
 
                     {item?.created_by == myid ? null
                         : acceptresult ?
@@ -171,7 +173,7 @@ const MeetingCommponent = () => {
 
                 </View>
 
-            </View>
+            </TouchableOpacity>
         )
     }
     const OnHandleRead = async () => {

@@ -36,6 +36,8 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [MapState, setMapState] = useState('');
+    const [meetingType, setMeetingType] = useState('Online')
+    const [onlineMeetingUrl, setOnlineMeetingUrl] = useState('')
 
     const PLACES_API_BASE_URL = 'https://maps.googleapis.com/maps/api/place';
     const apiKey = 'AIzaSyBVNrTxbZva7cV4XDyM8isa5JYpqA1SJYo';
@@ -44,6 +46,8 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Add 1 to the month and pad with zero
     const day = date.getUTCDate().toString().padStart(2, '0'); // Pad with zero
     const meetingdate = year + '-' + month + '-' + day
+    const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    var isValid = urlRegex.test(onlineMeetingUrl);
 
 
     const time = new Date(Time);
@@ -56,21 +60,33 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     const formattedHours = hours % 12 || 12;
     const period = hours < 12 ? 'AM' : 'PM';
     const meetingDesplayTime = formattedHours + ':' + minutes + ' ' + period
-
-    console.log(MapState);
-    // console.log(suggestions);
-
     const handleSubmit = () => {
         const data = {
-            type: 'Meeting', meetingtitle: title,
-            meetingdescription: descriptions, meetingdate: meetingdate,
-            meetingtime: meetingtime, remind: selectedItems, latitude: selectedPlace?.lat,
-            longitude: selectedPlace?.lng, address: selectedPlace?.address
+            type: 'Meeting',
+            mode: meetingType,
+            meetingtitle: title,
+            meetingdescription: descriptions,
+            meetingdate: meetingdate,
+            meetingtime: meetingtime,
+            meeting_url: onlineMeetingUrl,
+            remind: selectedItems,
+            latitude: selectedPlace?.lat,
+            longitude: selectedPlace?.lng,
+            address: selectedPlace?.address,
+
         }
         if (title == '' || descriptions == '') {
             Alert.alert('Please Enter title and description');
+            return;
         }
-
+        if (!isValid && meetingType == 'Online') {
+            Alert.alert('Invalid Online Meeting URL')
+            return;
+        }
+        if (!selectedPlace?.address && meetingType == 'Offline') {
+            Alert.alert('Select a valid location')
+            return;
+        }
         else {
             onSubmit(data);
             setTitle(null)
@@ -97,7 +113,6 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
             setSelectedItems([...selectedItems, itemId]);
         }
     };
-
     const getuser = async () => {
         const timezone = { timezone: Timezone.getTimeZone() }
         await User_List(timezone, token).then((res) => {
@@ -170,7 +185,6 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     // const handleMapPress = async (event) => {
     //     const { coordinate } = event.nativeEvent;
     //     setSelectedCoordinate(coordinate);
-
     //     try {
     //         const response = await fetch(
     //             `${PLACES_API_BASE_URL}/autocomplete/json?input=${coordinate.latitude},${coordinate.longitude}&key=${apiKey}&types=geocode`
@@ -182,6 +196,7 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
     //         setPlacePredictions([]);
     //     }
     // };
+
     return (
         <ScrollView
             bounces={false}
@@ -245,26 +260,63 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                 <PickerButton title={meetingDesplayTime} onPress={() => { setOpenTime(true) }} />
                 {/* <PickerButton title={'Remind'} onPress={() => setVisible(true)} /> */}
             </View>
-            <TextInput
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                placeholder="write a location"
-                value={query}
-                onChangeText={(text) => {
-                    setQuery(text);
-                    fetchSuggestions(text);
-                }}
-                placeholderTextColor={COLOR.placeholder}
-                style={{
-                    backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 1, width: 1 },
-                    height: 45,
-                    borderRadius: 5,
-                    paddingLeft: 10,
-                    fontWeight: '500',
-                    fontSize: 16,
-                    color: COLOR.textcolor, marginTop: 25
-                }}
-            />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', alignSelf: 'center', marginTop: 20 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10 }}>
+                    <TouchableOpacity onPress={() => { setMeetingType('Online') }}>
+                        <Image style={{ height: 18, width: 18 }} source={meetingType == 'Online' ? require('../../../Assets/Image/meetingradioselect.png') : require('../../../Assets/Image/meetingradiounselect.png')} />
+                    </TouchableOpacity>
+                    <Text style={{ marginLeft: 5, color: COLOR.black, fontWeight: '500', fontSize: 15 }}>Online </Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10 }}>
+                    <TouchableOpacity onPress={() => { setMeetingType('Offline') }}>
+                        <Image style={{ height: 18, width: 18 }} source={meetingType == 'Offline' ? require('../../../Assets/Image/meetingradioselect.png') : require('../../../Assets/Image/meetingradiounselect.png')} />
+                    </TouchableOpacity>
+                    <Text style={{ marginLeft: 5, color: COLOR.black, fontWeight: '500', fontSize: 15 }}>Offline </Text>
+                </View>
+
+            </View>
+            {
+                meetingType == 'Online' ? <TextInput
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    placeholder="Enter URL"
+                    value={onlineMeetingUrl}
+                    onChangeText={(text) => {
+                        setOnlineMeetingUrl(text)
+                    }}
+                    placeholderTextColor={COLOR.placeholder}
+                    style={{
+                        backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 1, width: 1 },
+                        height: 45,
+                        borderRadius: 5,
+                        paddingLeft: 10,
+                        fontWeight: '500',
+                        fontSize: 16,
+                        color: COLOR.textcolor, marginTop: 25
+                    }}
+                />
+                    :
+                    <TextInput
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                        placeholder="write a location"
+                        value={query}
+                        onChangeText={(text) => {
+                            setQuery(text);
+                            fetchSuggestions(text);
+                        }}
+                        placeholderTextColor={COLOR.placeholder}
+                        style={{
+                            backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 1, width: 1 },
+                            height: 45,
+                            borderRadius: 5,
+                            paddingLeft: 10,
+                            fontWeight: '500',
+                            fontSize: 16,
+                            color: COLOR.textcolor, marginTop: 25
+                        }}
+                    />
+            }
             {suggestions.length > 0 && (
                 <FlatList
                     style={{ width: '100%', maxHeight: 300 }}
@@ -360,7 +412,6 @@ const CreateMsgMeeting = ({ onSubmit, userId, token }) => {
                     </View>
                     <View style={{ marginTop: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
                         <FlatList style={{ paddingHorizontal: 20, marginBottom: 70 }} data={selectedUser} renderItem={(({ item }) => {
-                            // console.log(item);
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
                                 <View>

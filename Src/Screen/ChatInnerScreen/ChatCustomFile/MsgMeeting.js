@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Linking } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
 import { MyID } from '../../../Service/AsyncStorage';
@@ -17,38 +17,7 @@ export const MsgMeeting = ({ data, onAccept, onDecline }) => {
     const acceptresult = acceptMeetingid[0]?.split(',')?.map(Number).includes(myid);
     const declineresult = declineMeetingid[0]?.split(',')?.map(Number).includes(myid);
 
-
-    // const list = ({ item, index }) => {
-    //     return (
-    //         <View>
-    //             {index < 3 ? <Image source={{ uri: item?.profile }} style={{ height: 25, width: 25, borderRadius: 100, marginLeft: index == 0 ? 0 : -10 }} /> : ''}
-    //         </View>
-    //     )
-    // }
     return (
-        // <View style={{ alignSelf: data?.sentBy == 'loginUser' ? 'flex-end' : 'flex-start', width: '90%', }}>
-        //     <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 5, color: COLOR.black, marginLeft: 5 }}>Meeting</Text>
-        //     <View
-        //         onPress={onPress}
-        //         style={{ backgroundColor: data?.sentBy == 'loginUser' ? COLOR.lightgreen : COLOR.verylightgray, height: 'auto', borderRadius: 10, paddingHorizontal: 10, padding: 5, paddingLeft: 15 }}>
-        //         <Text style={styles.Heading}>Title: <Text style={styles.HeadingContent}>{data.messageDetails.title}</Text></Text>
-        //         <Text style={styles.Heading}>Description: <Text style={styles.HeadingContent}>{data?.messageDetails.description?.length > 60 ? data?.messageDetails.description.slice(0, 60) + '....' : data?.messageDetails.description}</Text></Text>
-        //         <Text style={styles.Heading}>Meeting Date: <Text style={styles.HeadingContent}>{data.messageDetails.date}</Text></Text>
-        //         <Text style={styles.Heading}>Meeting Time: < Text style={styles.HeadingContent}>{data.messageDetails.start_time}</Text></Text>
-        //         <Text style={styles.Heading}>Location: < Text style={styles.HeadingContent}>{data.messageDetails.location ? data.messageDetails.location : 'Empty'}</Text></Text>
-        //         <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-        //             <View style={{
-        //                 width: data.messageDetails.users?.length <= 2 ? 60 : 75,
-        //                 alignSelf: 'center', flexDirection: 'row', alignItems: 'center', position: 'absolute', right: data.messageDetails.users?.length <= 2 ? -20 : 0, bottom: 35
-        //             }}>
-        //                 <FlatList data={Member} renderItem={list} horizontal bounces={false}
-        //                     style={{}} />
-        //                 <Text style={{ fontSize: 12, fontWeight: 'bold', color: COLOR.titlecolor, }}>{Member?.length >= 3 ? '+' + (Member?.length - 3) : ""}</Text>
-        //             </View>
-        //         </View>
-        //         <Text style={styles.time}>{data.time}</Text>
-        //     </View>
-        // </View>
         <View style={styles.meetinglistContainer}>
             <Text style={styles.meetingTxt}>Meeting</Text>
             <View style={{ height: 1.5, backgroundColor: COLOR.lightgray, marginHorizontal: 15, marginTop: 5 }}></View>
@@ -66,11 +35,16 @@ export const MsgMeeting = ({ data, onAccept, onDecline }) => {
 
                 </View>
 
-                {data.messageDetails.location ? <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={require('../../../Assets/Image/location.png')} style={{ height: 20, width: 20, resizeMode: 'contain', marginLeft: -2 }} />
-                    < Text style={{ fontSize: 13, color: COLOR.gray, fontWeight: '600', marginRight: 15, marginLeft: 3 }}>{data.messageDetails.location ? data.messageDetails.location : 'Empty'}</Text>
+                {data?.messageDetails?.mode == 'Online' ?
+                    <TouchableOpacity onPress={() => Linking.openURL(data?.messageDetails?.meeting_url)} style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 15 }}>
+                        <Image source={require('../../../Assets/Image/help.png')} style={{ height: 20, width: 20, tintColor: COLOR.gray }} />
+                        <Text style={{ fontSize: 13, color: COLOR.slateblue, marginHorizontal: 8 }}>{data?.messageDetails?.meeting_url}</Text>
+                    </TouchableOpacity>
+                    : <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 15 }}>
+                        <Image source={require('../../../Assets/Image/location.png')} style={{ height: 20, width: 20 }} />
+                        <Text style={{ fontSize: 13, color: COLOR.gray, marginLeft: 8 }}>{data.messageDetails.location ? data.messageDetails.location : 'Empty'}</Text>
+                    </View>}
 
-                </View> : ''}
                 {data?.sentBy == 'loginUser' ? null
                     : acceptresult ?
                         <View style={{ backgroundColor: COLOR.lightgreen, paddingHorizontal: 10, padding: 5, borderRadius: 10, marginTop: 15, alignSelf: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
@@ -117,13 +91,6 @@ export const MsgMeeting = ({ data, onAccept, onDecline }) => {
         </View>
     );
 };
-// const styles = StyleSheet.create({
-//     Heading: { alignSelf: 'flex-start', marginTop: 10, fontWeight: 'bold', color: COLOR.black, fontSize: 13 },
-//     HeadingContent: { color: COLOR.black, fontSize: 12, fontWeight: '500' },
-//     time: { alignSelf: 'flex-end', margin: 5, fontWeight: '700', color: COLOR.placeholder, fontSize: 12 }
-// })
-
-
 const styles = StyleSheet.create({
     Heading: { alignSelf: 'flex-start', marginTop: 10, fontWeight: 'bold', color: COLOR.black, fontSize: 13 },
     HeadingContent: { color: COLOR.black, fontSize: 12, fontWeight: '500' },

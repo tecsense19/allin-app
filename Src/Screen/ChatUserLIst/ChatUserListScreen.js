@@ -121,7 +121,7 @@ const ChatUserListScreen = props => {
         };
         const userName = item?.first_name + ' ' + item.last_name
         const groupName = item.name
-        console.log(item);
+
 
         const swipeRightSide = () => {
             return (
@@ -306,7 +306,7 @@ const ChatUserListScreen = props => {
             <StatusBar barStyle="light-content" />
             <View style={styles.headerView}>
                 <MainMenu
-                    QR={() => { Alert.alert('Website QR'), setVisible(false) }}
+                    ScanQR={() => { props.navigation.navigate('scanqr'), setVisible(false) }}
                     onRequestClose={closeModal}
                     title={'Summarize'}
                     visible={visible}
@@ -315,9 +315,8 @@ const ChatUserListScreen = props => {
                     setting={() => { props.navigation.navigate('edit'); setVisible(false); }}
                     onPress={() => { props.navigation.navigate('summarize'), setVisible(false) }}
                     onGroup={() => { props.navigation.navigate('creategroup'), setVisible(false) }}
-
-
                 />
+
                 {!showSearch ? <ChatHeader
                     ProfileImage={profileData?.data?.userDetails?.profile}
                     onProfile={() => { props.navigation.navigate('edit') }}

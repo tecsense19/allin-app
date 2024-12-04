@@ -7,12 +7,12 @@ const Loader = ({ visible, Retry }) => {
     useEffect(() => {
         setInterval(() => {
             visible == true ? setIsRetry(true) : setIsRetry(false)
-        }, 10000)
+        }, 30000)
 
     }, [visible])
     const handleRetry = () => {
-        setIsRetry(false); // Reset state if needed
-        Retry(); // Call the Retry function
+        setIsRetry(false);
+        Retry();
     };
     return (
 
