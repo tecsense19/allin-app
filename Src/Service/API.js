@@ -66,6 +66,13 @@ export const ACTIONS = {
     GROUP_ADD_USER: BASE_PATH + '/add-group-user',
     GROUP_EDIT: BASE_PATH + '/edit-group',
     GROUP_DELETE: BASE_PATH + '/group-delete',
+    EVENT_DONE: BASE_PATH + '/sent-event-done',
+    GET_EVENT_DETAILS: BASE_PATH + '/event/',
+    GET_MEETING_DETAILS: BASE_PATH + '/meetings/',
+    CREATE_SURVEY: BASE_PATH + '/group/question-with-options',
+    SET_VOTE: BASE_PATH + '/group/select-option',
+    TASK_COMPLETE_INCOMPLETE: BASE_PATH + '/task-complete-incomplete',
+    ADD_TASK_COMMENT: BASE_PATH + '/tasks/comments',
 
 
 

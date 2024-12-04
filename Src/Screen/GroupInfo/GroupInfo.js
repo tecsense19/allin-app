@@ -12,6 +12,7 @@ import Textinput from '../../Custom/TextInput/SimpaleTextInput'
 
 const GroupInfo = (props) => {
     const Data = props?.route?.params
+    
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [visible, setVisible] = useState(false)

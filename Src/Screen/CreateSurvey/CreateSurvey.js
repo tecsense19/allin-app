@@ -1,35 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Alert, TextInput, TouchableOpacity, Image, Modal, FlatList, ScrollView, Dimensions } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import Button from '../../Custom/Button/Button';
-import * as Progress from 'react-native-progress';
+import { Create_Survey, Get_Group_List } from '../../Service/actions';
+import uuid from 'react-native-uuid'
+import Loader from '../../Custom/Loader/loader';
 
 const CreateSurvey = (props) => {
     const [pollQuestion, setPollQuestion] = useState('');
-    const [data, setData] = useState('');
-    const [openmodal, setOpenModal] = useState(false);
-    const [options, setOptions] = useState([
-        { id: Date.now().toString(), text: 'new Option', votes: 2 },
-        { id: Date.now().toString(), text: 'new Option', votes: 8 },
-        { id: Date.now().toString(), text: 'new Option', votes: 12 },
-        { id: Date.now().toString(), text: 'new Option', votes: 13 },
+    const [groupdata, setGroupData] = useState('');
+    const [selectitem, setselectitem] = useState('');
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
+    const [options, setOptions] = useState([
+        { id: uuid.v4(), text: 'new Option 1', votes: 2 },
+        { id: uuid.v4(), text: 'new Option 2', votes: 8 },
+        { id: uuid.v4(), text: 'new Option 3', votes: 12 },
+        { id: uuid.v4(), text: 'new Option 4', votes: 13 },
     ]);
-    const img = [
-        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
-        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
-        { uri: 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg', name: '' },
-    ]
-    const totalVotes = 13
-    const calculatePercentage = (votes) => {
-        if (totalVotes === 0) return 0;
-        return (votes / totalVotes).toFixed(2);
-    };
-    const HIGHT = Dimensions.get('screen').height
-    const WIDTH = Dimensions.get('screen').width
     const handleDragEnd = ({ data }) => {
         setOptions(data);
     };
@@ -52,13 +44,51 @@ const CreateSurvey = (props) => {
         );
     };
     const onHandaleCreate = () => {
-        if (pollQuestion === '') {
-            Alert.alert('Alert', 'Question is required');
+        if (selectitem == '') {
+            Alert.alert('Please select group');
             return;
         }
+        setVisible(false)
+        setLoading(true)
 
-        setData({ pollQuestion, options })
-        setOpenModal(true)
+        const commaSeparateOption = options.map(option => '"' + option.text.toString() + '"').join(',');
+        Create_Survey(pollQuestion, selectitem?.id, commaSeparateOption)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    setLoading(false)
+                    props.navigation.goBack()
+                }
+            })
+    }
+    const getGroupList = () => {
+        Get_Group_List().then((res) => {
+            if (res?.status_code == 200) {
+                setGroupData(res?.data)
+            }
+        })
+    }
+    useEffect(() => {
+        getGroupList()
+    }, [])
+    const list = ({ item }) => {
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLOR.white, borderRadius: 5, flex: 1, marginVertical: 10, justifyContent: 'space-between' }}>
+                <View style={{ padding: 5, flexDirection: 'row', alignItems: 'center' }} >
+                    <Image source={{ uri: item.profile_pic }} style={{ height: 50, width: 50, borderRadius: 50 }} />
+                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', marginLeft: 5 }}>{item.name}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setselectitem(item)}>
+                    <Image style={{ height: 25, width: 25, tintColor: selectitem.id == item.id ? COLOR.green : COLOR.gray }}
+                        source={selectitem.id == item.id ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} />
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    const onhandleselect = () => {
+        if (pollQuestion.trim() === '') {
+            return Alert.alert('Please enter your question')
+        }
+        setVisible(true)
     }
 
     return (
@@ -98,7 +128,7 @@ const CreateSurvey = (props) => {
                                         value={item.text}
                                         onChangeText={(txt) => handleTextChange(item.id, txt)}
                                     />
-                                    <TouchableOpacity style={{ padding: 5, }} onPress={() => { handleRemoveOption(item.id) }}>
+                                    <TouchableOpacity style={{ padding: 5 }} onPress={() => { handleRemoveOption(item.id) }}>
                                         <Image source={require('../../Assets/Image/bin.png')} style={{ height: 15, width: 15, tintColor: COLOR.black }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity style={{ paddingLeft: 15, paddingVertical: 10 }} onLongPress={drag}>
@@ -130,52 +160,25 @@ const CreateSurvey = (props) => {
                     <View style={{ position: 'absolute', bottom: 30, paddingHorizontal: 30, right: 0, left: 0 }}>
 
 
-                        <Button onPress={() => { onHandaleCreate() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
+                        <Button onPress={() => { onhandleselect() }} title={'Select'} bgColor={COLOR.green} color={COLOR.white} />
                     </View>
                 </View>
             </View>
-            <Modal visible={openmodal} animationType='slide'>
-                <View style={{ alignSelf: 'flex-start', width: '85%', backgroundColor: COLOR.lightgreen, marginTop: 50, borderRadius: 10, marginLeft: 10 }}>
-                    <Text style={{ color: COLOR.black, fontSize: 16, fontWeight: 'bold', marginTop: 20, paddingHorizontal: 20 }}>{data.pollQuestion}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, paddingHorizontal: 20 }}>
-                        <Image source={require('../../Assets/Image/pollmoreoptionicon.png')} style={{ height: 15, width: 30, resizeMode: 'contain' }} />
-                        <Text>{'Selecte one or more'}</Text>
+            <Loader visible={loading} Retry={onHandaleCreate} />
+            <Modal visible={visible}>
+                <View style={{ flex: 1, backgroundColor: COLOR.black, }}>
+                    <View style={{ paddingHorizontal: 30 }}>
+                        <NavigateHeader onPress={() => { setVisible(false) }} title={'Select Group'} color={COLOR.white} />
                     </View>
-                    <FlatList style={{ marginTop: 20, paddingHorizontal: 20 }} data={data.options} renderItem={({ item }) => {
-                        return (
-                            <View style={{ marginTop: 15 }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                                        <TouchableOpacity>
-                                            <Image source={require('../../Assets/Image/pollunselect.png')} style={{ height: 18, width: 18 }} />
-                                        </TouchableOpacity>
-                                        <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.text}</Text>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <View>
-                                            <FlatList horizontal data={img} renderItem={({ item, index }) => {
-                                                return (
-                                                    <Image source={{ uri: item.uri }} style={{ height: 20, width: 20, borderRadius: 20, marginLeft: index == '0' ? 0 : -10 }} />
-                                                )
-                                            }} />
-                                        </View>
-                                        <Text style={{ fontSize: 14, marginLeft: 5, color: COLOR.black, fontWeight: '500' }}>{item.votes}</Text>
-                                    </View>
-                                </View>
-                                <Progress.Bar unfilledColor={COLOR.lightgray} borderWidth={0} height={7} color={COLOR.green} progress={calculatePercentage(item.votes)} width={WIDTH - 100} style={{ marginTop: 10 }} />
-
-                            </View>
-                        )
-                    }} />
-                    <Text style={{ textAlign: 'right', color: COLOR.gray, fontSize: 13, marginVertical: 10, paddingHorizontal: 20 }}>{'10:12 pm'}</Text>
-                    <View style={{ borderBottomWidth: 1, borderColor: COLOR.lightgray, marginTop: 10 }} />
-                    <TouchableOpacity style={{}}>
-                        <Text style={{ fontSize: 16, textAlign: 'center', padding: 15, color: COLOR.green, fontWeight: 'bold' }}>
-                            View Votes
-                        </Text>
-                    </TouchableOpacity>
+                    <View style={{ flex: 1, backgroundColor: COLOR.white, marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, paddingBottom: 70 }}>
+                        <FlatList showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 20, }} data={groupdata} renderItem={list} />
+                        <View style={{ position: 'absolute', bottom: 20, paddingHorizontal: 30, right: 0, left: 0 }}>
+                            <Button onPress={() => { onHandaleCreate() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
+                        </View>
+                    </View>
                 </View>
             </Modal>
+
         </GestureHandlerRootView>
     );
 };

@@ -4,17 +4,21 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import Button from '../../Custom/Button/Button';
 import QRCode from 'react-native-qrcode-svg';
-import { AccountId } from '../../Service/AsyncStorage';
+import { MyData, MyID } from '../../Service/AsyncStorage';
 
 const ScanQR = (props) => {
-    const [accountId, setAccountId] = useState('');
+    const [loginUserId, setLoginUserId] = useState('');
+    const [qrData, setQrData] = useState('');
 
     const getAccountId = async () => {
-        const AccId = await AccountId();
-        if (typeof (AccId) == 'number') {
-            setAccountId(AccId.toString());
+        const LoginUserId = await MyID();
+        const myData = await MyData();
+
+        if (typeof (LoginUserId) == 'number') {
+            setLoginUserId(LoginUserId.toString());
+            setQrData(myData.userDetails)
         } else {
-            setAccountId('');
+            setLoginUserId('');
         }
     };
 
@@ -32,13 +36,13 @@ const ScanQR = (props) => {
                 <View style={{ height: 300, width: '100%', borderRadius: 10, backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowOffset: { height: 1, width: 1 }, marginTop: '25%', shadowRadius: 7 }}>
                     <Image
                         style={{ height: 63, width: 63, resizeMode: 'contain', borderRadius: 40, alignSelf: 'center', marginTop: -30 }}
-                        source={{ uri: 'https://preview.keenthemes.com/metronic-v4/theme_rtl/assets/pages/media/profile/profile_user.jpg' }} />
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, textAlign: 'center' }}>Nitin Kanazariya</Text>
+                        source={{ uri: qrData?.profile }} />
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, textAlign: 'center' }}>{qrData?.first_name + ' ' + qrData?.last_name}</Text>
                     <View style={{ alignSelf: 'center', marginTop: 30 }}>
-                        {accountId ? (
+                        {loginUserId ? (
                             <QRCode
                                 size={160}
-                                value={accountId}
+                                value={loginUserId + 'ThisIsAllinTaskManagemantApp'}
                                 logo={require('../../Assets/Image/allin_logo.png')}
                                 logoSize={40}
                             />
@@ -48,9 +52,7 @@ const ScanQR = (props) => {
                     </View>
                 </View>
                 <Text style={{ paddingHorizontal: 20, textAlign: 'center', marginTop: 20, fontSize: 15, color: COLOR.gray, fontWeight: '400' }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
-                <TouchableOpacity onPress={() => { props.navigation.navigate('startchat') }} style={{ padding: 20, alignSelf: 'center', }}>
-                    <Text style={{ color: COLOR.slateblue, fontWeight: '500', fontSize: 16, textAlign: 'center' }}>Scan QR Code</Text>
-                </TouchableOpacity>
+
                 <View style={{ position: 'absolute', bottom: 30, paddingHorizontal: 30, right: 0, left: 0 }}>
                     <Button onPress={() => { props.navigation.navigate('startchat') }} title={'Scan'} bgColor={COLOR.green} color={COLOR.white} />
                 </View>

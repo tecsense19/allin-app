@@ -2,8 +2,9 @@ import { Alert } from "react-native";
 import { ACTIONS } from "./API"
 import { useDispatch } from "react-redux";
 import { ExpireToken } from "./Redux/Actions";
+import { getToken } from "./AsyncStorage";
 
-export const User_List = async (timeZone, Token) => {
+export const User_List = async (timeZone, Token, Search) => {
     // console.log('request', token);
     const res = await fetch(ACTIONS.USER_LIST, {
         method: "POST",
@@ -427,9 +428,6 @@ export const Meeting_Messages = async (token, taskData) => {
     const remindId = taskData?.remind
     var stringArray = remindId?.map(String);
     var id = stringArray?.join(',');
-    // console.log(taskData.latitude);
-    // console.log(taskData.longitude);
-    // console.log(taskData.address);
     const res = await fetch(ACTIONS.MESSAGE_MEETING, {
         method: "POST",
         headers: {
@@ -438,13 +436,14 @@ export const Meeting_Messages = async (token, taskData) => {
         },
         body: JSON.stringify({
             message_type: 'Meeting',
-            receiver_id: id, mode: 'Offline',
+            receiver_id: id,
+            mode: taskData.mode,
             title: taskData.meetingtitle,
             description: taskData.meetingdescription,
             date: taskData.meetingdate,
             start_time: taskData.meetingtime,
             end_time: taskData.meetingtime,
-            meeting_url: '',
+            meeting_url: taskData.meeting_url,
             latitude: taskData.latitude,
             longitude: taskData.longitude,
             location: taskData.address,
@@ -452,7 +451,6 @@ export const Meeting_Messages = async (token, taskData) => {
         })
     })
     const response = await res.json()
-    // console.log(response);
     return response
 }
 
@@ -866,11 +864,7 @@ export const Get_Group_Details = async (token, id, zone) => {
         },
         body: JSON.stringify({ group_id: id, start: 0, timezone: zone })
     })
-
-
     const response = await res.json()
-    console.log(response);
-
     return response
 }
 export const Send_Group_Text_Message = async (token, msg, id) => {
@@ -998,17 +992,121 @@ export const Refresh_Token = async (token) => {
     }
 };
 
+export const Event_AttentOrNot = async (eventid, usrid, Type,) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.EVENT_DONE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ event_id: eventid, user_id: usrid, type: Type })
+    })
+    const response = await res.json()
+    return response
+}
 
-// export const Work_Hour_Send = async (token, Id, Month, EmailSummary) => {
-//     const res = await fetch(ACTIONS.SEND_WORK_HOUR_EMAIL, {
-//         method: "POST",
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${token}`
-//         },
-//         body: JSON.stringify({ id: Id, month: Month, summary: EmailSummary })
-//     })
-//     const response = await res.json()
-//     console.log(response);
-//     return response
-// }
+export const Event_Details = async (eventid) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.GET_EVENT_DETAILS + eventid, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+
+    const response = await res.json()
+    return response
+}
+
+export const Meeting_Details = async (meetingid) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.GET_MEETING_DETAILS + meetingid, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    const response = await res.json()
+    return response
+}
+export const Create_Survey = async (msg, gId, option) => {
+    const formData = new FormData();
+    formData.append('message_type', 'Options');
+    formData.append('message', msg);
+    formData.append('group_id', gId);
+    formData.append('options[]', option);
+    const token = await getToken()
+
+    const res = await fetch(ACTIONS.CREATE_SURVEY, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData
+    })
+    const response = await res.json()
+    return response
+}
+export const Set_Vote = async (id, vote) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.SET_VOTE, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ option_id: id, selected: vote })
+    })
+    const response = await res.json()
+    console.log(response);
+
+    return response
+}
+export const TaskComplete_or_Incomplete = async (id, type) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.TASK_COMPLETE_INCOMPLETE + '?message_id=' + id + '&select=' + type, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+
+    })
+    const response = await res.json()
+    return response
+}
+export const Add_Task_Comment = async (comment, taskId, msgId) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.ADD_TASK_COMMENT, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ comment: comment, task_chat_id: taskId, message_id: msgId })
+
+    })
+    const response = await res.json()
+    console.log('addComment----------------->>>>>>', response);
+
+    return response
+}
+export const Get_Group_List = async () => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.GROUP_LIST, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+
+    })
+    const response = await res.json()
+
+    return response
+}
+

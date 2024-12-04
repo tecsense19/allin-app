@@ -290,8 +290,7 @@ const CreateEvent = props => {
                         <PickerButton title={EventDesplayTime} onPress={() => { setOpenTime(true) }} />
                     </View>
                     <Button title={'submit'} marginTop={20} marginBottom={50} bgColor={COLOR.green} color={COLOR.white} onPress={() => handleCreateEvent()} />
-                    <Loader visible={loading} Retry={console.log('')
-                    } />
+                    <Loader visible={loading} Retry={handleCreateEvent} />
                 </ScrollView>
             </View>
             <Modal visible={userModal} >
