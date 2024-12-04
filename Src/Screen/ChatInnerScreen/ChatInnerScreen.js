@@ -689,10 +689,7 @@ const ChatInnerScreen = props => {
     const handleTouch = (e) => {
         const { pageY, pageX } = e.nativeEvent;
         setTouchPosition({ x: pageX, y: pageY });
-        console.log('----------->>>>>>', e.nativeEvent);
-
     };
-
     const Userid = props?.route?.params
     const userName = userDetails.first_name == undefined && userDetails.last_name == undefined ? '' : userDetails.first_name + ' ' + userDetails.last_name
     const scrollViewRef = useRef();
@@ -707,15 +704,12 @@ const ChatInnerScreen = props => {
         if (data?.status_code == 200) {
             setUserDetails(data.data.userData);
             setMessages(data?.data?.chat);
-            setLoding(false)
+            setTimeout(() => {
+                scrollViewRef?.current?.scrollToEnd({ animated: false });
+                setLoding(false)
+            }, 500);
+
         }
-    };
-
-
-    const scrollToBottom = () => {
-        setTimeout(() => {
-            scrollViewRef?.current?.scrollToEnd({ animated: false });
-        }, 1500);
     };
 
     useEffect(() => {
@@ -733,7 +727,6 @@ const ChatInnerScreen = props => {
         extractMessageIds();
     }, [messages]);
     useEffect(() => {
-        // scrollToBottom()
         if (selectedMSG?.length == 0) {
             setIsSelected(false)
         }
@@ -744,7 +737,6 @@ const ChatInnerScreen = props => {
     }, [selectedMSG])
     useEffect(() => {
         getAllMessages()
-        scrollToBottom()
     }, [])
     useEffect(() => {
         const fetchData = async () => {
@@ -800,7 +792,6 @@ const ChatInnerScreen = props => {
     }
     const onhandaleSelected = msg => {
         if (selectedMSG.includes(msg)) {
-            // scrollToBottom()
             setSelectedMSG(selectedMSG.filter((id) => id !== msg));
         } else {
             setSelectedMSG([...selectedMSG, msg]);
@@ -980,33 +971,13 @@ const ChatInnerScreen = props => {
                     delayLongPress={300}
                     onLongPress={(e) => { setIsSelected(true), onhandaleSelected(message), handleTouch(e) }}
                     onPress={() => {
-                        message.messageType == 'Location' ? Linking.openURL(message.messageDetails.location_url) : message.messageType == 'Meeting' ? props.navigation.navigate('meetingdetails', message) : null,
+                         message.messageType == 'Location' ?
+                          Linking.openURL(message.messageDetails.location_url) :
+                           message.messageType == 'Meeting' ?
+                            props.navigation.navigate('meetingdetails', message) : null,
                             setTaskpopup('')
                     }}>
                     {renderMessage()}
-
-                    {/* {taskpopup?.messageId == message?.messageId ?
-                        <View style={{ height: 120, justifyContent: 'space-around', borderRadius: 10, width: '40%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, marginTop: -50, alignSelf: 'flex-end', position: 'absolute' }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { onhandleNotification(message?.messageId), setTaskpopup('') }}>
-                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
-                                    Reminder
-                                </Text>
-                                <Image source={require('../../Assets/Image/taskreminder.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { setReMeCkModal(true), setMsgType('Task') }}>
-                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
-                                    Edit Task
-                                </Text>
-                                <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { setTaskpopup(''), selectedMsgDelete() }}>
-                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
-                                    Delete Task
-                                </Text>
-                                <Image source={require('../../Assets/Image/bin.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
-                            </TouchableOpacity>
-                        </View> : null} */}
-
                 </TouchableOpacity>
             </View>
         );
@@ -1054,7 +1025,6 @@ const ChatInnerScreen = props => {
         <View style={{ flex: 1, backgroundColor: COLOR.white }}>
 
             <KeyboardAvoidingView behavior='padding' style={{ flex: 1, backgroundColor: COLOR.white }}>
-
                 {msgType == 'Location' ?
                     <View style={{ flex: 1 }}>
                         <MapView
@@ -1205,7 +1175,6 @@ const ChatInnerScreen = props => {
                         </View>
                     </Pressable>
                 </BlurView> : null
-
             }
             {taskpopup ?
                 // <BlurView style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, }}
@@ -1237,17 +1206,16 @@ const ChatInnerScreen = props => {
                             </TouchableOpacity>
                         </View>
                     </Pressable>
-
-
                 </View>
                 // </BlurView>
                 : null
             }
+          {loding && <View style={{ backgroundColor: COLOR.white, position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
+            </View>} 
         </View >
     );
 };
 export default ChatInnerScreen;
-
 
 const CtrateHeader = ({ source, onBack, title }) => {
     return (
