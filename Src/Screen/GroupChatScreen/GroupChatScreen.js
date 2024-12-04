@@ -28,8 +28,6 @@ const GroupChatScreen = (props) => {
     const [myid, setMyId] = useState('')
     const totalGroupVotes = groupData?.members_count
 
-    console.log('-------------------------------->myid', myid);
-
     const handleSend = async () => {
         const token = await getToken()
         if (inputText.trim() == '') {
