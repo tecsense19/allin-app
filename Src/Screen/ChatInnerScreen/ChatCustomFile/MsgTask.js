@@ -6,7 +6,7 @@ import { BlurView } from '@react-native-community/blur';
 import Button from '../../../Custom/Button/Button';
 import { Add_Task_Comment } from '../../../Service/actions';
 
-const MsgTask = ({ data, ThreeDott }) => {
+const MsgTask = ({ data, ThreeDott, checkData }) => {
     const [visible, setVisible] = useState(false)
     const [comment, setComment] = useState('')
     const [commentData, setCommentData] = useState('')
