@@ -689,6 +689,8 @@ const ChatInnerScreen = props => {
     const handleTouch = (e) => {
         const { pageY, pageX } = e.nativeEvent;
         setTouchPosition({ x: pageX, y: pageY });
+        console.log('----------->>>>>>', e.nativeEvent);
+
     };
 
     const Userid = props?.route?.params
@@ -696,6 +698,7 @@ const ChatInnerScreen = props => {
     const scrollViewRef = useRef();
     const onhandalePhoneCall = () => { Linking?.openURL(`tel:${userDetails?.country_code + userDetails?.mobile}`); };
     const closeModal = () => { setVisible(false) };
+
     const getAllMessages = async () => {
         const Token = await getToken()
         setToken(Token)
@@ -704,20 +707,17 @@ const ChatInnerScreen = props => {
         if (data?.status_code == 200) {
             setUserDetails(data.data.userData);
             setMessages(data?.data?.chat);
-            setLoding(false);
-        } else {
-            setLoding(false);
-            Alert.alert(data?.message);
+            setLoding(false)
         }
     };
+
+
     const scrollToBottom = () => {
-        scrollViewRef.current.scrollToEnd({ animated: false });
+        setTimeout(() => {
+            scrollViewRef?.current?.scrollToEnd({ animated: false });
+        }, 1500);
     };
 
-    useEffect(() => {
-        scrollToBottom()
-    }, [messages]);
-    useEffect(() => { if (selectedMSG?.length == 0) { setIsSelected(false) } }, [selectedMSG])
     useEffect(() => {
         const extractMessageIds = () => {
             const ids = [];
@@ -731,29 +731,41 @@ const ChatInnerScreen = props => {
             setMessageIds(ids.join(','));
         };
         extractMessageIds();
-
     }, [messages]);
     useEffect(() => {
+        // scrollToBottom()
+        if (selectedMSG?.length == 0) {
+            setIsSelected(false)
+        }
+        if (selectedMSG?.length > 0) {
+            const id = selectedMSG?.map((res) => res?.messageId);
+            setForwordID(id?.join(','))
+        }
+    }, [selectedMSG])
+    useEffect(() => {
+        getAllMessages()
+        scrollToBottom()
+    }, [])
+    useEffect(() => {
         const fetchData = async () => {
-            await getAllMessages();
-
             if (messageIds) {
                 await Read_Unread_Messages(token, messageIds);
             }
         }
         fetchData();
-    }, [messageIds, token, change, taskpopup]);
+    }, [messageIds]);
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress', closeModal,);
-        return () => backHandler.remove();
-    }, [visible]);
-    useEffect(() => {
-        if (selectedMSG?.length > 0) {
-            const id = selectedMSG?.map((res) => res?.messageId);
-            setForwordID(id?.join(','))
-        }
-    }, [selectedMSG]);
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                setLocation({ latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
+            },
+            error => {
+
+            },
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    }, []);
     const requestLocationPermission = async () => {
         try {
             const granted = await request(
@@ -775,18 +787,6 @@ const ChatInnerScreen = props => {
             console.error('Error requesting location permission:', error);
         }
     };
-    useEffect(() => {
-        Geolocation.getCurrentPosition(
-            position => {
-                const { latitude, longitude } = position.coords;
-                setLocation({ latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
-            },
-            error => {
-
-            },
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-        );
-    }, []);
     const selectedMsgDelete = async () => {
         const id = taskpopup.messageId
         if (taskpopup) {
@@ -800,8 +800,11 @@ const ChatInnerScreen = props => {
     }
     const onhandaleSelected = msg => {
         if (selectedMSG.includes(msg)) {
+            // scrollToBottom()
             setSelectedMSG(selectedMSG.filter((id) => id !== msg));
-        } else { setSelectedMSG([...selectedMSG, msg]); }
+        } else {
+            setSelectedMSG([...selectedMSG, msg]);
+        }
     }
     const File_Message = async () => {
         const formData = new FormData();
@@ -935,10 +938,8 @@ const ChatInnerScreen = props => {
     }
     const onhandleNotification = async (MsgId) => {
         const token = await getToken()
-        await Reminder_Ping(token, MsgId)
-            .then(() => {
-
-            })
+        await Reminder_Ping(token, MsgId).then((res) => {
+        })
     }
     const onHandalMeeting = async (msg, type) => {
         const token = await getToken()
@@ -957,7 +958,7 @@ const ChatInnerScreen = props => {
                 case 'Attachment':
                     return <MsgAttachment data={message} />;
                 case 'Task':
-                    return <MsgTask data={message} ThreeDott={() => setTaskpopup(message)} disabled={selectedMSG?.length >= 1} />
+                    return <MsgTask data={message} ThreeDott={(e) => { setTaskpopup(message), handleTouch(e) }} />
                 case 'Meeting':
                     return <MsgMeeting onAccept={() => onHandalMeeting(message, 'accept')} onDecline={() => onHandalMeeting(message, 'decline')} data={message} />
                 case 'Reminder':
@@ -984,7 +985,7 @@ const ChatInnerScreen = props => {
                     }}>
                     {renderMessage()}
 
-                    {taskpopup?.messageId == message?.messageId ?
+                    {/* {taskpopup?.messageId == message?.messageId ?
                         <View style={{ height: 120, justifyContent: 'space-around', borderRadius: 10, width: '40%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, marginTop: -50, alignSelf: 'flex-end', position: 'absolute' }}>
                             <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { onhandleNotification(message?.messageId), setTaskpopup('') }}>
                                 <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
@@ -1004,7 +1005,7 @@ const ChatInnerScreen = props => {
                                 </Text>
                                 <Image source={require('../../Assets/Image/bin.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
                             </TouchableOpacity>
-                        </View> : null}
+                        </View> : null} */}
 
                 </TouchableOpacity>
             </View>
@@ -1204,6 +1205,43 @@ const ChatInnerScreen = props => {
                         </View>
                     </Pressable>
                 </BlurView> : null
+
+            }
+            {taskpopup ?
+                // <BlurView style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, }}
+                //     blurType="light"
+                //     blurAmount={10} >
+                <View style={{ position: 'absolute', right: 0, left: 0, top: 0, bottom: 0, }}>
+                    <Pressable style={{ position: 'absolute', right: 0, left: 0, top: 0, bottom: 0, }}
+                        onPress={() => { setTaskpopup('') }}>
+                        <View style={{ height: 120, marginTop: -30, justifyContent: 'space-around', borderRadius: 10, width: '40%', backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 5, shadowOffset: { height: 2, width: 2 }, alignSelf: 'flex-end', position: 'absolute', top: touchPosition.y, right: 20 }}>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }}
+                                onPress={() => { onhandleNotification(taskpopup?.messageId), setTaskpopup('') }}>
+                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
+                                    Reminder
+                                </Text>
+                                <Image source={require('../../Assets/Image/taskreminder.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }} onPress={() => { setReMeCkModal(true), setMsgType('Task') }}>
+                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
+                                    Edit Task
+                                </Text>
+                                <Image source={require('../../Assets/Image/addtask.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-between' }}
+                                onPress={() => { setTaskpopup(''), selectedMsgDelete() }}>
+                                <Text style={{ color: COLOR.black, fontSize: 15, fontWeight: '600' }}>
+                                    Delete Task
+                                </Text>
+                                <Image source={require('../../Assets/Image/bin.png')} style={{ height: 18, width: 18, tintColor: COLOR.green, marginLeft: 5 }} />
+                            </TouchableOpacity>
+                        </View>
+                    </Pressable>
+
+
+                </View>
+                // </BlurView>
+                : null
             }
         </View >
     );
