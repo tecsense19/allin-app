@@ -26,7 +26,11 @@ const AddContactCard = ({ userDetails, }) => {
             <Image source={{ uri: userDetails.profile }} style={{ height: 52, width: 52, borderRadius: 50 }} />
             <Text style={{ color: COLOR.black, fontWeight: 'bold', fontSize: 15, marginTop: 10, }}>{userDetails?.country_code + ' ' + userDetails?.mobile}</Text>
             <Text style={{ color: COLOR.black, fontWeight: '500', fontSize: 13, marginTop: 5, }}>-{userName}</Text>
-            <Text style={{ color: COLOR.gray, fontSize: 13, marginTop: 15, }}>Not a contact No Common Groups</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15, }}>
+                <Text style={{ color: COLOR.gray, fontSize: 13, }}>Not a contact</Text>
+                <View style={{ height: 4, width: 4, backgroundColor: COLOR.gray, marginHorizontal: 5, borderRadius: 10 }} />
+                <Text style={{ color: COLOR.gray, fontSize: 13, }}>Common Groups</Text>
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}>
                 <Image source={require('../../../Assets/Image/safetytool.png')} style={{ height: 15, width: 15, resizeMode: 'contain' }} />
                 <Text style={{ marginLeft: 5, color: '#298BFF', fontWeight: '500', fontSize: 13 }}>Safety tools</Text>
