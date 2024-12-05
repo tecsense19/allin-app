@@ -17,10 +17,10 @@ const CreateSurvey = (props) => {
     const [loading, setLoading] = useState(false);
 
     const [options, setOptions] = useState([
-        { id: uuid.v4(), text: 'new Option 1', votes: 2 },
-        { id: uuid.v4(), text: 'new Option 2', votes: 8 },
-        { id: uuid.v4(), text: 'new Option 3', votes: 12 },
-        { id: uuid.v4(), text: 'new Option 4', votes: 13 },
+        { id: uuid.v4(), text: '', },
+        { id: uuid.v4(), text: '', },
+        { id: uuid.v4(), text: '', },
+        { id: uuid.v4(), text: '', },
     ]);
     const handleDragEnd = ({ data }) => {
         setOptions(data);
@@ -141,7 +141,7 @@ const CreateSurvey = (props) => {
                         />
 
 
-                        <TouchableOpacity onPress={() => setOptions([...options, { id: Date.now().toString(), text: 'new Option', votes: 0 }])}
+                        <TouchableOpacity onPress={() => setOptions([...options, { id: Date.now().toString(), text: '', }])}
                             style={{
                                 borderRadius: 5, paddingVertical: 12,
                                 borderColor: '#ddd',
