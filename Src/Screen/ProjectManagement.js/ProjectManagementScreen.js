@@ -111,7 +111,7 @@ const ProjectManagementScreen = props => {
     const CreatedAt = viewNote?.created_at?.toString()?.slice(0, 10)?.replace("T", " ");
     const UpdateAt = viewNote?.updated_at?.toString()?.slice(0, 10)?.replace("T", " ");
     return (
-        <ScrollView bounces={false}>
+        <ScrollView bounces={false} style={{ flex: 1, backgroundColor: COLOR.white }}>
             <View style={styles.mainContainer}>
                 <StatusBar barStyle={'dark-content'} />
                 <Text style={styles.P_M_Text}>Project Management</Text>
