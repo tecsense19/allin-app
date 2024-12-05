@@ -109,7 +109,7 @@ const EventsCommponent = ({ onPress }) => {
                         <Text style={{ fontSize: 11, fontWeight: 'bold', color: COLOR.green }}>{item?.usersArr?.length - 3 <= 0 ? '' : ' +' + (item?.usersArr?.length - 3)}</Text>
                     </View>
                 </View>
-                {item.created_by !== myid ? null :
+                {item.created_by == myid ? null :
                     AttendResult ?
                         <View style={{ backgroundColor: COLOR.lightgreen, paddingHorizontal: 10, padding: 5, borderRadius: 10, marginTop: 15, alignSelf: 'flex-start', alignItems: 'center', flexDirection: 'row', position: 'absolute', bottom: 10, right: 10 }}>
                             <Image source={require('../../Assets/Image/approve.png')} style={{ height: 25, width: 25, marginRight: 5, }} />
