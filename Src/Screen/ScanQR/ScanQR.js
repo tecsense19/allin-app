@@ -31,7 +31,6 @@ const ScanQR = (props) => {
             <View style={{ paddingHorizontal: 30 }}>
                 <NavigateHeader onPress={() => { props.navigation.goBack() }} title={'Scan QR'} color={COLOR.white} />
             </View>
-
             <View style={{ flex: 1, backgroundColor: COLOR.white, paddingHorizontal: 30, marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
                 <View style={{ height: 300, width: '100%', borderRadius: 10, backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowOffset: { height: 1, width: 1 }, marginTop: '25%', shadowRadius: 7 }}>
                     <Image
@@ -51,8 +50,7 @@ const ScanQR = (props) => {
                         )}
                     </View>
                 </View>
-                <Text style={{ paddingHorizontal: 20, textAlign: 'center', marginTop: 20, fontSize: 15, color: COLOR.gray, fontWeight: '400' }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
-
+                <Text style={{ paddingHorizontal: 20, textAlign: 'center', marginTop: 20, fontSize: 15, color: COLOR.gray, fontWeight: '400' }}>By scanning this qr code one can chat with the user</Text>
                 <View style={{ position: 'absolute', bottom: 30, paddingHorizontal: 30, right: 0, left: 0 }}>
                     <Button onPress={() => { props.navigation.navigate('startchat') }} title={'Scan'} bgColor={COLOR.green} color={COLOR.white} />
                 </View>
