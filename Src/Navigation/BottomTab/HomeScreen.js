@@ -12,18 +12,16 @@ const Tab = createBottomTabNavigator();
 
 const HomeScreen = () => {
     return (
-        <View style={{ flex: 1 }}>
-            <Tab.Navigator
-                initialRouteName={"projectmanagement"}
-                tabBar={props => <MyTabBar {...props} />}
-                screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
-                {/* <Tab.Screen name="feed" component={FeedScreen} /> */}
-                {/* <Tab.Screen name="tme" component={TmeScreen} /> */}
-                <Tab.Screen name="projectmanagement" component={ProjectManagementScreen} />
-                <Tab.Screen name="chats" component={ChatUserListScreen} />
-                <Tab.Screen name="board" component={BoardScreen} />
-            </Tab.Navigator>
-        </View>
+        <Tab.Navigator
+            initialRouteName={"projectmanagement"}
+            tabBar={props => <MyTabBar {...props} />}
+            screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
+            {/* <Tab.Screen name="feed" component={FeedScreen} /> */}
+            {/* <Tab.Screen name="tme" component={TmeScreen} /> */}
+            <Tab.Screen name="projectmanagement" component={ProjectManagementScreen} />
+            <Tab.Screen name="chats" component={ChatUserListScreen} />
+            <Tab.Screen name="board" component={BoardScreen} />
+        </Tab.Navigator>
     );
 };
 
