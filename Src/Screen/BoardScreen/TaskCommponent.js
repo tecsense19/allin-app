@@ -7,11 +7,12 @@ import Loader from '../../Custom/Loader/loader';
 
 const TaskCommponent = ({ onPress }) => {
     const [isFocus, setIsFocus] = useState('Given')
-    const [userData, setAllUserData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [recevieTaskData, setRecevieTaskData] = useState([]);
+    const [givenTaskData, setGivenTaskData] = useState([]);
 
-    const reciveid = userData?.receiveArray?.map((item) => { return item?.message_id });
-    const givingid = userData?.givenArray?.map((item) => { return item?.message_id });
+    const reciveid = recevieTaskData.map((item) => { return item?.message_id });
+    const givingid = givenTaskData?.map((item) => { return item?.message_id });
     const commaS_id = reciveid?.join(',') + ',' + givingid?.join(',');
 
     useEffect(() => {
@@ -28,6 +29,7 @@ const TaskCommponent = ({ onPress }) => {
         const formattedDate = `${day}/${month}/${year}`;
 
         return (
+
             <TouchableOpacity
                 onPress={() => onNavigate(item)}
                 style={styles.ListmainContainer}>
@@ -54,11 +56,18 @@ const TaskCommponent = ({ onPress }) => {
     const getAllTask = async () => {
         setLoading(true)
         const Token = await getToken();
-        await Task_User_List(Token, 'All Task')
+        await Task_User_List(Token, 'Given')
             .then((res) => {
                 if (res.status_code == 200) {
-                    setAllUserData(res?.data);
-                    setLoading(false);
+                    setGivenTaskData(res?.data.userList);
+                    setLoading(false)
+                }
+            })
+        await Task_User_List(Token, 'Receive')
+            .then((res) => {
+                if (res.status_code == 200) {
+                    setRecevieTaskData(res?.data.userList);
+                    setLoading(false)
                 }
             })
     };
@@ -87,12 +96,11 @@ const TaskCommponent = ({ onPress }) => {
             <FlatList
                 style={{ marginBottom: '30%', paddingHorizontal: 10 }}
                 renderItem={list}
-                data={isFocus == 'Given' ? userData?.givenArray : userData?.receiveArray}
+                data={isFocus == 'Given' ? givenTaskData : recevieTaskData}
                 bounces={false}
                 ListEmptyComponent={<Text style={{ marginTop: '50%', textAlign: 'center', color: COLOR.gray, fontSize: 16, fontWeight: 'bold' }}>Not Found</Text>}
             />
             <Loader visible={loading} Retry={getAllTask} />
-
         </View>
     )
 }
