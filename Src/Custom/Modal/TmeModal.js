@@ -10,7 +10,7 @@ const TmeModal = ({ visible, onClose, onCamera, onFile, onGallery, onScane }) =>
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.1)' }}>
                     <View style={{
                         backgroundColor: COLOR.white, height: 150, width: 150, justifyContent: 'center',
-                        position: 'absolute', bottom: 150, left: 20, shadowOpacity: 0.5, borderRadius: 10,
+                        position: 'absolute', bottom: 30, left: 20, shadowOpacity: 0.5, borderRadius: 10,
                         shadowColor: 'gray', shadowOffset: { height: 1, width: 1 },
                     }}>
                         <ModalList source={require('../../Assets/Image/chatcameraicon.png')} title={'Camera'} onPress={() => { setOnSelect(1), onCamera() }} backgroundColor={onSelect == 1 ? COLOR.lightgreen : COLOR.white} />
@@ -28,7 +28,7 @@ const TmeModal = ({ visible, onClose, onCamera, onFile, onGallery, onScane }) =>
 export default TmeModal
 const ModalList = ({ onPress, title, backgroundColor, source }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={{ backgroundColor: backgroundColor, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', height: 30, paddingHorizontal: 10, width: '100%' }}>
+        <TouchableOpacity onPress={onPress} style={{ backgroundColor: backgroundColor, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', height: 30, paddingHorizontal: 10, width: '100%', marginVertical: 1 }}>
             <Text style={{ fontSize: 16, fontWeight: '700', }}>{title}</Text>
             <Image source={source} style={{ height: 15, width: 15, }} />
         </TouchableOpacity>
