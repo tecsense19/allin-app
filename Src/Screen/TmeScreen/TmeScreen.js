@@ -84,39 +84,18 @@ const TmeScreen = (props) => {
                 <GiftedChat
                     messages={messages}
                     onSend={message => onSend(message)}
-                    user={{
-                        _id: 1,
-                    }}
+                    user={{ _id: 1, }}
                     renderTime={props => {
                         return (
-                            <Time
-                                {...props}
-                                timeTextStyle={{
-                                    left: {
-                                        color: COLOR.textcolor,
-                                        fontSize: 14,
-                                        fontWeight: '500', textAlign: 'right'
-                                    },
-                                    right: {
-                                        color: COLOR.textcolor,
-                                        fontSize: 14,
-                                        fontWeight: '500',
-                                    },
-                                }}
-                            />
+                            <Time {...props} timeTextStyle={{
+                                left: { color: COLOR.textcolor, fontSize: 14, fontWeight: '500', textAlign: 'right' },
+                                right: { color: COLOR.textcolor, fontSize: 14, fontWeight: '500', },
+                            }} />
                         );
                     }}
-                    renderDay={pr => {
+                    renderDay={props => {
                         return (
-                            <Day
-                                {...props}
-                                textStyle={{
-                                    color: COLOR.textcolor,
-                                    fontWeight: '500',
-                                    fontSize: 14,
-                                    marginBottom: 15,
-                                }}
-                            />
+                            <Day {...props} textStyle={{ color: COLOR.textcolor, fontWeight: '500', fontSize: 14, marginBottom: 15, }} />
                         );
                     }}
                     renderBubble={props => {
