@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import DocumentScanner from 'react-native-document-scanner-plugin';
 import { PERMISSIONS, openSettings, request } from 'react-native-permissions';
@@ -10,6 +10,7 @@ import MyAlert from '../../Custom/Alert/PermissionAlert';
 //     TextRecognitionScript,
 // } from '@react-native-ml-kit/text-recognition'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import PDFView from 'react-native-view-pdf';
 
 import RNFS from 'react-native-fs';
 // import { File_Uplode } from './Src/Service/actions';
@@ -18,10 +19,23 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { Chat_File_Message, Docs_File_Uplode, File_Uplode, Scan_Document_List } from '../../Service/actions';
 import { getToken } from '../../Service/AsyncStorage';
 import Loader from '../../Custom/Loader/loader';
+import ProfileModal from '../../Custom/Modal/ProfileModal';
+import { pdfGenerator } from '../../MLKit/pdfGenerator';
+
 const ScanDocScreen = props => {
+    const pdfRef = useRef();
+
     const [scannedImage, setScannedImage] = useState();
     const [loading, setLoading] = useState(false);
-    const [text, setText] = useState('')
+    const [text, setText] = useState('');
+    const [visible, setVisible] = useState(false);
+    const [isFlagPdf, setIsFlagPdf] = useState(0); // 1 = image, 2 = text
+    const [pdfDetails, setPdfDetails] = useState({
+        name: '',
+        uri: '',
+        type: ''
+    });
+
     const chatData = props?.route?.params
 
     // const getImage = async () => {
@@ -57,40 +71,44 @@ const ScanDocScreen = props => {
     //     })
     // }
     // console.log(scannedImage);
-    const scanDocument = async () => {
-        setText('')
-        const { scannedImages } = await DocumentScanner.scanDocument({
-            letUserAdjustCrop: true,
-            croppedImageQuality: 100,
-            maxNumDocuments: 1
-        });
-        if (scannedImages.length > 0) {
-            const fileName = scannedImages[0].substring(scannedImages[0].lastIndexOf('/') + 1);
-            const filePath = scannedImages[0]
-            const lastDotIndex = scannedImages[0].lastIndexOf('.');
-            const fileType = scannedImages[0].substring(lastDotIndex + 1)
-            setScannedImage({ fileName, filePath, fileType });
-            if (chatData.isChat == true) {
-                SendScanDoc(fileName, filePath, fileType)
-                ScanDocStore(fileName, filePath, fileType)
-            }
-            else {
-                ScanDocStore(fileName, filePath, fileType)
-            }
-        }
-    };
-    const ScanDocStore = async (name, path, type) => {
+    // const scanDocument = async () => {
+    //     setText('')
+    //     const { scannedImages } = await DocumentScanner.scanDocument({
+    //         letUserAdjustCrop: true,
+    //         croppedImageQuality: 100,
+    //         maxNumDocuments: 1
+    //     });
+    //     if (scannedImages.length > 0) {
+    //         const fileName = scannedImages[0].substring(scannedImages[0].lastIndexOf('/') + 1);
+    //         const filePath = scannedImages[0]
+    //         const lastDotIndex = scannedImages[0].lastIndexOf('.');
+    //         const fileType = scannedImages[0].substring(lastDotIndex + 1)
+    //         setScannedImage({ fileName, filePath, fileType });            
+    //         if (chatData.isChat == true) {
+    //             SendScanDoc(fileName, filePath, fileType)
+    //             ScanDocStore(fileName, filePath, fileType)
+    //         }
+    //         else {
+    //             ScanDocStore(fileName, filePath, fileType)
+    //         }
+    //     }
+    // };
+    // const ScanDocStore = async (name, path, type) => {
+    const ScanDocStore = async () => {
         setLoading(true)
         const formData = new FormData();
-        const AttachmentUri = path
-        const AttachmentName = name
-        if (AttachmentName) {
-            formData.append('file', { uri: AttachmentUri, name: AttachmentName, type: type });
+        if (pdfDetails.name) {
+            formData.append('file', pdfDetails);
             formData.append('attachment_type', 'scan');
         }
         const token = await getToken()
-        const data = await Docs_File_Uplode(token, formData,)
+        const data = await Docs_File_Uplode(token, formData,)             
         setLoading(false)
+        setPdfDetails({
+            name: '',
+            uri: '',
+            type: ''
+        })
         // console.log(data);
     }
     const SendScanDoc = async (name, path, type) => {
@@ -144,6 +162,38 @@ const ScanDocScreen = props => {
         requestCameraPermission();
     }, []);
 
+    const imageModal = (flag) => {
+        setVisible(true);
+        setIsFlagPdf(flag);
+    }
+    const profileImgCemera = async () => {
+        const result = await launchCamera();
+        if (result?.assets[0]?.uri) {
+            pdfCreator(result?.assets[0]?.uri);
+        }
+        setVisible(false);
+    };
+    const profileImgGallery = async () => {
+        const result = await launchImageLibrary();
+        if (result?.assets[0]?.uri) {
+            pdfCreator(result?.assets[0]?.uri);
+        }
+        setVisible(false);
+    };
+    const pdfCreator = async(imageUrl) => {
+        let pdfUrl = await pdfGenerator(imageUrl, isFlagPdf);
+        const pdfNameIndex = pdfUrl.filePath.lastIndexOf('/') + 1;
+        const pdfName = pdfUrl.filePath.slice(pdfNameIndex);
+        const lastDotIndex = pdfUrl.filePath.lastIndexOf('.');
+        const pdfType = pdfUrl.filePath.substring(lastDotIndex + 1)
+        const filePath = `file://${pdfUrl.filePath}`
+        setPdfDetails({
+            name: pdfName,
+            uri: filePath,
+            type: pdfType
+        })
+    }
+
     return (
         <View style={styles.mainContainer}>
             <View style={{ paddingHorizontal: 20 }}>
@@ -151,23 +201,45 @@ const ScanDocScreen = props => {
             </View>
             <View
                 style={styles.detailsContainer}>
-                <ScrollView style={{}} bounces={false}>
-                    {text == '' ? <Image
-                        resizeMode="contain"
-                        style={styles.scaniconAndImage}
-                        source={scannedImage == undefined
-                            ? require('../../Assets/Image/scanner.png')
-                            : { uri: scannedImage.filePath }} /> : null}
-                    <Text style={styles.scanText}>{text}</Text>
-                </ScrollView>
 
-                <Button title={'Scan Docs'} bgColor={COLOR.green} onPress={scanDocument} color={COLOR.white} marginHorizontal={20} />
-                <Button title={'View Docs'} bgColor={COLOR.green} marginTop={10} onPress={() => props.navigation.navigate('docstore')} color={COLOR.white} marginHorizontal={20} />
-                {/* <Button title={'Scan Text'} bgColor={COLOR.green} marginTop={10} onPress={getImage} color={COLOR.white} marginHorizontal={20}/> */}
-                <Button title={'Close'} marginHorizontal={20} color={COLOR.black} bgColor={COLOR.white} onPress={() => props.navigation.goBack()} marginTop={10} marginBottom={30} borderWidth={1} />
+                {pdfDetails.name ?
+                    <>
+                        <PDFView
+                            key={pdfDetails.name}
+                            ref={pdfRef}
+                            style={{ flex: 1 }}
+                            resource={pdfDetails.name}
+                            fileFrom={"documentsDirectory"}
+                            resourceType={"file"}
+                            onLoad={() => console.log(`PDF rendered from`)}
+                            onError={(error) => console.log('Cannot render PDF', error)}
+                        />
+                        <Button title={'Save'} bgColor={COLOR.green} onPress={() => ScanDocStore()} color={COLOR.white} marginHorizontal={20} marginBottom={30} />
+                    </>
+                    :
+                    <>
+                        <ScrollView style={{}} bounces={false}>
+                            {text == '' ? <Image
+                                resizeMode="contain"
+                                style={styles.scaniconAndImage}
+                                source={scannedImage == undefined
+                                    ? require('../../Assets/Image/scanner.png')
+                                    : { uri: scannedImage.filePath }} /> : null}
+                            <Text style={styles.scanText}>{text}</Text>
+                        </ScrollView>
+
+                        <Button title={'Image to Pdf'} bgColor={COLOR.green} onPress={() => imageModal(1)} color={COLOR.white} marginHorizontal={20} />
+                        <Button title={'Text Recognition'} bgColor={COLOR.green} onPress={() => imageModal(2)} color={COLOR.white} marginHorizontal={20} marginTop={10} />
+                        {/* <Button title={'Scan Docs'} bgColor={COLOR.green} onPress={scanDocument} color={COLOR.white} marginHorizontal={20} /> */}
+                        <Button title={'View Docs'} bgColor={COLOR.green} marginTop={10} onPress={() => props.navigation.navigate('docstore')} color={COLOR.white} marginHorizontal={20} />
+                        {/* <Button title={'Scan Text'} bgColor={COLOR.green} marginTop={10} onPress={getImage} color={COLOR.white} marginHorizontal={20}/> */}
+                        <Button title={'Close'} marginHorizontal={20} color={COLOR.black} bgColor={COLOR.white} onPress={() => props.navigation.goBack()} marginTop={10} marginBottom={30} borderWidth={1} />
+                    </>
+                }
 
             </View>
-            <Loader visible={loading} Retry={scanDocument} />
+            <Loader visible={loading} Retry={() => ScanDocStore()} />
+            <ProfileModal onRequestClose={() => setVisible(false)} visible={visible} onClose={() => setVisible(false)} onCemera={() => { requestCameraPermission(); profileImgCemera(); }} onGallery={() => profileImgGallery()} />
         </View>
     );
 };
