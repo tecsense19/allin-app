@@ -21,14 +21,13 @@ const ReceivedTask = (props) => {
     const [isFocused, setIsFocused] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
 
-    // console.log(props);
     useEffect(() => {
         getuser();
-        // setMessageID(props.route.params)
     }, [token]);
-    const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.id));
+
+    const filteredUserData = allUserData?.filter(user => selectedItems?.includes(user.message_id));
     const AllUserIDs = selectedUserIds.join(',');
-    console.log(AllUserIDs);
+
     const getuser = async () => {
         const Token = await getToken();
         setToken(Token);
@@ -37,6 +36,7 @@ const ReceivedTask = (props) => {
                 if (res.status_code == 200) {
                     setAllUserData(res?.data?.userList);
                     setLoading(false);
+                    // console.log(res.data.userList);
                 }
             })
             .catch((e) => {
@@ -57,22 +57,21 @@ const ReceivedTask = (props) => {
         }
     };
     const list = ({ item }) => {
-        const userName = item?.name
         return (
             <View style={{ backgroundColor: COLOR.white, paddingHorizontal: 15, marginTop: 5 }}>
                 <TouchableOpacity
-                    style={[styles.listcontainer, selectedUserIds.includes(item.id) ? styles.selectedUser : null]} // Apply styles for selected user
-                    onPress={() => { toggleUserSelection(item.id) }} // Toggle user selection onPress
+                    style={[styles.listcontainer, selectedUserIds.includes(item.message_id) ? styles.selectedUser : null]} // Apply styles for selected user
+                    onPress={() => { toggleUserSelection(item.message_id) }} // Toggle user selection onPress
                 >
                     <View style={styles.imgAndNameView}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Image source={{ uri: item?.profile }} style={styles.chetImg} />
+                            <Image source={{ uri: item?.taskCreatorProfile }} style={styles.chetImg} />
                             <Text style={styles.name}>
-                                {userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}
+                                {item.taskCreatorName}
                             </Text>
                         </View>
-                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { toggleUserSelection(item.id) }}>
-                            <Image source={selectedUserIds.includes(item.id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
+                        <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { toggleUserSelection(item.message_id) }}>
+                            <Image source={selectedUserIds.includes(item.message_id) ? require('../../Assets/Image/check.png') : require('../../Assets/Image/box.png')} style={{ tintColor: COLOR.green, height: 25, width: 25, marginRight: 10 }} />
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
@@ -109,7 +108,7 @@ const ReceivedTask = (props) => {
                     <FlatList style={{ flex: 1 }} horizontal data={filteredUserData} renderItem={({ item, index }) => {
                         return (
                             <View>
-                                <Image source={{ uri: index > 3 ? '' : item.profile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0, margin: 2, }} />
+                                <Image source={{ uri: index > 3 ? '' : item.taskCreatorProfile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0, margin: 2, }} />
                             </View>
                         )
                     }} />
