@@ -160,7 +160,7 @@ const CreateSurvey = (props) => {
                     <View style={{ position: 'absolute', bottom: 30, paddingHorizontal: 30, right: 0, left: 0 }}>
 
 
-                        <Button onPress={() => { onhandleselect() }} title={'Select'} bgColor={COLOR.green} color={COLOR.white} />
+                        <Button onPress={() => { onhandleselect() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
                     </View>
                 </View>
             </View>
@@ -173,7 +173,7 @@ const CreateSurvey = (props) => {
                     <View style={{ flex: 1, backgroundColor: COLOR.white, marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, paddingBottom: 70 }}>
                         <FlatList showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 20, }} data={groupdata} renderItem={list} />
                         <View style={{ position: 'absolute', bottom: 20, paddingHorizontal: 30, right: 0, left: 0 }}>
-                            <Button onPress={() => { onHandaleCreate() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
+                            <Button onPress={() => { onHandaleCreate() }} title={'Select'} bgColor={COLOR.green} color={COLOR.white} />
                         </View>
                     </View>
                 </View>
