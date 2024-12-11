@@ -23,7 +23,7 @@ const MainMenu = ({ visible, onPress, setting, onClose, title, ScanQR, onRequest
                                 <Image source={require('../../Assets/Image/summerizemenuicon.png')} style={{ height: 15, width: 15 }} />
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.onselectlist, { backgroundColor: onSelect == 2 ? COLOR.lightgreen : COLOR.white }]} onPress={() => { setOnSelect(2), ScanQR() }}>
-                                <Text style={styles.modalText}>Scan QR</Text>
+                                <Text style={styles.modalText}>Profile QR</Text>
                                 <Image source={require('../../Assets/Image/qr.png')} style={{ height: 15, width: 15 }} />
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.onselectlist, { backgroundColor: onSelect == 3 ? COLOR.lightgreen : COLOR.white }]} onPress={() => { setOnSelect(3), onGroup() }}>
