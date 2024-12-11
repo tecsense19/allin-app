@@ -35,10 +35,10 @@ const TaskCommponent = ({ onPress }) => {
                 style={styles.ListmainContainer}>
                 <View style={styles.secondContainer}>
                     <View style={styles.twoContainerDevide}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, }}>
                             <Image source={{ uri: isFocus == 'Receive' ? item?.taskCreatorProfile : item?.taskReceiverProfile }} style={styles.profileImg} />
                             <View style={{ flex: 1 }}>
-                                <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.black, flex: 1 }}>{isFocus == 'Receive' ? item?.taskCreatorName : item?.taskReceiverName}</Text>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.black, }}>{isFocus == 'Receive' ? item?.taskCreatorName : item?.taskReceiverName}</Text>
                                 <Text style={{ color: '#7B7B7B', fontSize: 14, marginTop: 5, fontWeight: 'regular' }}>{item.completedTasks + "/" + item.totalTasks + 'Completed'}</Text>
                             </View>
                         </View>
