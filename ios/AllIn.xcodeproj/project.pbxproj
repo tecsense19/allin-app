@@ -14,6 +14,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		411CE76DF4854E3D90AB985F /* SFProDisplay-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 357DFE09404643C49E494C46 /* SFProDisplay-Black.ttf */; };
 		6C20EB3E2C04612100A49894 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6C20EB3D2C04612100A49894 /* GoogleService-Info.plist */; };
+		6CB484D02D08500E009439AA /* RCTTextRecognition.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB484CF2D08500E009439AA /* RCTTextRecognition.m */; };
 		6FE4F17BA034500DF4B23A1D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 287874580915A052CAB6FAA9 /* PrivacyInfo.xcprivacy */; };
 		78A1365C819942A0BE604120 /* SFProDisplay-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 80C373D5482248968765DFBD /* SFProDisplay-Heavy.ttf */; };
 		79E643E7190C6AE61EA5BF95 /* Pods_AllIn_AllInTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E9152BCCDB25D74D00C935 /* Pods_AllIn_AllInTests.framework */; };
@@ -57,6 +58,8 @@
 		5B7EB9410499542E8C5724F5 /* Pods-AllIn-AllInTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllIn-AllInTests.debug.xcconfig"; path = "Target Support Files/Pods-AllIn-AllInTests/Pods-AllIn-AllInTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6C20EB3D2C04612100A49894 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6C20EB3F2C04696200A49894 /* AllIn.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = AllIn.entitlements; path = AllIn/AllIn.entitlements; sourceTree = "<group>"; };
+		6CB484CF2D08500E009439AA /* RCTTextRecognition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTTextRecognition.m; sourceTree = "<group>"; };
+		6CDC76D32D084FB000760884 /* RCTTextRecognition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTTextRecognition.h; sourceTree = "<group>"; };
 		6E1D6697F78148668905B9C4 /* SFProDisplay-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Bold.ttf"; path = "../assets/fonts/SFProDisplay-Bold.ttf"; sourceTree = "<group>"; };
 		71E9152BCCDB25D74D00C935 /* Pods_AllIn_AllInTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AllIn_AllInTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		80C373D5482248968765DFBD /* SFProDisplay-Heavy.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Heavy.ttf"; path = "../assets/fonts/SFProDisplay-Heavy.ttf"; sourceTree = "<group>"; };
@@ -110,6 +113,7 @@
 		13B07FAE1A68108700A75B9A /* AllIn */ = {
 			isa = PBXGroup;
 			children = (
+				6CDC76D22D084F7C00760884 /* MLKit */,
 				6C20EB3F2C04696200A49894 /* AllIn.entitlements */,
 				6C20EB3D2C04612100A49894 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -148,6 +152,15 @@
 				71E9152BCCDB25D74D00C935 /* Pods_AllIn_AllInTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6CDC76D22D084F7C00760884 /* MLKit */ = {
+			isa = PBXGroup;
+			children = (
+				6CDC76D32D084FB000760884 /* RCTTextRecognition.h */,
+				6CB484CF2D08500E009439AA /* RCTTextRecognition.m */,
+			);
+			path = MLKit;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -428,6 +441,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				6CB484D02D08500E009439AA /* RCTTextRecognition.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

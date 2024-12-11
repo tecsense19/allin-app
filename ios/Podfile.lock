@@ -35,6 +35,16 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleMLKit/MLKitCore (6.0.0):
+    - MLKitCommon (~> 11.0.0)
+  - GoogleMLKit/TextRecognition (6.0.0):
+    - GoogleMLKit/MLKitCore
+    - MLKitTextRecognition (~> 4.0.0)
+  - GoogleToolboxForMac/Defines (4.2.1)
+  - GoogleToolboxForMac/Logger (4.2.1):
+    - GoogleToolboxForMac/Defines (= 4.2.1)
+  - "GoogleToolboxForMac/NSData+zlib (4.2.1)":
+    - GoogleToolboxForMac/Defines (= 4.2.1)
   - GoogleUtilities/AppDelegateSwizzler (7.13.3):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -60,6 +70,30 @@ PODS:
   - GoogleUtilities/UserDefaults (7.13.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
+  - GoogleUtilitiesComponents (1.1.0):
+    - GoogleUtilities/Logger
+  - GTMSessionFetcher/Core (3.5.0)
+  - MLImage (1.0.0-beta5)
+  - MLKitCommon (11.0.0):
+    - GoogleDataTransport (< 10.0, >= 9.4.1)
+    - GoogleToolboxForMac/Logger (< 5.0, >= 4.2.1)
+    - "GoogleToolboxForMac/NSData+zlib (< 5.0, >= 4.2.1)"
+    - GoogleUtilities/UserDefaults (< 8.0, >= 7.13.0)
+    - GoogleUtilitiesComponents (~> 1.0)
+    - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
+  - MLKitTextRecognition (4.0.0):
+    - MLKitCommon (~> 11.0)
+    - MLKitTextRecognitionCommon (= 3.0.0)
+    - MLKitVision (~> 7.0)
+  - MLKitTextRecognitionCommon (3.0.0):
+    - MLKitCommon (~> 11.0)
+    - MLKitVision (~> 7.0)
+  - MLKitVision (7.0.0):
+    - GoogleToolboxForMac/Logger (< 5.0, >= 4.2.1)
+    - "GoogleToolboxForMac/NSData+zlib (< 5.0, >= 4.2.1)"
+    - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
+    - MLImage (= 1.0.0-beta5)
+    - MLKitCommon (~> 11.0)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
@@ -1027,6 +1061,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-html-to-pdf (0.12.0):
+    - React-Core
   - react-native-image-picker (7.1.2):
     - DoubleConversion
     - glog
@@ -1354,6 +1390,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNPDF (0.14.0):
+    - React
   - RNPermissions (4.1.5):
     - React-Core
   - RNReanimated (3.11.0):
@@ -1413,6 +1451,7 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - GoogleMLKit/TextRecognition
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1446,6 +1485,7 @@ DEPENDENCIES:
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-document-scanner-plugin (from `../node_modules/react-native-document-scanner-plugin`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -1485,6 +1525,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNPDF (from `../node_modules/react-native-view-pdf`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1501,7 +1542,16 @@ SPEC REPOS:
     - FirebaseInstallations
     - FirebaseMessaging
     - GoogleDataTransport
+    - GoogleMLKit
+    - GoogleToolboxForMac
     - GoogleUtilities
+    - GoogleUtilitiesComponents
+    - GTMSessionFetcher
+    - MLImage
+    - MLKitCommon
+    - MLKitTextRecognition
+    - MLKitTextRecognitionCommon
+    - MLKitVision
     - nanopb
     - PromisesObjC
     - SocketRocket
@@ -1580,6 +1630,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-document-scanner-plugin"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
+  react-native-html-to-pdf:
+    :path: "../node_modules/react-native-html-to-pdf"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
@@ -1658,6 +1710,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNPDF:
+    :path: "../node_modules/react-native-view-pdf"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -1684,7 +1738,16 @@ SPEC CHECKSUMS:
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
+  GoogleMLKit: 97ac7af399057e99182ee8edfa8249e3226a4065
+  GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
+  GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
+  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
+  MLImage: 1824212150da33ef225fbd3dc49f184cf611046c
+  MLKitCommon: afec63980417d29ffbb4790529a1b0a2291699e1
+  MLKitTextRecognition: c83c18ad25496f2077f6ec93c5940487ff2eb343
+  MLKitTextRecognitionCommon: c0b3a63d529296a19bce1f8bc8a513644ed4d1f6
+  MLKitVision: e858c5f125ecc288e4a31127928301eaba9ae0c1
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: 02617c592a293bd6d418e0a88ff4ee1f88329b47
@@ -1718,6 +1781,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: 2b3efb60622b7be891b8d0e0e5424632150e0c94
   react-native-document-scanner-plugin: 0687a1d8eaff9dac01dd2799993590831f8f8bcb
   react-native-geolocation: b3201810fd4c47b3d92cff854dc93d1c304fb07b
+  react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-image-picker: d83c33b93b45f1db2ead17c12965550ee17178f1
   react-native-image-resizer: 669454edae94399b11e49c840e4da14482302293
   react-native-maps: 7b2c2cee95271592a92ba485eea1dec66a363a6e
@@ -1757,6 +1821,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 03b326b0a078c24fba5e509a913ea7d80b46609f
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: a5d0b4dd7f5cb1fc06cf09cfa8ee0dfb5c579b65
+  RNPDF: 8526c7210ff375c29d2461c51945e2f5480f7b60
   RNPermissions: 10d46d6c38fa0ff137d9aad0f676699de60b5bf4
   RNReanimated: 669b9c611bdccd0fb897ea8df181bcc340d45f16
   RNScreens: baa80504a942be4a5bf669dc97ea0bb8997d6867
@@ -1766,6 +1831,6 @@ SPEC CHECKSUMS:
   SwiftAudioEx: f6aa653770f3a0d3851edaf8d834a30aee4a7646
   Yoga: dafebc41bc66910af33077aaa41078e89fd635bf
 
-PODFILE CHECKSUM: 0f0fd09c187be51d40374ee916d15fe7504e3ec1
+PODFILE CHECKSUM: 8a76960508d9fbeca9a288be5431387b24c41c91
 
 COCOAPODS: 1.15.2

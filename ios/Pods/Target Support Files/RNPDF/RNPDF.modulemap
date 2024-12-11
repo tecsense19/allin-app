@@ -1,0 +1,6 @@
+framework module RNPDF {
+  umbrella header "RNPDF-umbrella.h"
+
+  export *
+  module * { export * }
+}
