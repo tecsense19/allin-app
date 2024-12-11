@@ -216,6 +216,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
             {checkboxes.map((checkbox, index) => {
                 const users = checkbox?.task_checked_users?.split(',')?.map(Number);
                 // console.log(users?.includes(myID));
+                console.log(checkbox);
+
 
                 return (
                     <View key={index} style={{
@@ -237,7 +239,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                             <TouchableOpacity onPress={() => toggleCheckbox(index)}>
                                 <Image
                                     source={
-                                        checkbox.task_checked || users?.includes(myID)
+                                        users?.includes(myID)
                                             ? require('../../../Assets/Image/check.png') // Path to checked image
                                             : require('../../../Assets/Image/box.png') // Path to unchecked image
                                     }
@@ -245,7 +247,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                                         width: 24,
                                         height: 24,
                                         marginRight: 10,
-                                        tintColor: checkbox.task_checked || users?.includes(myID) ? COLOR.green : COLOR.black
+                                        tintColor: users?.includes(myID) ? COLOR.green : COLOR.black
                                     }}
                                 />
                             </TouchableOpacity>
