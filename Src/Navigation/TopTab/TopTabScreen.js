@@ -24,7 +24,6 @@ import { User_Logout } from '../../Service/actions';
 import { getToken } from '../../Service/AsyncStorage';
 import messaging from '@react-native-firebase/messaging';
 import Loader from '../../Custom/Loader/loader';
-import { load } from 'react-native-track-player/lib/src/trackPlayer';
 
 const Tab = createMaterialTopTabNavigator();
 
