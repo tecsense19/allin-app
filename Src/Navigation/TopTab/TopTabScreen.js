@@ -91,14 +91,14 @@ const MyTopTabs = props => {
                 <View style={{ backgroundColor: COLOR.black }}>
 
                     <MenuModal
+                        ScanQR={() => { props.navigation.navigate('scanqr'), setVisible(false) }}
                         onRequestClose={closeModal}
                         visible={visible}
                         setting={() => {
                             props.navigation.navigate('setting'), setVisible(false);
                         }}
-                        QR={() => {
-                            Alert.alert('Website QR'), setVisible(false);
-                        }}
+                        onGroup={() => { props.navigation.navigate('creategroup'), setVisible(false) }}
+
                         onClose={() => setVisible(false)}
                         title={'Received'}
                         onLogout={createTwoButtonAlert}
