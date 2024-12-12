@@ -14,22 +14,18 @@ import { BlurView } from '@react-native-community/blur'
 
 
 const CreateTask = ({ onSubmit, userId, token, editData }) => {
-    const [descriptions, setDescription] = useState('');
+    const [selectedCheckList, setSelectedCheckList] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
     const [visible, setVisible] = useState(false);
     const [UserData, setUserData] = useState();
     const [selectedItems, setSelectedItems] = useState([userId]);
     const [myID, setMyId] = useState('');
     const [loading, setLoading] = useState(false);
-    const id = uuid.v4()
-    // const isLoginUser = editData?.sentBy == 'loginUser'
-    // const text = editData[0]?.messageType == 'Text'
-
-    const [taskTitle, setTaskTitle] = useState(''); // State for task title
-    const [checkboxes, setCheckboxes] = useState([]); // State for holding checkboxes
-    const [modalVisible, setModalVisible] = useState(false); // State to control modal visibility
-    const [newCheckBoxLabel, setNewCheckBoxLabel] = useState(''); // State for the new checkbox label
-    const [isEditing, setIsEditing] = useState(false); // State to track if editing
+    const [taskTitle, setTaskTitle] = useState('');
+    const [checkboxes, setCheckboxes] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [newCheckBoxLabel, setNewCheckBoxLabel] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
     const [editingIndex, setEditingIndex] = useState(null);
     const [selectedCheckBox, setSelectedCheckBox] = useState(null);
     const [taskDate, setTaskDate] = useState(new Date());
@@ -37,7 +33,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const [openTime, setOpenTime] = useState(false);
     const [openDate, setOpenDate] = useState(false);
     const [datetime, setdatetime] = useState({ date: false, time: false })
-    console.log(datetime);
+    console.log(selectedCheckList);
 
 
     useEffect(() => {
@@ -45,8 +41,6 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
         if (editData[0]?.messageType == 'Text') {
             setTaskTitle(editData[0].messageDetails)
         } else if (editData.messageType == 'Task') {
-            // console.log(editData.messageType == 'Task');
-
             setTaskTitle(editData.messageDetails.task_name)
             setCheckboxes(editData.messageDetails.tasks);
             setSelectedItems(editData.messageDetails.users.map((user, ind) => {
@@ -60,6 +54,14 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
         const a = await MyID()
         setMyId(a)
     }
+    const toggleCheckBoxItem = (itemId) => {
+        // console.log(itemId);
+        if (selectedCheckList.includes(itemId)) {
+            setSelectedCheckList(selectedCheckList.filter((id) => id !== itemId));
+        } else {
+            setSelectedCheckList([...selectedCheckList, itemId]);
+        }
+    };
     const year = taskDate?.getUTCFullYear();
     const month = (taskDate?.getUTCMonth() + 1)?.toString()?.padStart(2, '0'); // Add 1 to the month and pad with zero
     const day = taskDate?.getUTCDate()?.toString()?.padStart(2, '0'); // Pad with zero
@@ -94,7 +96,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
         }
         else {
             onSubmit(data);
-            setDescription(null)
+
         }
     };
     const handleUpdate = async () => {
@@ -216,7 +218,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
             {checkboxes.map((checkbox, index) => {
                 const users = checkbox?.task_checked_users?.split(',')?.map(Number);
                 // console.log(users?.includes(myID));
-                console.log(checkbox);
+                // console.log(checkbox?.task_checked_users, '--------------------------------', users?.includes(myID), checkbox.task_checked);
 
 
                 return (
@@ -236,21 +238,38 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                     }}>
                         {/* Custom Image Checkbox */}
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity onPress={() => toggleCheckbox(index)}>
-                                <Image
-                                    source={
-                                        users?.includes(myID)
-                                            ? require('../../../Assets/Image/check.png') // Path to checked image
-                                            : require('../../../Assets/Image/box.png') // Path to unchecked image
-                                    }
-                                    style={{
-                                        width: 24,
-                                        height: 24,
-                                        marginRight: 10,
-                                        tintColor: users?.includes(myID) ? COLOR.green : COLOR.black
-                                    }}
-                                />
-                            </TouchableOpacity>
+                            {users?.includes(myID) ?
+                                <View>
+                                    <Image
+                                        source={
+                                            users?.includes(myID)
+                                                ? require('../../../Assets/Image/check.png') // Path to checked image
+                                                : require('../../../Assets/Image/box.png') // Path to unchecked image
+                                        }
+                                        style={{
+                                            width: 24,
+                                            height: 24,
+                                            marginRight: 10,
+                                            tintColor: users?.includes(myID) ? COLOR.green : COLOR.black
+                                        }}
+                                    />
+                                </View> :
+                                <TouchableOpacity onPress={() => { toggleCheckbox(index), toggleCheckBoxItem(checkbox.id) }}>
+                                    <Image
+                                        source={
+                                            selectedCheckList.includes(checkbox.id)
+                                                ? require('../../../Assets/Image/check.png') // Path to checked image
+                                                : require('../../../Assets/Image/box.png') // Path to unchecked image
+                                        }
+                                        style={{
+                                            width: 24,
+                                            height: 24,
+                                            marginRight: 10,
+                                            tintColor: selectedCheckList.includes(checkbox.id) ? COLOR.green : COLOR.black
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            }
                             <Text style={{ color: COLOR.gray, fontWeight: '500' }}>{checkbox?.checkbox?.length > 33 ? checkbox?.checkbox.slice(0, 33) + '...' : checkbox?.checkbox}</Text>
                         </View>
                         <TouchableOpacity onPress={() => { setSelectedCheckBox(checkbox) }} style={styles.menuButton}>
