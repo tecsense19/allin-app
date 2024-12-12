@@ -971,10 +971,10 @@ const ChatInnerScreen = props => {
                     delayLongPress={300}
                     onLongPress={(e) => { setIsSelected(true), onhandaleSelected(message), handleTouch(e) }}
                     onPress={() => {
-                         message.messageType == 'Location' ?
-                          Linking.openURL(message.messageDetails.location_url) :
-                           message.messageType == 'Meeting' ?
-                            props.navigation.navigate('meetingdetails', message) : null,
+                        message.messageType == 'Location' ?
+                            Linking.openURL(message.messageDetails.location_url) :
+                            message.messageType == 'Meeting' ?
+                                props.navigation.navigate('meetingdetails', message) : null,
                             setTaskpopup('')
                     }}>
                     {renderMessage()}
@@ -1210,8 +1210,8 @@ const ChatInnerScreen = props => {
                 // </BlurView>
                 : null
             }
-          {loding && <View style={{ backgroundColor: COLOR.white, position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
-            </View>} 
+            {loding && <View style={{ backgroundColor: COLOR.white, position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
+            </View>}
         </View >
     );
 };
