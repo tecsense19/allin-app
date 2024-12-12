@@ -104,14 +104,17 @@ const ReceivedTask = (props) => {
 
             <View style={{ paddingBottom: isFocused ? 5 : 25, backgroundColor: COLOR.white }}>
                 {<View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20 }}>
+                    <View>
+                        <FlatList style={{ paddingVertical: 10 }} horizontal data={filteredUserData} renderItem={({ item, index }) => {
+                            return (
+                                <View>
+                                    {index > 3 ? null : <Image source={{ uri: item.taskCreatorProfile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0, margin: 2, }} />}
+                                </View>
+                            )
+                        }} />
+                    </View>
+                    {selectedItems.length > 4 ? <Text style={{ fontSize: 15, color: COLOR.black, fontWeight: 'bold' }}>{'+' + (selectedItems.length - 4)}</Text> : null}
 
-                    <FlatList style={{ flex: 1 }} horizontal data={filteredUserData} renderItem={({ item, index }) => {
-                        return (
-                            <View>
-                                <Image source={{ uri: index > 3 ? '' : item.taskCreatorProfile }} style={{ height: 42, width: 42, borderRadius: 50, marginLeft: index > 0 ? -20 : 0, margin: 2, }} />
-                            </View>
-                        )
-                    }} />
                 </View>}
                 <ChatInputToolBar placeholder={'Email Summary To...'} hidePlus={true} source={require('../../Assets/Image/send.png')} onChangeText={text => { setEmailSummary(text) }} onBlur={() => setIsFocused(false)}
                     onFocus={() => setIsFocused(true)} value={EmailSummary} onsend={SendSummarizeEmail}
