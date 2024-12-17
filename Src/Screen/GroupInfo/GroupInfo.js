@@ -9,10 +9,11 @@ import { Edit_Group, Group_User_Add, Group_User_List, Group_User_Remove, Group_U
 import { getToken } from '../../Service/AsyncStorage'
 import Timezone from 'react-native-timezone'
 import Textinput from '../../Custom/TextInput/SimpaleTextInput'
+import ListImage from '../../Custom/ListImage/ListImage'
 
 const GroupInfo = (props) => {
     const Data = props?.route?.params
-    
+
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [visible, setVisible] = useState(false)
@@ -65,8 +66,9 @@ const GroupInfo = (props) => {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={{ uri: item.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                    <View style={{ marginLeft: 10 }}>
+                    <ListImage uri={item.profile} />
+                    {/* <Image source={{ uri: item.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                    <View style={{}}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.full_name}</Text>
                     </View>
 
@@ -214,7 +216,7 @@ const GroupInfo = (props) => {
                         <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setVisible(false)} />
                     </View>
                     <View style={{ marginTop: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
-                        <FlatList style={{ paddingHorizontal: 20, }} data={allUserData} renderItem={(({ item }) => {
+                        <FlatList style={{ paddingHorizontal: 20, marginBottom: 70 }} data={allUserData} renderItem={(({ item }) => {
                             const ids = groupUserList.map(user => user.id);
                             const isAllRadyThere = ids.includes(item.id)
                             // console.log(isHilighted);
@@ -224,8 +226,9 @@ const GroupInfo = (props) => {
                                 <View>
                                     {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                            <ListImage uri={item.profile} />
+                                            {/* <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                                            <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                         </View>
 
                                         {isAllRadyThere ?
