@@ -26,7 +26,7 @@ const MeetingDetails = (props) => {
 
     const list = ({ item }) => {
         return (
-            <View style={{ paddingVertical: 10, borderBottomWidth: 0.5, borderColor: COLOR.lightgray, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ paddingVertical: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Image source={{ uri: item?.profile }} style={{ height: 27, width: 27, borderRadius: 27, }} />
                     <Text style={{ marginLeft: 8, fontSize: 13, color: COLOR.gray, fontWeight: '500' }}>{item.first_name + ' ' + item.last_name}</Text>
@@ -88,15 +88,23 @@ const MeetingDetails = (props) => {
                                 <Text style={{ color: isFocuse == 'Decline' ? COLOR.green : COLOR.gray, fontSize: 15, fontWeight: '500' }}>Decline</Text>
                             </TouchableOpacity>
                         </View>
-                        <FlatList bounces={false} ListEmptyComponent={(() => {
-                            return (
-                                <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
-                                        Not Found User
-                                    </Text>
-                                </View>
-                            )
-                        })} data={isFocuse == 'Accept' ? data?.users?.accepted_users : data?.users?.declined_users} renderItem={list} />
+                        <FlatList bounces={false}
+                            renderItem={list}
+                            ItemSeparatorComponent={() => {
+                                return (
+                                    <View style={{ borderBottomWidth: 0.51, borderColor: COLOR.lightgray }} />
+                                )
+                            }}
+                            ListEmptyComponent={(() => {
+                                return (
+                                    <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
+                                            User Not Found
+                                        </Text>
+                                    </View>
+                                )
+                            })} data={isFocuse == 'Accept' ? data?.users?.accepted_users : data?.users?.declined_users}
+                        />
                     </View>}
                 </ScrollView>
             </View>
