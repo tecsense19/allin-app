@@ -46,9 +46,9 @@ const DocumentStore = (props) => {
         return (
 
             <TouchableOpacity onPress={() => { setVisible(true), setViewImage(item?.attachment_path) }} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLOR.verylightgray, marginTop: 20, borderRadius: 5 }}>
-                {/* <Image
-                    source={{ uri: item.attachment_path }} style={{ height: 60, width: 60, borderRadius: 5 }} /> */}
-                <FastImage style={{ height: 60, width: 60 }} source={item.attachment_path} />
+                <Image
+                    source={{ uri: item.attachment_path }} style={{ height: 60, width: 60, borderRadius: 5 }} />
+                {/* <FastImage style={{ height: 60, width: 60 }} source={item.attachment_path} /> */}
                 <View>
                     <Text style={{ color: COLOR.black, fontSize: 16, fontWeight: '700', marginLeft: 10 }}>{item.attachment_name?.length > 25 ? item?.attachment_name.slice(0, 28) + '...' : ''}</Text>
                     <Text style={{ color: COLOR.gray, fontSize: 12, fontWeight: '700', marginTop: 5, marginLeft: 10 }}>{formattedDate}</Text>
@@ -66,7 +66,7 @@ const DocumentStore = (props) => {
                 <NavigateHeader title={'Documents'} onPress={() => props.navigation.goBack()} />
             </View>
             {documentData.length > 0 ?
-                <FlatList bounces={false} data={documentData} renderItem={list} style={{ paddingHorizontal: 15 }} />
+                <FlatList bounces={false} data={documentData} renderItem={list} style={{ paddingHorizontal: 15 }} inverted />
                 : <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Image source={{ uri: 'https://cdn4.iconfinder.com/data/icons/backyard-music/96/Audio-Music-Listen-Player-28-512.png' }} style={{ height: 50, width: 50, tintColor: COLOR.gray, marginBottom: 10 }} />
                     <Text style={{ fontSize: 18, fontWeight: '700', color: COLOR.gray, marginBottom: 50 }}>{'No Document!'}</Text>
