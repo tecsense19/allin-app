@@ -27,6 +27,7 @@ import Loader from '../../Custom/Loader/loader';
 import { getToken } from '../../Service/AsyncStorage';
 import { useDispatch } from 'react-redux';
 import { setTrue } from '../../Service/Redux/Actions';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const ChatUserListScreen = props => {
     const [visible, setVisible] = useState(false);
@@ -181,7 +182,8 @@ const ChatUserListScreen = props => {
                             style={styles.listcontainer}
                             onPress={() => { item.type == 'user' ? props.navigation.navigate('chatinner', item.id) : props.navigation.navigate('groupchat', item.id), setShowSearch(false) }}>
                             <View style={styles.imgAndNameView}>
-                                <Image source={{ uri: item?.profile }} style={styles.chetImg} />
+                                <ListImage uri={item?.profile} />
+                                {/* <Image source={{ uri: item?.profile }} style={styles.chetImg} /> */}
                                 <View style={{}}>
                                     {item.type == 'user' ? <Text style={styles.name}>
                                         {userName?.length >= 17
