@@ -1,5 +1,5 @@
 
-import { View, Text, ScrollView, TextInput, Image, TouchableOpacity, FlatList, Alert, Modal, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, ScrollView, TextInput, Image, TouchableOpacity, FlatList, Alert, Modal, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import uuid from 'react-native-uuid'
 import Button from '../../../Custom/Button/Button'
@@ -33,7 +33,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const [openTime, setOpenTime] = useState(false);
     const [openDate, setOpenDate] = useState(false);
     const [datetime, setdatetime] = useState({ date: false, time: false })
-    console.log(selectedCheckList);
+    console.log(editData);
 
 
     useEffect(() => {
@@ -243,8 +243,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                                     <Image
                                         source={
                                             users?.includes(myID)
-                                                ? require('../../../Assets/Image/check.png') // Path to checked image
-                                                : require('../../../Assets/Image/box.png') // Path to unchecked image
+                                                ? require('../../../Assets/Image/check.png') 
+                                                : require('../../../Assets/Image/box.png') 
                                         }
                                         style={{
                                             width: 24,
@@ -258,8 +258,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                                     <Image
                                         source={
                                             selectedCheckList.includes(checkbox.id)
-                                                ? require('../../../Assets/Image/check.png') // Path to checked image
-                                                : require('../../../Assets/Image/box.png') // Path to unchecked image
+                                                ? require('../../../Assets/Image/check.png') 
+                                                : require('../../../Assets/Image/box.png') 
                                         }
                                         style={{
                                             width: 24,
