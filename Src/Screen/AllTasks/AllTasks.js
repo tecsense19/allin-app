@@ -8,6 +8,7 @@ import Loader from '../../Custom/Loader/loader';
 import Button from '../../Custom/Button/Button';
 import styles from './AllTasksStyle';
 import ChatInputToolBar from '../ChatInnerScreen/ChatCustomFile/ChatInputToolBar';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const AllTasks = (props) => {
     const [allUserData, setAllUserData] = useState([]);
@@ -73,7 +74,8 @@ const AllTasks = (props) => {
                 >
                     <View style={styles.imgAndNameView}>
                         <View style={styles.profileAndnameview}>
-                            <Image source={{ uri: item.userProfile }} style={styles.chetImg} />
+                            <ListImage uri={item?.userProfile} />
+                            {/* <Image source={{ uri: item.userProfile }} style={styles.chetImg} /> */}
                             <Text style={styles.name}>
                                 {item.userName}
                             </Text>
