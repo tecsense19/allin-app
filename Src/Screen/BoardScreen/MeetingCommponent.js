@@ -64,17 +64,17 @@ const MeetingCommponent = ({ onPress }) => {
             const [date, time] = dateTimeString.split(' ');
             const [hours, minutes, seconds] = time.split(':').map(Number);
             const period = hours >= 12 ? 'PM' : 'AM';
-            const hours12 = hours % 12 || 12; // Handle 0 hours (midnight) and 12 hours (noon)
+            const hours12 = hours % 12 || 12; 
             const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
             return `${date} ${hours12}:${formattedMinutes} ${period}`;
         }
         const formatDate = (dateString) => {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {
-                weekday: 'long', // full name of the day (e.g., Sunday)
-                day: 'numeric',  // numeric day (e.g., 6)
-                month: 'short',  // short form of the month (e.g., Oct)
-                year: 'numeric', // numeric year (e.g., 2024)
+                weekday: 'long', 
+                day: 'numeric',  
+                month: 'short',  
+                year: 'numeric',
             });
         };
         const member = item?.assigned_users
