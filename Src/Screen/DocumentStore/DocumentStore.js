@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
+import { View, Text, FlatList, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, SafeAreaView, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getToken } from '../../Service/AsyncStorage'
 import { Scan_Document_List } from '../../Service/actions'
@@ -21,12 +21,10 @@ const DocumentStore = (props) => {
             .then((res) => {
                 const data = res.data
                 const pdfData = data?.filter((i) => i.attachment_name.toLowerCase().endsWith(".pdf"));
-                setDocumentData(pdfData)
+                setDocumentData(pdfData.reverse())
                 setLoading(false)
             })
-            .catch(() => {
-
-            })
+            .catch(() => { })
     }
     const list = ({ item, index }) => {
         const date = new Date(item.created_at);
@@ -46,8 +44,10 @@ const DocumentStore = (props) => {
         return (
 
             <TouchableOpacity onPress={() => { setVisible(true), setViewImage(item?.attachment_path) }} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLOR.verylightgray, marginTop: 20, borderRadius: 5 }}>
-                <Image
-                    source={{ uri: item.attachment_path }} style={{ height: 60, width: 60, borderRadius: 5 }} />
+                <ImageBackground source={require('../../Assets/Image/pdf.png')} style={{ height: 60, width: 60, }}>
+                    <Image
+                        source={{ uri: item.attachment_path }} style={{ height: 60, width: 60, borderRadius: 5 }} />
+                </ImageBackground>
                 {/* <FastImage style={{ height: 60, width: 60 }} source={item.attachment_path} /> */}
                 <View>
                     <Text style={{ color: COLOR.black, fontSize: 16, fontWeight: '700', marginLeft: 10 }}>{item.attachment_name?.length > 25 ? item?.attachment_name.slice(0, 28) + '...' : ''}</Text>
@@ -66,7 +66,7 @@ const DocumentStore = (props) => {
                 <NavigateHeader title={'Documents'} onPress={() => props.navigation.goBack()} />
             </View>
             {documentData.length > 0 ?
-                <FlatList bounces={false} data={documentData} renderItem={list} style={{ paddingHorizontal: 15 }} inverted />
+                <FlatList bounces={false} data={documentData} renderItem={list} style={{ paddingHorizontal: 15 }} />
                 : <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Image source={{ uri: 'https://cdn4.iconfinder.com/data/icons/backyard-music/96/Audio-Music-Listen-Player-28-512.png' }} style={{ height: 50, width: 50, tintColor: COLOR.gray, marginBottom: 10 }} />
                     <Text style={{ fontSize: 18, fontWeight: '700', color: COLOR.gray, marginBottom: 50 }}>{'No Document!'}</Text>
