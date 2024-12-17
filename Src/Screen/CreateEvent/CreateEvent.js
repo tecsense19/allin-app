@@ -10,6 +10,7 @@ import { getToken } from '../../Service/AsyncStorage';
 import Loader from '../../Custom/Loader/loader';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Timezone from 'react-native-timezone';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const CreateEvent = props => {
     const [visible, setVisible] = useState(false);
@@ -289,7 +290,9 @@ const CreateEvent = props => {
                         <PickerButton title={Eventdate} onPress={() => { setOpen(true) }} />
                         <PickerButton title={EventDesplayTime} onPress={() => { setOpenTime(true) }} />
                     </View>
-                    <Button title={'submit'} marginTop={20} marginBottom={50} bgColor={COLOR.green} color={COLOR.white} onPress={() => handleCreateEvent()} />
+                    <View>
+                        <Button title={'submit'} marginTop={20} marginBottom={50} bgColor={COLOR.green} color={COLOR.white} onPress={() => handleCreateEvent()} />
+                    </View>
                     <Loader visible={loading} Retry={handleCreateEvent} />
                 </ScrollView>
             </View>
@@ -298,15 +301,16 @@ const CreateEvent = props => {
                     <View style={{ paddingHorizontal: 20 }}>
                         <NavigateHeader title={'Select Users'} color={COLOR.white} onPress={() => setUserModal(false)} />
                     </View>
-                    <View style={{ marginTop: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20 }}>
+                    <View style={{ marginTop: 10, backgroundColor: COLOR.white, flex: 1, borderRadius: 20, paddingBottom: 70 }}>
                         <FlatList data={selectedUser} style={{ paddingHorizontal: 20, }} renderItem={(({ item }) => {
                             const userName = item?.first_name + ' ' + item.last_name
                             return (
                                 <View>
                                     {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                            <ListImage uri={item?.profile} />
+                                            {/* <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                                            <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                         </View>
 
                                         <TouchableOpacity onPress={() => toggleItem(item?.id)}>
