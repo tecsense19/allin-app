@@ -753,7 +753,6 @@ const ChatInnerScreen = props => {
                 setLocation({ latitude, longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 });
             },
             error => {
-
             },
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );
