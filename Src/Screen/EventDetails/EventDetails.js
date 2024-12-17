@@ -4,6 +4,7 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import { Event_Details } from '../../Service/actions';
 import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const EventDetails = (props) => {
     const [isFocuse, setIsFocuse] = useState('Attend')
@@ -28,7 +29,8 @@ const EventDetails = (props) => {
         return (
             <View style={{ paddingVertical: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={{ uri: item.profile }} style={{ height: 27, width: 27, borderRadius: 27, }} />
+                    <ListImage height={27} width={27} uri={item.profile} marginRight={0} />
+                    {/* <Image source={{ uri: item.profile }} style={{ height: 27, width: 27, borderRadius: 27, }} /> */}
                     <Text style={{ marginLeft: 8, fontSize: 13, color: COLOR.gray, fontWeight: '500' }}>{item.first_name + ' ' + item.last_name}</Text>
                 </View>
                 <Text style={{ color: COLOR.black, fontWeight: '600', fontSize: 13 }}>{isFocuse == 'Attend' ? 'Join' : 'Not Join'}</Text>
