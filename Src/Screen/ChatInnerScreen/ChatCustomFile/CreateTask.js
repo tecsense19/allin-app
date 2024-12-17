@@ -11,6 +11,7 @@ import Loader from '../../../Custom/Loader/loader'
 import DatePicker from 'react-native-date-picker'
 import { getToken, MyID } from '../../../Service/AsyncStorage'
 import { BlurView } from '@react-native-community/blur'
+import ListImage from '../../../Custom/ListImage/ListImage'
 
 
 const CreateTask = ({ onSubmit, userId, token, editData }) => {
@@ -243,8 +244,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                                     <Image
                                         source={
                                             users?.includes(myID)
-                                                ? require('../../../Assets/Image/check.png') 
-                                                : require('../../../Assets/Image/box.png') 
+                                                ? require('../../../Assets/Image/check.png')
+                                                : require('../../../Assets/Image/box.png')
                                         }
                                         style={{
                                             width: 24,
@@ -258,8 +259,8 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                                     <Image
                                         source={
                                             selectedCheckList.includes(checkbox.id)
-                                                ? require('../../../Assets/Image/check.png') 
-                                                : require('../../../Assets/Image/box.png') 
+                                                ? require('../../../Assets/Image/check.png')
+                                                : require('../../../Assets/Image/box.png')
                                         }
                                         style={{
                                             width: 24,
@@ -333,10 +334,10 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                             <Image source={require('../../../Assets/Image/x.png')} style={{ height: 15, width: 15 }} />
                         </TouchableOpacity>
                         <Text style={{ textAlign: 'center', fontSize: 22, fontWeight: 'bold', color: COLOR.black }}>New Task</Text>
-                        <TouchableOpacity style={{ alignSelf: 'center', marginTop: 30 }}>
+                        {/* <TouchableOpacity style={{ alignSelf: 'center', marginTop: 30 }}>
                             <Image source={require('../../../Assets/Image/addmoretaskicon.png')} style={{ width: 42, height: 42, marginRight: 5, tintColor: COLOR.green, resizeMode: 'contain' }} />
 
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TextInput
                             style={{
                                 backgroundColor: COLOR.white,
@@ -407,8 +408,9 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
                                 <View>
                                     {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                            <ListImage uri={item?.profile} />
+                                            {/* <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                                            <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                         </View>
 
                                         <TouchableOpacity onPress={() => toggleItem(item?.id)}>
