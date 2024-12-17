@@ -35,7 +35,7 @@ import MeetingDetails from '../../Screen/MeetingDetails/MeetingDetails';
 import TaskDetails from '../../Screen/TaskDetails/TaskDetails';
 
 const Stack = createNativeStackNavigator();
-const StackScreen = () => {
+const   StackScreen = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
