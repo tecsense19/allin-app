@@ -4,6 +4,7 @@ import { getToken } from '../../Service/AsyncStorage';
 import { Task_Meeting_Event_Unread, Task_User_List } from '../../Service/actions';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const TaskCommponent = ({ onPress }) => {
     const [isFocus, setIsFocus] = useState('Given')
@@ -36,7 +37,8 @@ const TaskCommponent = ({ onPress }) => {
                 <View style={styles.secondContainer}>
                     <View style={styles.twoContainerDevide}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, }}>
-                            <Image source={{ uri: isFocus == 'Receive' ? item?.taskCreatorProfile : item?.taskReceiverProfile }} style={styles.profileImg} />
+                            <ListImage uri={isFocus == 'Receive' ? item?.taskCreatorProfile : item?.taskReceiverProfile} />
+                            {/* <Image source={{ uri: isFocus == 'Receive' ? item?.taskCreatorProfile : item?.taskReceiverProfile }} style={styles.profileImg} /> */}
                             <View style={{ flex: 1 }}>
                                 <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.black, }}>{isFocus == 'Receive' ? item?.taskCreatorName : item?.taskReceiverName}</Text>
                                 <Text style={{ color: '#7B7B7B', fontSize: 14, marginTop: 5, fontWeight: 'regular' }}>{item.completedTasks + "/" + item.totalTasks + 'Completed'}</Text>
