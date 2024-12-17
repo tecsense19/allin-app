@@ -8,6 +8,7 @@ import Button from '../../Custom/Button/Button';
 import { Create_Survey, Get_Group_List } from '../../Service/actions';
 import uuid from 'react-native-uuid'
 import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const CreateSurvey = (props) => {
     const [pollQuestion, setPollQuestion] = useState('');
@@ -74,8 +75,9 @@ const CreateSurvey = (props) => {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLOR.white, borderRadius: 5, flex: 1, marginVertical: 10, justifyContent: 'space-between' }}>
                 <View style={{ padding: 5, flexDirection: 'row', alignItems: 'center' }} >
-                    <Image source={{ uri: item.profile_pic }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', marginLeft: 5 }}>{item.name}</Text>
+                    <ListImage uri={item.profile_pic} />
+                    {/* <Image source={{ uri: item.profile_pic }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', }}>{item.name}</Text>
                 </View>
                 <TouchableOpacity onPress={() => setselectitem(item)}>
                     <Image style={{ height: 25, width: 25, tintColor: selectitem.id == item.id ? COLOR.green : COLOR.gray }}
