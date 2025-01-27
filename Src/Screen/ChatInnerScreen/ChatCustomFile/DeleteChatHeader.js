@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet, Alert, onCopy } from 'react-native'
 import React from 'react'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-const DeleteChatHeader = ({ onBack, onedit, onDelete, Count, onCopy, edithide }) => {
+const DeleteChatHeader = ({ onBack, onedit, onDelete, Count, onCopy, edithide, isCopy }) => {
 
     const createDeleteAlert = () =>
         Alert.alert(
@@ -50,12 +50,14 @@ const DeleteChatHeader = ({ onBack, onedit, onDelete, Count, onCopy, edithide })
                         style={{ height: 20, width: 20, tintColor: COLOR.white, }}
                     />
                 </TouchableOpacity>
+                {isCopy ?
                 <TouchableOpacity onPress={onCopy} style={{ marginRight: 15 }}>
-                    <Image
-                        source={require('../../../Assets/Image/copyicon.png')}
-                        style={{ height: 20, width: 20, tintColor: COLOR.white, resizeMode: 'contain' }}
-                    />
-                </TouchableOpacity>
+                <Image
+                    source={require('../../../Assets/Image/copyicon.png')}
+                    style={{ height: 20, width: 20, tintColor: COLOR.white, resizeMode: 'contain' }}
+                />
+            </TouchableOpacity>
+            : null}
 
             </View>
 
