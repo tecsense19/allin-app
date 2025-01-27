@@ -70,7 +70,7 @@ const ChatUserListScreen = props => {
             'Clear Chat', 'You are about to Erase,Are you sure you want to proceed ?',
             [
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'Cancel', },
-                { text: 'Clear', onPress: () => { ClearChat(id), swipeableRef.current[openItemId].close(); setOpenItemId(null) }, style: 'destructive' },
+                { text: 'Clear', onPress: () => { ClearChat(id), swipeableRef?.current[openItemId]?.close(); setOpenItemId(null) }, style: 'destructive' },
             ],)
     }
     const DeleteAlert = (id) => {
