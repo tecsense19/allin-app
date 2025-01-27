@@ -180,7 +180,6 @@ export const Get_All_Messages = async (data, token) => {
     const response = await res.json()
     return response
 }
-
 export const Chat_Text_Messages = async (token, msgType, inputText, userId) => {
     const res = await fetch(ACTIONS.MESSAGE_TEXT, {
         method: "POST",
@@ -801,9 +800,10 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => 
     const commaSeparatedtitle = checkBoxData.map(item => item.checkbox).join(',');
     const commaSeparatedboolean = checkBoxData.map(item => item.task_checked).join(',');
     const commaSeparateduser = user.map(item => item).join(',');
+    console.log('---------------------------',);
 
+    // console.log({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean, receiver_id: commaSeparateduser });
 
-    // // console.log({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean });
 
     const res = await fetch(ACTIONS.TASK_UPDATE, {
         method: "POST",
@@ -816,7 +816,7 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => 
 
 
     const response = await res.json()
-    console.log('------------', response);
+    console.log('------------',);
 
     return response
 }
@@ -1107,6 +1107,19 @@ export const Get_Group_List = async () => {
     })
     const response = await res.json()
 
+    return response
+}
+export const Images_To_Pdf = async (image) => {
+    const token = await getToken()
+    const res = await fetch(ACTIONS.IMAGES_TO_PDF, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: image
+    })
+    const response = await res.json()
     return response
 }
 
