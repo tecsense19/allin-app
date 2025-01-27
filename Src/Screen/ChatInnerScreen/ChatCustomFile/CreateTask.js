@@ -34,7 +34,7 @@ const CreateTask = ({ onSubmit, userId, token, editData }) => {
     const [openTime, setOpenTime] = useState(false);
     const [openDate, setOpenDate] = useState(false);
     const [datetime, setdatetime] = useState({ date: false, time: false })
-    console.log(editData);
+    console.log('editData');
 
 
     useEffect(() => {
