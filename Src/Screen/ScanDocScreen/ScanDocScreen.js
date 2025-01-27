@@ -16,7 +16,7 @@ import RNFS from 'react-native-fs';
 // import { File_Uplode } from './Src/Service/actions';
 // import { getToken } from './Src/Service/AsyncStorage';
 import RNFetchBlob from 'rn-fetch-blob';
-import { Chat_File_Message, Docs_File_Uplode, File_Uplode, Scan_Document_List } from '../../Service/actions';
+import { Chat_File_Message, Docs_File_Uplode, File_Uplode, Images_To_Pdf, Scan_Document_List } from '../../Service/actions';
 import { getToken } from '../../Service/AsyncStorage';
 import Loader from '../../Custom/Loader/loader';
 import ProfileModal from '../../Custom/Modal/ProfileModal';
@@ -25,7 +25,7 @@ import { pdfGenerator } from '../../MLKit/pdfGenerator';
 const ScanDocScreen = props => {
     const pdfRef = useRef();
 
-    const [scannedImage, setScannedImage] = useState();
+    const [scannedImage, setScannedImage] = useState([]);
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState('');
     const [visible, setVisible] = useState(false);
@@ -35,6 +35,7 @@ const ScanDocScreen = props => {
         uri: '',
         type: ''
     });
+    const [pdfList, setPdfList] = useState([]);
 
     const chatData = props?.route?.params
 
@@ -102,13 +103,14 @@ const ScanDocScreen = props => {
             formData.append('attachment_type', 'scan');
         }
         const token = await getToken()
-        const data = await Docs_File_Uplode(token, formData,)             
+        const data = await Docs_File_Uplode(token, formData,)
         setLoading(false)
-        setPdfDetails({
-            name: '',
-            uri: '',
-            type: ''
-        })
+        // setPdfDetails({
+        //     name: '',
+        //     uri: '',
+        //     type: ''
+        // });
+        setPdfList([]);
         // console.log(data);
     }
     const SendScanDoc = async (name, path, type) => {
@@ -180,7 +182,7 @@ const ScanDocScreen = props => {
         }
         setVisible(false);
     };
-    const pdfCreator = async(imageUrl) => {
+    const pdfCreator = async (imageUrl) => {
         let pdfUrl = await pdfGenerator(imageUrl, isFlagPdf);
         const pdfNameIndex = pdfUrl.filePath.lastIndexOf('/') + 1;
         const pdfName = pdfUrl.filePath.slice(pdfNameIndex);
@@ -194,6 +196,39 @@ const ScanDocScreen = props => {
         })
     }
 
+    const scanDocument = async () => {
+        DocumentScanner.scanDocument()
+            .then(({ scannedImages }) => {
+                if (!scannedImages?.length) {
+                    throw new Error('No images scanned');
+                }
+                // console.log('scannedImages======>>>', scannedImages);
+                let tempImageArray = [];
+                scannedImages.map(async (imagePath) => {
+                    const formData = new FormData();
+                    const imageName = imagePath.substring(imagePath.lastIndexOf('/') + 1);
+                    const imageExtention = imageName.substring(imageName.indexOf('.') + 1);
+                    const imageType = `image/${imageExtention}`;
+                    const imageObj = {
+                        uri: imagePath,
+                        name: imageName,
+                        type: imageType
+                    }
+                    formData.append('image[]', [imageObj])
+                    Images_To_Pdf(formData).then((response) =>{
+                        // console.log('response======>>>', response); 
+                        if (response.pdf_url) {
+                            tempImageArray.push(response.pdf_url);
+                        }
+                    })
+                })
+                // console.log('tempImageArray======>>>', tempImageArray);
+                // setScannedImage(tempImageArray)
+                setPdfList(tempImageArray);
+            })
+            .catch(error => console.log(`Failed to create PDF: ${error}`));
+    };
+
     return (
         <View style={styles.mainContainer}>
             <View style={{ paddingHorizontal: 20 }}>
@@ -202,15 +237,15 @@ const ScanDocScreen = props => {
             <View
                 style={styles.detailsContainer}>
 
-                {pdfDetails.name ?
+                {pdfList.length > 0 ?
                     <>
                         <PDFView
-                            key={pdfDetails.name}
+                            key={pdfList[0]}
                             ref={pdfRef}
                             style={{ flex: 1 }}
-                            resource={pdfDetails.name}
+                            resource={pdfList[0]}
                             fileFrom={"documentsDirectory"}
-                            resourceType={"file"}
+                            resourceType={"url"}
                             onLoad={() => console.log(`PDF rendered from`)}
                             onError={(error) => console.log('Cannot render PDF', error)}
                         />
@@ -222,13 +257,13 @@ const ScanDocScreen = props => {
                             {text == '' ? <Image
                                 resizeMode="contain"
                                 style={styles.scaniconAndImage}
-                                source={scannedImage == undefined
+                                source={scannedImage.length == 0
                                     ? require('../../Assets/Image/scanner.png')
-                                    : { uri: scannedImage.filePath }} /> : null}
+                                    : { uri: scannedImage[0].filePath }} /> : null}
                             <Text style={styles.scanText}>{text}</Text>
                         </ScrollView>
 
-                        <Button title={'Image to Pdf'} bgColor={COLOR.green} onPress={() => imageModal(1)} color={COLOR.white} marginHorizontal={20} />
+                        <Button title={'Image to Pdf'} bgColor={COLOR.green} onPress={() => scanDocument()} color={COLOR.white} marginHorizontal={20} />
                         <Button title={'Text Recognition'} bgColor={COLOR.green} onPress={() => imageModal(2)} color={COLOR.white} marginHorizontal={20} marginTop={10} />
                         {/* <Button title={'Scan Docs'} bgColor={COLOR.green} onPress={scanDocument} color={COLOR.white} marginHorizontal={20} /> */}
                         <Button title={'View Docs'} bgColor={COLOR.green} marginTop={10} onPress={() => props.navigation.navigate('docstore')} color={COLOR.white} marginHorizontal={20} />
