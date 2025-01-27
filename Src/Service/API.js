@@ -73,6 +73,5 @@ export const ACTIONS = {
     SET_VOTE: BASE_PATH + '/group/select-option',
     TASK_COMPLETE_INCOMPLETE: BASE_PATH + '/task-complete-incomplete',
     ADD_TASK_COMMENT: BASE_PATH + '/tasks/comments',
-
-
+    IMAGES_TO_PDF: BASE_PATH + '/image-to-pdf'
 }
