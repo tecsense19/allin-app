@@ -800,11 +800,6 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => 
     const commaSeparatedtitle = checkBoxData.map(item => item.checkbox).join(',');
     const commaSeparatedboolean = checkBoxData.map(item => item.task_checked).join(',');
     const commaSeparateduser = user.map(item => item).join(',');
-    console.log('---------------------------',);
-
-    // console.log({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean, receiver_id: commaSeparateduser });
-
-
     const res = await fetch(ACTIONS.TASK_UPDATE, {
         method: "POST",
         headers: {
@@ -814,9 +809,7 @@ export const Edit_Task = async (token, msgId, checkBoxData, taskTitle, user) => 
         body: JSON.stringify({ message_id: msgId, task_ids: commaSeparatedIds, task_name: taskTitle, checkbox: commaSeparatedtitle, task_checked: commaSeparatedboolean, receiver_id: commaSeparateduser })
     })
 
-
     const response = await res.json()
-    console.log('------------',);
 
     return response
 }
@@ -943,7 +936,7 @@ export const Edit_Group = async (token, groupid, img, groupname,) => {
             name: profileImageName,
             type: profileImageType
         });
-        console.log(profileImageUri, profileImageName, profileImageType);
+        // console.log(profileImageUri, profileImageName, profileImageType);
     }
 
 
