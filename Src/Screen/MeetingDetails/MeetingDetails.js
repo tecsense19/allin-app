@@ -4,20 +4,19 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import { Meeting_Details } from '../../Service/actions';
 import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const MeetingDetails = (props) => {
     const [isFocuse, setIsFocuse] = useState('Accept')
     const [data, setData] = useState('')
     const [loading, setLoading] = useState(true)
-    const MeetingId = props?.route?.params?.message_id ? props?.route?.params?.message_id : props?.route?.params.messageDetails.message_id
+    const MeetingId = props?.route?.params?.message_id ? props?.route?.params?.message_id : props?.route?.params?.messageDetails?.message_id
 
     const date = new Date(data?.meeting?.created_at);
     const options = { weekday: 'long', day: 'numeric', year: 'numeric' };
 
 
-
     const formattedDate = date.toLocaleDateString('en-US', options);
-
     let formattedTime = date.toLocaleString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
@@ -26,9 +25,10 @@ const MeetingDetails = (props) => {
 
     const list = ({ item }) => {
         return (
-            <View style={{ paddingVertical: 10, borderBottomWidth: 0.5, borderColor: COLOR.lightgray, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ paddingVertical: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={{ uri: item?.profile }} style={{ height: 27, width: 27, borderRadius: 27, }} />
+                    <ListImage height={27} width={27} uri={item?.profile} marginRight={0} />
+                    {/* <Image source={{ uri: item?.profile }} style={{ height: 27, width: 27, borderRadius: 27, }} /> */}
                     <Text style={{ marginLeft: 8, fontSize: 13, color: COLOR.gray, fontWeight: '500' }}>{item.first_name + ' ' + item.last_name}</Text>
                 </View>
                 <Text style={{ color: COLOR.black, fontWeight: '600', fontSize: 13 }}>Join</Text>
@@ -88,19 +88,27 @@ const MeetingDetails = (props) => {
                                 <Text style={{ color: isFocuse == 'Decline' ? COLOR.green : COLOR.gray, fontSize: 15, fontWeight: '500' }}>Decline</Text>
                             </TouchableOpacity>
                         </View>
-                        <FlatList bounces={false} ListEmptyComponent={(() => {
-                            return (
-                                <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
-                                        Not Found User
-                                    </Text>
-                                </View>
-                            )
-                        })} data={isFocuse == 'Accept' ? data?.users?.accepted_users : data?.users?.declined_users} renderItem={list} />
+                        <FlatList bounces={false}
+                            renderItem={list}
+                            ItemSeparatorComponent={() => {
+                                return (
+                                    <View style={{ borderBottomWidth: 0.51, borderColor: COLOR.lightgray }} />
+                                )
+                            }}
+                            ListEmptyComponent={(() => {
+                                return (
+                                    <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
+                                            User Not Found
+                                        </Text>
+                                    </View>
+                                )
+                            })} data={isFocuse == 'Accept' ? data?.users?.accepted_users : data?.users?.declined_users}
+                        />
                     </View>}
                 </ScrollView>
             </View>
-            <Loader visible={loading} Retry={() => props.navigation.goBack()} />
+            <Loader visible={loading} Retry={() => getMeetingDetails()} />
         </View >
     )
 }

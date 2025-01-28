@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, TextInput, Image, } from 'react-native'
 import React from 'react'
 import { COLOR } from '../../../Assets/AllFactors/AllFactors';
-const ChatInputToolBar = ({ onPress, onsend, value, onFocus, onBlur, onChangeText, autoFocus, source, placeholder,hidePlus }) => {
+const ChatInputToolBar = ({ onPress, onsend, value, onFocus, onBlur, onChangeText, autoFocus, source, placeholder, hidePlus }) => {
     return (
         <View
             style={{
@@ -18,7 +18,7 @@ const ChatInputToolBar = ({ onPress, onsend, value, onFocus, onBlur, onChangeTex
                     flexDirection: 'row',
                     alignItems: 'center',
                 }}>
-                {hidePlus ? '' : <TouchableOpacity onPress={onPress}>
+                {!hidePlus && <TouchableOpacity onPress={onPress}>
                     <Text
                         style={{
                             fontSize: 24,

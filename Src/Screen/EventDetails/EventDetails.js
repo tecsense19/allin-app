@@ -4,6 +4,7 @@ import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import { Event_Details } from '../../Service/actions';
 import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const EventDetails = (props) => {
     const [isFocuse, setIsFocuse] = useState('Attend')
@@ -26,9 +27,10 @@ const EventDetails = (props) => {
 
     const list = ({ item }) => {
         return (
-            <View style={{ paddingVertical: 10, borderBottomWidth: 0.5, borderColor: COLOR.lightgray, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ paddingVertical: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={{ uri: item.profile }} style={{ height: 27, width: 27, borderRadius: 27, }} />
+                    <ListImage height={27} width={27} uri={item.profile} marginRight={0} />
+                    {/* <Image source={{ uri: item.profile }} style={{ height: 27, width: 27, borderRadius: 27, }} /> */}
                     <Text style={{ marginLeft: 8, fontSize: 13, color: COLOR.gray, fontWeight: '500' }}>{item.first_name + ' ' + item.last_name}</Text>
                 </View>
                 <Text style={{ color: COLOR.black, fontWeight: '600', fontSize: 13 }}>{isFocuse == 'Attend' ? 'Join' : 'Not Join'}</Text>
@@ -59,7 +61,7 @@ const EventDetails = (props) => {
             <View style={{ marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, flex: 1, backgroundColor: COLOR.white, }}>
                 {/*card view */}
                 <ScrollView style={{ flex: 1, paddingHorizontal: 30 }}>
-                    {!loading&&<View style={{ backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 7, marginTop: 30, borderRadius: 5, shadowOffset: { height: 1, width: 1 }, padding: 30 }}>
+                    {!loading && <View style={{ backgroundColor: COLOR.white, shadowOpacity: 0.2, shadowRadius: 7, marginTop: 30, borderRadius: 5, shadowOffset: { height: 1, width: 1 }, padding: 30 }}>
                         <Text style={{ fontSize: 18, color: COLOR.black, fontWeight: 'bold' }}>Event</Text>
                         <View style={{ borderBottomWidth: 1, marginTop: 15, borderColor: COLOR.lightgray }} />
                         <Text style={{ fontSize: 18, color: COLOR.black, fontWeight: 'bold', marginTop: 15 }}>{data?.event?.event_title}</Text>
@@ -85,15 +87,21 @@ const EventDetails = (props) => {
                                 <Text style={{ color: isFocuse == 'NotAttend' ? COLOR.green : COLOR.gray, fontSize: 15, fontWeight: '500' }}>Not Attend</Text>
                             </TouchableOpacity>
                         </View>
-                        <FlatList bounces={false} ListEmptyComponent={(() => {
-                            return (
-                                <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
-                                    <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
-                                        Not Found User
-                                    </Text>
-                                </View>
-                            )
-                        })} data={isFocuse == 'Attend' ? data?.users?.attend_users : data?.users?.notattend_users} renderItem={list} />
+                        <FlatList
+                            ItemSeparatorComponent={() => {
+                                return (
+                                    <View style={{ borderBottomWidth: 0.51, borderColor: COLOR.lightgray }} />
+                                )
+                            }}
+                            bounces={false} ListEmptyComponent={(() => {
+                                return (
+                                    <View style={{ marginVertical: 50, marginTop: 70, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Text style={{ color: COLOR.lightgray, fontWeight: 'bold', fontSize: 16 }}>
+                                            Not Found User
+                                        </Text>
+                                    </View>
+                                )
+                            })} data={isFocuse == 'Attend' ? data?.users?.attend_users : data?.users?.notattend_users} renderItem={list} />
                     </View>}
                 </ScrollView>
             </View>

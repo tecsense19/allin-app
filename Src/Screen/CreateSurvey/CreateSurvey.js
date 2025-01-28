@@ -8,6 +8,7 @@ import Button from '../../Custom/Button/Button';
 import { Create_Survey, Get_Group_List } from '../../Service/actions';
 import uuid from 'react-native-uuid'
 import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const CreateSurvey = (props) => {
     const [pollQuestion, setPollQuestion] = useState('');
@@ -17,10 +18,10 @@ const CreateSurvey = (props) => {
     const [loading, setLoading] = useState(false);
 
     const [options, setOptions] = useState([
-        { id: uuid.v4(), text: 'new Option 1', votes: 2 },
-        { id: uuid.v4(), text: 'new Option 2', votes: 8 },
-        { id: uuid.v4(), text: 'new Option 3', votes: 12 },
-        { id: uuid.v4(), text: 'new Option 4', votes: 13 },
+        { id: uuid.v4(), text: '', },
+        { id: uuid.v4(), text: '', },
+        { id: uuid.v4(), text: '', },
+        { id: uuid.v4(), text: '', },
     ]);
     const handleDragEnd = ({ data }) => {
         setOptions(data);
@@ -74,8 +75,9 @@ const CreateSurvey = (props) => {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: COLOR.white, borderRadius: 5, flex: 1, marginVertical: 10, justifyContent: 'space-between' }}>
                 <View style={{ padding: 5, flexDirection: 'row', alignItems: 'center' }} >
-                    <Image source={{ uri: item.profile_pic }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', marginLeft: 5 }}>{item.name}</Text>
+                    <ListImage uri={item.profile_pic} />
+                    {/* <Image source={{ uri: item.profile_pic }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                    <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold', }}>{item.name}</Text>
                 </View>
                 <TouchableOpacity onPress={() => setselectitem(item)}>
                     <Image style={{ height: 25, width: 25, tintColor: selectitem.id == item.id ? COLOR.green : COLOR.gray }}
@@ -141,7 +143,7 @@ const CreateSurvey = (props) => {
                         />
 
 
-                        <TouchableOpacity onPress={() => setOptions([...options, { id: Date.now().toString(), text: 'new Option', votes: 0 }])}
+                        <TouchableOpacity onPress={() => setOptions([...options, { id: Date.now().toString(), text: '', }])}
                             style={{
                                 borderRadius: 5, paddingVertical: 12,
                                 borderColor: '#ddd',
@@ -160,7 +162,7 @@ const CreateSurvey = (props) => {
                     <View style={{ position: 'absolute', bottom: 30, paddingHorizontal: 30, right: 0, left: 0 }}>
 
 
-                        <Button onPress={() => { onhandleselect() }} title={'Select'} bgColor={COLOR.green} color={COLOR.white} />
+                        <Button onPress={() => { onhandleselect() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
                     </View>
                 </View>
             </View>
@@ -173,7 +175,7 @@ const CreateSurvey = (props) => {
                     <View style={{ flex: 1, backgroundColor: COLOR.white, marginTop: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, paddingBottom: 70 }}>
                         <FlatList showsVerticalScrollIndicator={false} style={{ paddingHorizontal: 20, }} data={groupdata} renderItem={list} />
                         <View style={{ position: 'absolute', bottom: 20, paddingHorizontal: 30, right: 0, left: 0 }}>
-                            <Button onPress={() => { onHandaleCreate() }} title={'Create'} bgColor={COLOR.green} color={COLOR.white} />
+                            <Button onPress={() => { onHandaleCreate() }} title={'Select'} bgColor={COLOR.green} color={COLOR.white} />
                         </View>
                     </View>
                 </View>

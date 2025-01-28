@@ -4,16 +4,22 @@ import React, { useEffect, useState } from 'react'
 import NavigateHeader from '../../Custom/Header/NavigateHeader';
 import { COLOR, HEIGHT } from '../../Assets/AllFactors/AllFactors';
 import { TaskComplete_or_Incomplete } from '../../Service/actions';
+import ListImage from '../../Custom/ListImage/ListImage';
+import Loader from '../../Custom/Loader/loader';
 
 const TaskDetails = (props) => {
     const [isFocuse, setIsFocuse] = useState('Completed')
     const [completeTaskList, setCompleteTaskList] = useState('')
     const [inCompleteTaskList, setInCompleteTaskList] = useState('')
+    const [loading, setLoading] = useState(false)
     const data = props?.route?.params
     const getTaskListDetails = async () => {
+        setLoading(true)
         await TaskComplete_or_Incomplete(data?.message_id, 'complete').then((res) => {
             if (res.status_code == 200) {
                 setCompleteTaskList(res.data)
+                setLoading(false)
+
             }
         })
         await TaskComplete_or_Incomplete(data?.message_id, 'incomplete').then((res) => {
@@ -42,6 +48,7 @@ const TaskDetails = (props) => {
                                 renderItem={({ item, index }) => {
                                     return (
                                         <>
+                                            {/* {index < 4 ? <ListImage uri={item.profile} height={27} width={27} marginRight={0} marginLeft={index == 0 ? 0 : - 10} /> : null} */}
                                             {index < 4 ? <Image source={{ uri: item.profile }} style={{ height: 27, width: 27, borderRadius: 25, backgroundColor: 'white', marginLeft: index == 0 ? 0 : - 10, }} /> : null}
                                         </>
                                     )
@@ -84,6 +91,7 @@ const TaskDetails = (props) => {
                         )
                     })} data={isFocuse == 'Completed' ? completeTaskList : inCompleteTaskList} renderItem={list} />
             </View>
+            <Loader visible={loading} Retry={getTaskListDetails} />
         </View >
     )
 }

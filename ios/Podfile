@@ -54,6 +54,8 @@ def node_require(script)
       :hermes_enabled => config[:hermes_enabled],
       :app_path => "#{Pod::Config.instance.installation_root}/.."
     )
+
+    pod 'GoogleMLKit/TextRecognition'
   
     target 'AllInTests' do
       inherit! :complete

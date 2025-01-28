@@ -1,17 +1,16 @@
 import { View, Image, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput, Alert } from 'react-native';
 import React, { useState } from 'react';
-import { COLOR, HEIGHT, WIDTH } from '../../../Assets/AllFactors/AllFactors';
-import { MyID } from '../../../Service/AsyncStorage';
+import { COLOR, } from '../../../Assets/AllFactors/AllFactors';
+import { getToken,  } from '../../../Service/AsyncStorage';
 import { BlurView } from '@react-native-community/blur';
 import Button from '../../../Custom/Button/Button';
-import { Add_Task_Comment } from '../../../Service/actions';
+import { Add_Task_Comment, Edit_Task } from '../../../Service/actions';
 
-const MsgTask = ({ data, ThreeDott, checkData }) => {
+const MsgTask = ({ data, ThreeDott, myID }) => {
     const [visible, setVisible] = useState(false)
     const [comment, setComment] = useState('')
     const [commentData, setCommentData] = useState('')
     const TaskData = data.messageDetails.tasks;
-
 
     const AddComment = () => {
         if (comment.trim() === '') {
@@ -26,6 +25,16 @@ const MsgTask = ({ data, ThreeDott, checkData }) => {
                 }
             })
     }
+    const handleUpdate = async (task) => {
+        const messageId = task?.messageId
+        const token = await getToken()
+        Edit_Task(token, messageId, task?.messageDetails?.tasks, task.messageDetails?.task_name, task?.messageDetails?.users)
+            .then((res) => {
+                if (res.status_code == 200) {
+                    // console.log(res);
+                }
+            })
+    }
     return (
         <View style={styles.container}>
             <View style={styles.View1}>
@@ -36,22 +45,29 @@ const MsgTask = ({ data, ThreeDott, checkData }) => {
                                 ? `${data?.messageDetails?.task_name.slice(0, 28)}...`
                                 : data?.messageDetails?.task_name}
                         </Text>
-                        <TouchableOpacity onPress={ThreeDott} style={styles.onThreeDott}>
+                        {data.sentBy == 'loginUser' ? <TouchableOpacity onPress={ThreeDott} style={styles.onThreeDott}>
                             <Image source={require('../../../Assets/Image/dott.png')} style={styles.threedottImg} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> : null}
                     </View>
                 </View>
 
-                {TaskData.map(async (task, index) => {
+                {TaskData.map((task, index) => {
                     const users = task.task_checked_users.split(',').map(Number);
-                    const myID = await MyID()
+                    //  const myID = 1
                     return (
                         <View key={index} style={styles.checkboxContainer}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', width: '82%' }}>
-                                    <Image source={users.includes(myID) ? require('../../../Assets/Image/check.png') : require('../../../Assets/Image/box.png')} style={[styles.checkImg, { tintColor: users.includes(myID) ? COLOR.green : COLOR.black }]} />
-                                    <Text numberOfLines={1} style={{ color: COLOR.gray, fontWeight: '600', flex: 1 }}>{task.checkbox}</Text>
-                                </View>
+                                {users.includes(myID) ?
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '82%', }}>
+                                        <Image source={require('../../../Assets/Image/check.png')} style={[styles.checkImg, { tintColor: COLOR.green }]} />
+                                        <Text numberOfLines={1} style={{ color: COLOR.gray, fontWeight: '600', flex: 1 }}>{task.checkbox}</Text>
+                                    </View> :
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '82%' }}>
+                                        <TouchableOpacity style={{ padding: 5 }} onPress={() => handleUpdate(data)}>
+                                            <Image source={require('../../../Assets/Image/box.png')} style={[styles.checkImg, { tintColor: COLOR.black }]} />
+                                        </TouchableOpacity>
+                                        <Text numberOfLines={1} style={{ color: COLOR.gray, fontWeight: '600', flex: 1 }}>{task.checkbox}</Text>
+                                    </View>}
                                 <View style={{}}>
                                     <FlatList scrollEnabled={false} style={{}} horizontal data={task?.profiles} renderItem={({ item, index }) => {
                                         return (
@@ -86,8 +102,8 @@ const MsgTask = ({ data, ThreeDott, checkData }) => {
                 <BlurView style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}
                     blurType="light"
                     blurAmount={10} >
-                    <View style={{ width: '90%', backgroundColor: COLOR.white, padding: 20, borderRadius: 20, shadowOpacity: 0.3, shadowOffset: { height: 1, width: 1 }, shadowRadius: 10 }}>
-                        <TouchableOpacity onPress={() => setVisible(false)} style={{ alignSelf: 'flex-end', marginBottom: 20 }}>
+                    <View style={{ width: '90%', backgroundColor: COLOR.white, paddingHorizontal: 20, borderRadius: 20, shadowOpacity: 0.3, shadowOffset: { height: 1, width: 1 }, shadowRadius: 10 }}>
+                        <TouchableOpacity onPress={() => setVisible(false)} style={{ alignSelf: 'flex-end', padding: 20, marginRight: -20 }}>
                             <Image source={require('../../../Assets/Image/x.png')} style={{ height: 15, width: 15 }} />
                         </TouchableOpacity>
                         <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', }}>Add Comment</Text>
@@ -113,7 +129,7 @@ const MsgTask = ({ data, ThreeDott, checkData }) => {
                             }}
                         />
 
-                        <Button onPress={AddComment} marginTop={20} fontSize={16} title={'Add'} bgColor={COLOR.green} color={COLOR.white} />
+                        <Button onPress={AddComment} marginBottom={20} marginTop={20} fontSize={16} title={'Add'} bgColor={COLOR.green} color={COLOR.white} />
                     </View>
                 </BlurView>
             </Modal>
@@ -145,7 +161,6 @@ const styles = StyleSheet.create({
     checkImg: {
         height: 22,
         width: 22,
-        marginRight: 10,
     },
     taskTitle: {
         fontSize: 17,
@@ -173,6 +188,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     checkboxContainer: {
-        marginTop: 20,
+        marginTop: 10,
     },
 });

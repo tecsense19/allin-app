@@ -4,14 +4,16 @@ import { getToken } from '../../Service/AsyncStorage';
 import { Task_Meeting_Event_Unread, Task_User_List } from '../../Service/actions';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const TaskCommponent = ({ onPress }) => {
     const [isFocus, setIsFocus] = useState('Given')
-    const [userData, setAllUserData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [recevieTaskData, setRecevieTaskData] = useState([]);
+    const [givenTaskData, setGivenTaskData] = useState([]);
 
-    const reciveid = userData?.receiveArray?.map((item) => { return item?.message_id });
-    const givingid = userData?.givenArray?.map((item) => { return item?.message_id });
+    const reciveid = recevieTaskData.map((item) => { return item?.message_id });
+    const givingid = givenTaskData?.map((item) => { return item?.message_id });
     const commaS_id = reciveid?.join(',') + ',' + givingid?.join(',');
 
     useEffect(() => {
@@ -28,15 +30,17 @@ const TaskCommponent = ({ onPress }) => {
         const formattedDate = `${day}/${month}/${year}`;
 
         return (
+
             <TouchableOpacity
                 onPress={() => onNavigate(item)}
                 style={styles.ListmainContainer}>
                 <View style={styles.secondContainer}>
                     <View style={styles.twoContainerDevide}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                            <Image source={{ uri: isFocus == 'Receive' ? item?.taskCreatorProfile : item?.taskReceiverProfile }} style={styles.profileImg} />
+                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, }}>
+                            <ListImage uri={isFocus == 'Receive' ? item?.taskCreatorProfile : item?.taskReceiverProfile} />
+                            {/* <Image source={{ uri: isFocus == 'Receive' ? item?.taskCreatorProfile : item?.taskReceiverProfile }} style={styles.profileImg} /> */}
                             <View style={{ flex: 1 }}>
-                                <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.black, flex: 1 }}>{isFocus == 'Receive' ? item?.taskCreatorName : item?.taskReceiverName}</Text>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLOR.black, }}>{isFocus == 'Receive' ? item?.taskCreatorName : item?.taskReceiverName}</Text>
                                 <Text style={{ color: '#7B7B7B', fontSize: 14, marginTop: 5, fontWeight: 'regular' }}>{item.completedTasks + "/" + item.totalTasks + 'Completed'}</Text>
                             </View>
                         </View>
@@ -54,11 +58,18 @@ const TaskCommponent = ({ onPress }) => {
     const getAllTask = async () => {
         setLoading(true)
         const Token = await getToken();
-        await Task_User_List(Token, 'All Task')
+        await Task_User_List(Token, 'Given')
             .then((res) => {
                 if (res.status_code == 200) {
-                    setAllUserData(res?.data);
-                    setLoading(false);
+                    setGivenTaskData(res?.data.userList);
+                    setLoading(false)
+                }
+            })
+        await Task_User_List(Token, 'Receive')
+            .then((res) => {
+                if (res.status_code == 200) {
+                    setRecevieTaskData(res?.data.userList);
+                    setLoading(false)
                 }
             })
     };
@@ -87,12 +98,11 @@ const TaskCommponent = ({ onPress }) => {
             <FlatList
                 style={{ marginBottom: '30%', paddingHorizontal: 10 }}
                 renderItem={list}
-                data={isFocus == 'Given' ? userData?.givenArray : userData?.receiveArray}
+                data={isFocus == 'Given' ? givenTaskData : recevieTaskData}
                 bounces={false}
                 ListEmptyComponent={<Text style={{ marginTop: '50%', textAlign: 'center', color: COLOR.gray, fontSize: 16, fontWeight: 'bold' }}>Not Found</Text>}
             />
             <Loader visible={loading} Retry={getAllTask} />
-
         </View>
     )
 }

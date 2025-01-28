@@ -24,7 +24,6 @@ import { User_Logout } from '../../Service/actions';
 import { getToken } from '../../Service/AsyncStorage';
 import messaging from '@react-native-firebase/messaging';
 import Loader from '../../Custom/Loader/loader';
-import { load } from 'react-native-track-player/lib/src/trackPlayer';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -92,14 +91,14 @@ const MyTopTabs = props => {
                 <View style={{ backgroundColor: COLOR.black }}>
 
                     <MenuModal
+                        ScanQR={() => { props.navigation.navigate('scanqr'), setVisible(false) }}
                         onRequestClose={closeModal}
                         visible={visible}
                         setting={() => {
                             props.navigation.navigate('setting'), setVisible(false);
                         }}
-                        QR={() => {
-                            Alert.alert('Website QR'), setVisible(false);
-                        }}
+                        onGroup={() => { props.navigation.navigate('creategroup'), setVisible(false) }}
+
                         onClose={() => setVisible(false)}
                         title={'Received'}
                         onLogout={createTwoButtonAlert}

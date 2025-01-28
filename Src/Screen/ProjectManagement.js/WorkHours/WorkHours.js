@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ImageBackground, Image, FlatList, KeyboardAvoidingView, TextInput, ScrollView, Alert, Modal } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-import { COLOR } from '../../../Assets/AllFactors/AllFactors';
+import { COLOR, HEIGHT } from '../../../Assets/AllFactors/AllFactors';
 import NavigateHeader from '../../../Custom/Header/NavigateHeader';
 import WorkNoteModal from '../../../Custom/Modal/WorkNoteModal';
 import { Add_Work_Hour, Edit_Work_Hour_Summary, User_List, Work_Hour, Work_Hour_Send } from '../../../Service/actions';
@@ -12,6 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import ChatInputToolBar from '../../ChatInnerScreen/ChatCustomFile/ChatInputToolBar';
 import Button from '../../../Custom/Button/Button';
 import Timezone from 'react-native-timezone'
+import ListImage from '../../../Custom/ListImage/ListImage';
 
 const WorkHours = props => {
     const [start, setStart] = useState(false);
@@ -108,9 +109,9 @@ const WorkHours = props => {
         }
         return (
             <TouchableOpacity style={{ backgroundColor: COLOR.lightgreen, borderRadius: 10, height: 70, padding: 10, marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <View>
+                <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.black }}>{convertedDateString}</Text>
-                    {item.location ? <Text style={{ fontSize: 14, fontWeight: '500', color: COLOR.gray, marginTop: 10 }}>{item.location}</Text> : ''}
+                    {item.location ? <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: '500', color: COLOR.gray, marginTop: 10 }}>{item.location}</Text> : ''}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLOR.black }}>{item.total_hours}</Text>
@@ -255,7 +256,7 @@ const WorkHours = props => {
                 flex: 1,
             }}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding'>
-                <ScrollView>
+                <ScrollView bounces={false}>
                     <View style={{ padding: 20, paddingHorizontal: 30 }}>
                         <NavigateHeader top={30} color={COLOR.black} title={'Timer'} onPress={() => props.navigation.goBack()} />
                     </View>
@@ -282,11 +283,14 @@ const WorkHours = props => {
                     {cleanedTime && <Text style={{ textAlign: 'center', marginTop: 15, marginBottom: 5, color: COLOR.green, fontSize: 15, fontWeight: '600' }}>{cleanedTime + ' Hours'}</Text>}
                     <View style={{ borderBottomWidth: 1, borderColor: '#eeeeee', marginTop: 20, marginBottom: 10 }} />
                     {show ?
-                        <MonthPicker
-                            onChange={onValueChange}
-                            value={date}
-                            maximumDate={new Date()}
-                        />
+                        <View style={{ top: HEIGHT / 3.5 }}>
+                            <MonthPicker
+
+                                onChange={onValueChange}
+                                value={date}
+                                maximumDate={new Date()}
+                            />
+                        </View>
                         //  <View style={{ height: '40%', marginHorizontal: 25, marginTop: 5, borderRadius: 10, backgroundColor: COLOR.white, shadowOffset: { height: 0.5, width: 0 }, shadowColor: 'gray', shadowOpacity: 0.3, }}>
                         //     <FlatList renderItem={({ item }) => (
                         //         <TouchableOpacity style={{ padding: 8, backgroundColor: COLOR.verylightgray, marginTop: 10 }} onPress={() => { setSelectedMonth(item), setShow(false) }}>
@@ -296,30 +300,27 @@ const WorkHours = props => {
                         // </View>
                         :
                         <FlatList renderItem={list} data={WorkHourData} style={{ paddingHorizontal: 30 }} />}
-                    <ScrollView>
-                        <WorkNoteModal Close={() => { setShowWorkModal(false), AddWorkHours(), EditWorkHours() }}
-                            //  title={isUpdate ? 'Update Summary' : 'Add Summary'}
-                            visible={showWorkModal}
-                            buttonTitle={'Save'}
-                            // buttonTitle={isUpdate ? 'Update' : 'Save'}
-                            onPress={() => {
-                                if (isUpdate) {
-                                    EditWorkHours()
-                                    setShowWorkModal(false);
-                                } else {
-                                    setShowWorkModal(false);
-                                    setClear(true);
-                                    AddWorkHours();
-                                    setLoading(true);
-                                }
-                            }}
-                            startTime={formattedTimeStart} EndTime={formattedTimeEnd} summary={summary}
-                            onChangeText={(res) => setSummary(res)} Totle={`${Hours} hrs ${Minutes} mins`}
-                            locationValue={location} setLocationValue={(txt) => { setLocation(txt) }} />
-                    </ScrollView>
-
+                    <WorkNoteModal Close={() => { setShowWorkModal(false) }}
+                        //  title={isUpdate ? 'Update Summary' : 'Add Summary'}
+                        visible={showWorkModal}
+                        buttonTitle={'Save'}
+                        // buttonTitle={isUpdate ? 'Update' : 'Save'}
+                        onPress={() => {
+                            if (isUpdate) {
+                                EditWorkHours()
+                                GetWorkHours()
+                                setShowWorkModal(false);
+                            } else {
+                                setShowWorkModal(false);
+                                setClear(true);
+                                AddWorkHours();
+                                setLoading(true);
+                            }
+                        }}
+                        startTime={formattedTimeStart} EndTime={formattedTimeEnd} summary={summary}
+                        onChangeText={(res) => setSummary(res)} Totle={`${Hours} hrs ${Minutes} mins`}
+                        locationValue={location} setLocationValue={(txt) => { setLocation(txt) }} />
                     <Loader visible={loading} Retry={() => { getuser(), GetWorkHours() }} />
-
                 </ScrollView>
                 <View style={{ marginBottom: isFocused ? 5 : 25, }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, margin: 10, alignSelf: 'center' }}>
@@ -354,8 +355,9 @@ const WorkHours = props => {
                                 <View>
                                     {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                            <ListImage uri={item?.profile} />
+                                            {/* <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                                            <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                         </View>
 
                                         <TouchableOpacity onPress={() => toggleItem(item?.id)}>

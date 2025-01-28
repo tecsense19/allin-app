@@ -6,6 +6,7 @@ import Button from '../../../Custom/Button/Button'
 import NavigateHeader from '../../../Custom/Header/NavigateHeader'
 import Timezone from 'react-native-timezone'
 import { User_List } from '../../../Service/actions'
+import ListImage from '../../../Custom/ListImage/ListImage'
 
 const CreateReminder = ({ onSubmit, userId, token }) => {
     const [descriptions, setDescription] = useState('');
@@ -189,8 +190,9 @@ const CreateReminder = ({ onSubmit, userId, token }) => {
                                 <View>
                                     {item.type == 'user' ? <View style={{ justifyContent: 'space-between', borderRadius: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', marginVertical: 8, padding: 5, shadowRadius: 1.5, shadowOpacity: 0.5, margin: 3, shadowColor: COLOR.gray, shadowOffset: { height: 1, width: 0 } }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} />
-                                            <Text style={{ fontSize: 16, marginLeft: 10, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
+                                            <ListImage uri={item?.profile} />
+                                            {/* <Image source={{ uri: item?.profile }} style={{ height: 50, width: 50, borderRadius: 50 }} /> */}
+                                            <Text style={{ fontSize: 16, color: COLOR.black, fontWeight: 'bold' }}>{userName?.length >= 16 ? userName?.slice(0, 16) + ' . . . ' || '' : userName}</Text>
                                         </View>
 
                                         <TouchableOpacity onPress={() => toggleItem(item?.id)}>

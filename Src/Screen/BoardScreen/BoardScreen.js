@@ -1,13 +1,13 @@
 import { View, Text, StatusBar, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLOR } from '../../Assets/AllFactors/AllFactors';
-import CalenderComponent from './CalenderComponent';
 import MeetingCommponent from './MeetingCommponent';
 import EventsCommponent from './EventsCommponent';
 import TaskCommponent from './TaskCommponent';
 import { getToken } from '../../Service/AsyncStorage';
 import { Task_Meeting_Event_Count } from '../../Service/actions';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import CalenderComponent from '../../Custom/Calendar/Calender';
 const BoardScreen = (props) => {
     const [isAcctive, setIsAcctive] = useState('Calender');
     const [taskCount, setTaskCount] = useState('');

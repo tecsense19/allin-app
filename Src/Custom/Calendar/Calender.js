@@ -7,7 +7,7 @@ import { COLOR } from '../../Assets/AllFactors/AllFactors';
 import Button from '../Button/Button';
 import { openSettings } from 'react-native-permissions';
 
-const CalendarView = () => {
+const CalenderComponent = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [eventText, setEventText] = useState('');
     const [events, setEvents] = useState({});
@@ -46,10 +46,7 @@ const CalendarView = () => {
         try {
             const eventStartDate = new Date(selectedDate);
             const eventEndDate = new Date(selectedDate);
-            // Ensure time is at the start and end of the day
-            // eventStartDate.setHours(0, 0, 0, 0);
-            // eventEndDate.setHours(23, 59, 59, 999);
-            // Add the event to the device's calendar
+
             await RNCalendarEvents.saveEvent(eventText, {
                 startDate: eventStartDate.toISOString(),
                 endDate: eventEndDate.toISOString(),
@@ -180,7 +177,7 @@ const CalendarView = () => {
     );
 };
 
-export default CalendarView;
+export default CalenderComponent;
 
 const theme = {
     backgroundColor: '#ffffff',

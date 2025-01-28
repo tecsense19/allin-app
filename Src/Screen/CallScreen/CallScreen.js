@@ -15,20 +15,24 @@ import styles from './CallScreenStyle';
 import { getToken } from '../../Service/AsyncStorage';
 import TimeZone from 'react-native-timezone'
 import { User_List } from '../../Service/actions';
+import Loader from '../../Custom/Loader/loader';
+import ListImage from '../../Custom/ListImage/ListImage';
 
 const CallScreen = (props) => {
     const [data, setData] = useState([])
     const [search, setSearch] = useState('')
     const [token, setToken] = useState('')
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
         getuser();
-    }, [search.length > 2]);
+    }, []);
 
     const getuser = async () => {
+
         const Token = await getToken();
         setToken(Token);
         const bodydata = { timezone: TimeZone.getTimeZone(), search: search };
-
+        setLoading(true);
         await User_List(bodydata, Token)
             .then((res) => {
                 if (res.status_code == 200) {
@@ -36,12 +40,9 @@ const CallScreen = (props) => {
                     setLoading(false);
                 }
             })
-            .catch((e) => {
-                console.log(e, 'userList screen');
-            });
+
     };
     const list = ({ item }) => {
-        // console.log(item);
         const onhandalePhoneCall = () => {
             Linking.openURL(`tel:${item.country_code + ' ' + item.mobile}`);
         };
@@ -50,7 +51,8 @@ const CallScreen = (props) => {
             <View style={{ backgroundColor: COLOR.white, }}>
                 {item.type == 'user' ? <View style={styles.listcontainer}>
                     <View style={styles.imgAndNameView}>
-                        <Image source={{ uri: item.profile }} style={styles.chetImg} />
+                        <ListImage uri={item.profile} />
+                        {/* <Image source={{ uri: item.profile }} style={styles.chetImg} /> */}
                         <View>
                             <Text style={styles.name}>
                                 {userName.length >= 20
@@ -74,6 +76,7 @@ const CallScreen = (props) => {
                         <Text style={styles.time}>{item.time}</Text>
                     </TouchableOpacity>
                 </View> : ''}
+
             </View>
         );
     };
@@ -131,6 +134,7 @@ const CallScreen = (props) => {
 
                 <FlatList showsVerticalScrollIndicator={false} renderItem={list} data={data} style={{ paddingHorizontal: 20 }} />
             </View>
+            <Loader visible={loading} Retry={getuser} />
         </View>
     );
 };
