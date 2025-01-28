@@ -35,6 +35,8 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import SelectedTextMsgPopup from './ChatCustomFile/SelectedTextMsgPopup';
 import { BlurView } from '@react-native-community/blur';
 import AddContactCard from './ChatCustomFile/AddContactCard';
+import CtrateHeader from './ChatCustomFile/CreateHeader';
+import SimpleTaskModal from './ChatCustomFile/SimpleTaskModal';
 
 const ChatInnerScreen = props => {
     const [messages, setMessages] = useState([]);
@@ -62,6 +64,7 @@ const ChatInnerScreen = props => {
     const [isCardHide, setIsCardHide] = useState(false);
     const [myid, setMyId] = useState('');
     const [onUpdateMessage, setOnUpdateMessage] = useState(false);
+    const [openSimpleTask, setOpenSimpleTask] = useState(false);
 
     const handleTouch = (e) => {
         const { pageY, pageX } = e.nativeEvent;
@@ -358,7 +361,7 @@ const ChatInnerScreen = props => {
         );
     }
     );
-    
+
     const SendFormetedContactArray = selectedContact.map(obj => ({
         givenName: obj.givenName,
         phoneNumbers: obj.phoneNumbers.map(phone => phone.number)
@@ -545,7 +548,8 @@ const ChatInnerScreen = props => {
                                     </View>
                                     <View style={{ alignSelf: selectedMSG[0].sentBy == 'loginUser' ? 'flex-start' : 'flex-end', marginLeft: selectedMSG[0].sentBy == 'loginUser' ? -65 : 0, marginRight: selectedMSG[0].sentBy == 'loginUser' ? 0 : -65 }}>
                                         <SelectedTextMsgPopup msgType={selectedMSG[0].messageType} userType={selectedMSG[0]?.sentBy}
-                                            OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }}
+                                            // OnAddTask={() => { setReMeCkModal(true), setMsgType('Task') }}
+                                            OnAddTask={() => { setOpenSimpleTask(true) }}
                                             onIgnore={() => { setSelectedMSG([]) }}
                                             onForword={() => { props.navigation.navigate('forword', { forwordId }), setSelectedMSG([]) }}
                                         // onDeleteTask={selectedMsgDelete}
@@ -599,45 +603,16 @@ const ChatInnerScreen = props => {
                 // </BlurView>
                 : null
             }
+
             {loding && <View style={{ backgroundColor: COLOR.white, position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
             </View>}
+            <SimpleTaskModal visble={openSimpleTask} close={() => setOpenSimpleTask(false)} msg={selectedMSG[0]?.messageDetails} />
+
         </View >
     );
 };
 export default ChatInnerScreen;
 
-const CtrateHeader = ({ source, onBack, title }) => {
-    return (
-        <View style={{ paddingHorizontal: 15, padding: 15, marginTop: 35, flexDirection: 'row', alignItems: 'center', marginBottom: -15 }}>
-            <TouchableOpacity onPress={onBack} style={{
-                backgroundColor: COLOR.green,
-                borderRadius: 50,
-                height: 30,
-                width: 30,
-                alignItems: 'center',
-                justifyContent: 'center', marginRight: 5
-            }}>
-                <Image
-                    source={require('../../Assets/Image/back.png')}
-                    style={{
-                        height: 16,
-                        width: 16,
-                        resizeMode: 'contain', tintColor: COLOR.black, marginLeft: -2
-                    }}
-                />
-            </TouchableOpacity>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {source ? <Image source={{ uri: source }} style={{ height: 45, width: 45, marginLeft: 8, borderRadius: 50 }} /> : ''}
-                <Text style={{
-                    color: COLOR.white,
-                    fontSize: 18,
-                    fontWeight: '600',
-                    marginLeft: 10,
-                }}>{title}</Text>
-            </View>
-        </View>
-    )
-}
 
 
 
